@@ -164,13 +164,11 @@
     </div>
 
     <script>
-        // Background Image Handler (Flatten / Fixed)
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedBg = localStorage.getItem('hani_venus_bg');
-            if (savedBg) {
-                document.getElementById('bg-layer').style.backgroundImage = `url(${savedBg})`;
-            }
-        });
+        // Background Image Handler
+        const savedBg = localStorage.getItem('hani_venus_bg');
+        if (savedBg) {
+            document.getElementById('bg-layer').style.backgroundImage = `url(${savedBg})`;
+        }
 
         function changeBackground(event) {
             const file = event.target.files[0];
@@ -222,7 +220,7 @@
             } catch(e) {}
         }
 
-        // Form & Transactions Logic
+        // Form & Transactions Elements
         const form = document.getElementById('savingForm');
         const editIndexInput = document.getElementById('editIndex');
         const typeInput = document.getElementById('type');
@@ -244,8 +242,13 @@
         const notifSpinner = document.getElementById('notifSpinner');
         const notifText = document.getElementById('notifText');
 
-        if(dateInput) {
-            dateInput.valueAsDate = new Date();
+        // Set default date safely (YYYY-MM-DD format)
+        if (dateInput) {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
         }
 
         function toggleFormType() {
@@ -323,7 +326,4 @@
                         <td>${formatFullDate(item.date)}</td>
                         <td><b>${labelKet}</b></td>
                         <td><span class="${isIncome ? 'badge-masuk' : 'badge-keluar'}">${isIncome ? 'Masuk' : 'Keluar'}</span></td>
-                        <td style="color:${isIncome ? '#0d47a1' : '#d32f2f'}; font-weight:800;">${formatRupiah(val)}</td>
-                        <td>
-                            <div class="btn-action-group">
-                                <button type="button" class="btn-edit" onclick="editI
+                        <td style="color:${isIncome ? '#0d47a1' : '#d32f2f'}; font-weight:800;">${formatRupiah
