@@ -472,7 +472,7 @@
 
         <!-- Riwayat Transaksi -->
         <div class="history">
-            <h2>Riwayat Transaksi (Realtime Online)</h2>
+            <h2>Riwayat Transaksi (Lokal HP)</h2>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -487,7 +487,7 @@
                     <tbody id="historyList"></tbody>
                 </table>
             </div>
-            <div id="emptyMessage" class="empty-text">Memuat data online...</div>
+            <div id="emptyMessage" class="empty-text" style="display: none;">Belum ada riwayat transaksi.</div>
         </div>
     </div>
 
@@ -531,27 +531,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK (Version 9+ Compatibility Mode) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
     <script>
-        // KONEKSI REALTIME DATABASE FIREBASE ANDA
-        const firebaseConfig = {
-          apiKey: "AIzaSyB39y3l8a8jXdtcNNjGJB97GwJw9MOCNKk",
-          authDomain: "tabungan-hani-dan-venus.firebaseapp.com",
-          databaseURL: "https://tabungan-hani-dan-venus-default-rtdb.firebaseio.com",
-          projectId: "tabungan-hani-dan-venus",
-          storageBucket: "tabungan-hani-dan-venus.firebasestorage.app",
-          messagingSenderId: "914398412644",
-          appId: "1:914398412644:web:112a0f0862056be0470471",
-          measurementId: "G-B1QVVTSMVR"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref('transactions');
-
         // Form Elements
         const form = document.getElementById('savingForm');
         const typeInput = document.getElementById('type');
@@ -581,7 +561,7 @@
         const editDate = document.getElementById('editDate');
         const editAmount = document.getElementById('editAmount');
         const editAmountLabel = document.getElementById('editAmountLabel');
-        let currentEditKey = null;
+        let currentEditId = null;
 
         // Countdown Timer
         const weddingDate = new Date('2027-04-03T08:00:00').getTime();
@@ -602,4 +582,24 @@
         dateInput.valueAsDate = new Date();
 
         function toggleFormType() {
-            if (typeInp
+            if (typeInput.value === 'in') {
+                personGroup.style.display = 'flex';
+                categoryGroup.style.display = 'none';
+                amountLabel.textContent = 'Jumlah Tabungan (Rp)';
+                submitBtn.textContent = 'Tambah Pemasukan';
+                submitBtn.style.backgroundColor = 'var(--warna-utama)';
+            } else {
+                personGroup.style.display = 'none';
+                categoryGroup.style.display = 'flex';
+                amountLabel.textContent = 'Jumlah Pengeluaran (Rp)';
+                submitBtn.textContent = 'Tambah Pengeluaran';
+                submitBtn.style.backgroundColor = 'var(--warna-pengeluaran)';
+            }
+        }
+
+        function toggleEditFormType() {
+            if (editType.value === 'in') {
+                editPersonGroup.style.display = 'flex';
+                editCategoryGroup.style.display = 'none';
+                editAmountLabel.textContent = 'Jumlah Tabungan (Rp)';
+       
