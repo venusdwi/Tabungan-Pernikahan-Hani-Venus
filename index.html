@@ -11,54 +11,85 @@
         :root {
             --warna-utama: #0f4c81;
             --warna-pengeluaran: #d32f2f;
-            --kartu-gradasi-1: rgba(21, 101, 192, 0.85);
-            --kartu-gradasi-2: rgba(66, 165, 245, 0.85);
+            --kartu-gradasi-1: rgba(21, 101, 192, 0.88);
+            --kartu-gradasi-2: rgba(66, 165, 245, 0.88);
             --bg-halaman: #f0f4f8;
-            --bg-header-tabel: rgba(227, 242, 253, 0.85);
+            --bg-header-tabel: rgba(227, 242, 253, 0.9);
             --teks-header-tabel: #0d47a1;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        #bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-halaman); z-index: -1; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
+        #bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-halaman); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: -1; }
         body { color: #111; display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
-        .container { width: 100%; max-width: 650px; background: rgba(255, 255, 255, 0.25); padding: 30px 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.4); margin: auto 0; }
-        h1 { text-align: center; color: var(--warna-utama); margin-bottom: 22px; font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; }
+        .container { width: 100%; max-width: 650px; background: rgba(255, 255, 255, 0.35); padding: 30px 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.5); backdrop-filter: blur(8px); margin: auto 0; }
+        h1 { text-align: center; color: var(--warna-utama); margin-bottom: 22px; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; }
         .summary-card { background: linear-gradient(135deg, var(--kartu-gradasi-1), var(--kartu-gradasi-2)); color: white; padding: 22px 20px; border-radius: 14px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
-        .summary-card h3 { font-size: 13px; font-weight: 500; opacity: 0.95; }
-        .summary-card .total-main { font-size: 32px; font-weight: 700; margin-top: 4px; }
+        .summary-card h3 { font-size: 15px; font-weight: 500; opacity: 0.95; }
+        .summary-card .total-main { font-size: 36px; font-weight: 700; margin-top: 4px; }
         .financial-details { display: flex; justify-content: space-around; margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.4); }
-        .fin-box { font-size: 12px; }
-        .fin-box val { display: block; font-size: 15px; font-weight: 700; margin-top: 2px; }
+        .fin-box { font-size: 13px; }
+        .fin-box val { display: block; font-size: 17px; font-weight: 700; margin-top: 2px; }
         .divider { height: 1px; background: rgba(255, 255, 255, 0.3); margin: 16px 0 12px 0; }
-        .countdown-title { font-size: 12px; font-weight: 600; opacity: 0.9; margin-bottom: 8px; }
+        .countdown-title { font-size: 14px; font-weight: 600; opacity: 0.95; margin-bottom: 4px; }
+        .countdown-date { font-size: 13px; font-weight: 500; opacity: 0.9; margin-bottom: 10px; }
         .countdown-grid { display: flex; justify-content: center; gap: 8px; }
-        .countdown-box { background: rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 8px; min-width: 60px; border: 1px solid rgba(255, 255, 255, 0.3); }
-        .countdown-num { font-size: 18px; font-weight: 700; line-height: 1.2; }
-        .countdown-label { font-size: 9px; text-transform: uppercase; opacity: 0.85; margin-top: 2px; font-weight: 600; }
-        .monthly-section { background: rgba(255, 255, 255, 0.4); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.4); }
-        .monthly-section h2 { font-size: 16px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 4px; font-family: 'Playfair Display', serif; }
-        .monthly-item { background: rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+        .countdown-box { background: rgba(255, 255, 255, 0.2); padding: 8px 12px; border-radius: 8px; min-width: 65px; border: 1px solid rgba(255, 255, 255, 0.3); }
+        .countdown-num { font-size: 20px; font-weight: 700; line-height: 1.2; }
+        .countdown-label { font-size: 10px; text-transform: uppercase; opacity: 0.85; margin-top: 2px; font-weight: 600; }
+        
+        .bg-picker-section { background: rgba(255, 255, 255, 0.5); border-radius: 12px; padding: 12px 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .bg-picker-section label { font-size: 14px; cursor: pointer; color: var(--warna-utama); display: flex; align-items: center; gap: 6px; font-weight: 700; }
+        .bg-picker-section input[type="file"] { display: none; }
+        .btn-reset-bg { background: #e0e0e0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        .monthly-section { background: rgba(255, 255, 255, 0.5); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .monthly-section h2 { font-size: 18px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 4px; font-family: 'Playfair Display', serif; }
+        .monthly-item { background: rgba(255, 255, 255, 0.6); padding: 12px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
         .monthly-header { font-weight: 700; color: var(--warna-utama); margin-bottom: 4px; display: flex; justify-content: space-between; }
-        .monthly-details { display: flex; justify-content: space-between; color: #333; font-weight: 600; font-size: 12px; }
-        form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.35); padding: 18px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.4); }
+        .monthly-details { display: flex; justify-content: space-between; color: #333; font-weight: 600; font-size: 13px; }
+        
+        form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.4); padding: 18px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 13px; font-weight: 700; color: #111; }
-        input, select { padding: 10px 12px; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 8px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.85); font-weight: 600; color: #222; }
-        button.btn-add { background-color: var(--warna-utama); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 5px; }
-        .history h2 { font-size: 17px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 6px; font-weight: 700; font-family: 'Playfair Display', serif; }
+        label { font-size: 14px; font-weight: 700; color: #111; }
+        input, select { padding: 11px 12px; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 8px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.9); font-weight: 600; color: #222; }
+        
+        .btn-action-container { display: flex; gap: 10px; margin-top: 5px; }
+        button.btn-add { flex: 1; background-color: var(--warna-utama); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+        button.btn-cancel-edit { background-color: #757575; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
+
+        .history h2 { font-size: 19px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 6px; font-weight: 700; font-family: 'Playfair Display', serif; }
         .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-size: 12px; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; min-width: 520px; }
+        th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-size: 13px; font-weight: 600; }
         th { background-color: var(--bg-header-tabel); color: var(--teks-header-tabel); font-weight: 700; }
-        .badge-masuk { background: rgba(15, 76, 129, 0.15); color: var(--warna-utama); padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
-        .badge-keluar { background: rgba(211, 47, 47, 0.15); color: var(--warna-pengeluaran); padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
-        .btn-delete { background-color: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: 700; }
-        .empty-text { text-align: center; color: #333; padding: 15px; font-size: 13px; font-weight: 600; }
+        .badge-masuk { background: rgba(15, 76, 129, 0.15); color: var(--warna-utama); padding: 3px 7px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+        .badge-keluar { background: rgba(211, 47, 47, 0.15); color: var(--warna-pengeluaran); padding: 3px 7px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+        
+        .btn-group-action { display: flex; gap: 5px; }
+        .btn-edit { background-color: #ff9800; color: white; border: none; padding: 5px 9px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; }
+        .btn-delete { background-color: #ff4d4d; color: white; border: none; padding: 5px 9px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; }
+        .empty-text { text-align: center; color: #333; padding: 15px; font-size: 14px; font-weight: 600; }
+
+        /* Notification & Loading Overlay */
+        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .loading-box { background: white; padding: 25px 35px; border-radius: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--warna-utama); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-weight: 700; font-size: 16px; color: #333; }
     </style>
 </head>
 <body>
     <div id="bg-layer"></div>
+
+    <div id="loadingOverlay">
+        <div class="loading-box">
+            <div id="spinnerIcon" class="spinner"></div>
+            <div id="loadingText" class="loading-text">Menyimpan data...</div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>Tabungan Pernikahan<br>Hani & Venus 💍</h1>
+        
         <div class="summary-card">
             <h3>Sisa Saldo Tabungan</h3>
             <div class="total-main" id="totalBalance">Rp 0</div>
@@ -67,7 +98,8 @@
                 <div class="fin-box">Total Pengeluaran<val id="totalExpense" style="color: #ffcdd2;">Rp 0</val></div>
             </div>
             <div class="divider"></div>
-            <div class="countdown-title">💍 Menuju Hari Pernikahan (Sabtu, 03 April 2027)</div>
+            <div class="countdown-title">💍 Menuju Hari Pernikahan</div>
+            <div class="countdown-date">Sabtu, 03 April 2027</div>
             <div class="countdown-grid">
                 <div class="countdown-box"><div class="countdown-num" id="cdDays">0</div><div class="countdown-label">Hari</div></div>
                 <div class="countdown-box"><div class="countdown-num" id="cdHours">0</div><div class="countdown-label">Jam</div></div>
@@ -75,11 +107,20 @@
                 <div class="countdown-box"><div class="countdown-num" id="cdSeconds">0</div><div class="countdown-label">Detik</div></div>
             </div>
         </div>
+
+        <div class="bg-picker-section">
+            <label for="bgFile">🖼️ Pilih Foto Latar Belakang</label>
+            <input type="file" id="bgFile" accept="image/*" onchange="changeBackground(event)">
+            <button class="btn-reset-bg" onclick="resetBackground()">Reset Foto</button>
+        </div>
+
         <div class="monthly-section">
             <h2>📊 Rincian Tabungan Per Bulan</h2>
             <div id="monthlyList"></div>
         </div>
+
         <form id="savingForm">
+            <input type="hidden" id="editIndex" value="">
             <div class="form-group">
                 <label for="type">Jenis Transaksi</label>
                 <select id="type" onchange="toggleFormType()" required>
@@ -106,8 +147,12 @@
                 <label for="amount" id="amountLabel">Jumlah Tabungan (Rp)</label>
                 <input type="number" id="amount" placeholder="Contoh: 500000" min="1" required>
             </div>
-            <button type="submit" class="btn-add" id="submitBtn">Tambah Pemasukan</button>
+            <div class="btn-action-container">
+                <button type="button" id="cancelEditBtn" class="btn-cancel-edit" onclick="cancelEdit()">Batal</button>
+                <button type="submit" class="btn-add" id="submitBtn">Konfirmasi</button>
+            </div>
         </form>
+
         <div class="history">
             <h2>Riwayat Transaksi</h2>
             <div class="table-responsive">
@@ -129,6 +174,51 @@
     </div>
 
     <script>
+        // Background Image Persistence
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedBg = localStorage.getItem('hani_venus_bg');
+            if(savedBg) {
+                document.getElementById('bg-layer').style.backgroundImage = `url(${savedBg})`;
+            }
+        });
+
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const result = e.target.result;
+                    document.getElementById('bg-layer').style.backgroundImage = `url(${result})`;
+                    localStorage.setItem('hani_venus_bg', result);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetBackground() {
+            localStorage.removeItem('hani_venus_bg');
+            document.getElementById('bg-layer').style.backgroundImage = 'none';
+        }
+
+        // Sound Notification Helper (Web Audio API Beep)
+        function playSuccessSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5 note
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            } catch(e) {}
+        }
+
+        // Countdown Timer
         const weddingDate = new Date(2027, 3, 3, 0, 0, 0).getTime();
         function updateCountdown() {
             const now = new Date().getTime();
@@ -152,12 +242,17 @@
         const amountInput = document.getElementById('amount');
         const amountLabel = document.getElementById('amountLabel');
         const submitBtn = document.getElementById('submitBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editIndexInput = document.getElementById('editIndex');
         const totalBalanceEl = document.getElementById('totalBalance');
         const totalIncomeEl = document.getElementById('totalIncome');
         const totalExpenseEl = document.getElementById('totalExpense');
         const monthlyListEl = document.getElementById('monthlyList');
         const historyListEl = document.getElementById('historyList');
         const emptyMessageEl = document.getElementById('emptyMessage');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const spinnerIcon = document.getElementById('spinnerIcon');
+        const loadingText = document.getElementById('loadingText');
 
         dateInput.valueAsDate = new Date();
 
@@ -166,13 +261,11 @@
                 personGroup.style.display = 'flex';
                 categoryGroup.style.display = 'none';
                 amountLabel.textContent = 'Jumlah Tabungan (Rp)';
-                submitBtn.textContent = 'Tambah Pemasukan';
                 submitBtn.style.backgroundColor = 'var(--warna-utama)';
             } else {
                 personGroup.style.display = 'none';
                 categoryGroup.style.display = 'flex';
                 amountLabel.textContent = 'Jumlah Pengeluaran (Rp)';
-                submitBtn.textContent = 'Tambah Pengeluaran';
                 submitBtn.style.backgroundColor = 'var(--warna-pengeluaran)';
             }
         }
@@ -210,7 +303,7 @@
 
             if (dataObj.length === 0) {
                 emptyMessageEl.style.display = 'block';
-                monthlyListEl.innerHTML = '<div style="font-size:12px; text-align:center; color:#333;">Belum ada data bulanan.</div>';
+                monthlyListEl.innerHTML = '<div style="font-size:13px; text-align:center; color:#333;">Belum ada data bulanan.</div>';
             } else {
                 emptyMessageEl.style.display = 'none';
                 dataObj.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -234,57 +327,4 @@
                     const labelKet = isIncome ? (item.person || 'Hani') : (item.category || 'Pengeluaran');
                     row.innerHTML = `
                         <td>${formatFullDate(item.date)}</td>
-                        <td><b>${labelKet}</b></td>
-                        <td><span class="${isIncome ? 'badge-masuk' : 'badge-keluar'}">${isIncome ? 'Masuk' : 'Keluar'}</span></td>
-                        <td style="color:${isIncome ? '#0d47a1' : '#d32f2f'}; font-weight:700;">${formatRupiah(val)}</td>
-                        <td><button class="btn-delete" onclick="deleteItem(${item.id || index})">Hapus</button></td>
-                    `;
-                    historyListEl.appendChild(row);
-                });
-
-                Object.keys(monthlyData).sort().reverse().forEach(mKey => {
-                    const mInfo = monthlyData[mKey];
-                    const div = document.createElement('div');
-                    div.className = 'monthly-item';
-                    div.innerHTML = `
-                        <div class="monthly-header"><span>📅 ${formatMonthYear(mKey)}</span><span>Bersih: ${formatRupiah(mInfo.total)}</span></div>
-                        <div class="monthly-details"><span>Hani: ${formatRupiah(mInfo.Hani)}</span><span>Venus: ${formatRupiah(mInfo.Venus)}</span><span style="color:#d32f2f;">Keluar: ${formatRupiah(mInfo.Pengeluaran)}</span></div>
-                    `;
-                    monthlyListEl.appendChild(div);
-                });
-            }
-            totalIncomeEl.textContent = formatRupiah(totalIn);
-            totalExpenseEl.textContent = formatRupiah(totalOut);
-            totalBalanceEl.textContent = formatRupiah(totalIn - totalOut);
-        }
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const isIncome = typeInput.value === 'in';
-            const data = getTransactions();
-            data.push({
-                id: Date.now(),
-                type: typeInput.value,
-                person: isIncome ? personInput.value : '',
-                category: !isIncome ? categoryInput.value : '',
-                date: dateInput.value,
-                amount: parseFloat(amountInput.value)
-            });
-            saveTransactions(data);
-            amountInput.value = '';
-            categoryInput.value = '';
-        });
-
-        function deleteItem(idOrIndex) {
-            if (confirm('Yakin ingin menghapus transaksi ini?')) {
-                let data = getTransactions();
-                // Support both ID-based and index-based fallback deletion
-                data = data.filter((d, idx) => (d.id ? d.id !== idOrIndex : idx !== idOrIndex));
-                saveTransactions(data);
-            }
-        }
-
-        renderUI();
-    </script>
-</body>
-</html>
+            
