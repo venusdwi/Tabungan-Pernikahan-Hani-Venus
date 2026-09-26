@@ -13,6 +13,7 @@
             --warna-utama: #0f4c81;          
             --warna-hover: #0a3357;          
             --warna-pengeluaran: #d32f2f;
+            --warna-edit: #f57c00;
             --kartu-gradasi-1: rgba(21, 101, 192, 0.85);   
             --kartu-gradasi-2: rgba(66, 165, 245, 0.85);
             --bg-halaman: #f0f4f8;           
@@ -27,7 +28,7 @@
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
         }
 
-        /* LAYER FOTO LATAR BELAKANG TETAP / STATIONARY */
+        /* LAYER FOTO LATAR BELAKANG TETAP */
         #bg-layer {
             position: fixed;
             top: 0;
@@ -292,7 +293,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 480px;
+            min-width: 520px;
         }
 
         th, td {
@@ -327,6 +328,22 @@
             font-weight: 700;
         }
 
+        .action-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-edit {
+            background-color: var(--warna-edit);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
         .btn-delete {
             background-color: #ff4d4d;
             color: white;
@@ -344,6 +361,80 @@
             padding: 15px;
             font-size: 13px;
             font-weight: 600;
+        }
+
+        /* MODAL / POPUP EDIT */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            font-size: 16px;
+            color: var(--warna-utama);
+        }
+
+        .close-modal {
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-save {
+            background: var(--warna-utama);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            flex: 1;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            flex: 1;
+            font-weight: 700;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -428,7 +519,7 @@
             </div>
 
             <div class="form-group">
-                <label for="date">Hari, Tanggal, Bulan & Tahun Transaksi</label>
+                <label for="date">Hari & Tanggal Transaksi</label>
                 <input type="date" id="date" required>
             </div>
 
@@ -460,6 +551,45 @@
         </div>
     </div>
 
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Edit Data Transaksi</h3>
+                <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Jenis Transaksi</label>
+                <select id="editType" onchange="toggleEditFormType()">
+                    <option value="in">Pemasukan (Tabungan)</option>
+                    <option value="out">Pengeluaran (Biaya Pernikahan)</option>
+                </select>
+            </div>
+            <div class="form-group" id="editPersonGroup" style="margin-bottom: 10px;">
+                <label>Nama Penabung</label>
+                <select id="editPerson">
+                    <option value="Hani">Hani</option>
+                    <option value="Venus">Venus</option>
+                </select>
+            </div>
+            <div class="form-group" id="editCategoryGroup" style="margin-bottom: 10px; display: none;">
+                <label>Jenis / Kategori Pengeluaran</label>
+                <input type="text" id="editCategory">
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Hari & Tanggal Transaksi</label>
+                <input type="date" id="editDate" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label id="editAmountLabel">Jumlah (Rp)</label>
+                <input type="number" id="editAmount" min="1" required>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeEditModal()">Batal</button>
+                <button class="btn-save" onclick="saveEditItem()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const form = document.getElementById('savingForm');
         const typeInput = document.getElementById('type');
@@ -481,6 +611,18 @@
         const bgInput = document.getElementById('bgInput');
         const resetBgBtn = document.getElementById('resetBgBtn');
         const bgLayer = document.getElementById('bg-layer');
+
+        // Modal Edit Elements
+        const editModal = document.getElementById('editModal');
+        const editType = document.getElementById('editType');
+        const editPerson = document.getElementById('editPerson');
+        const editCategory = document.getElementById('editCategory');
+        const editPersonGroup = document.getElementById('editPersonGroup');
+        const editCategoryGroup = document.getElementById('editCategoryGroup');
+        const editDate = document.getElementById('editDate');
+        const editAmount = document.getElementById('editAmount');
+        const editAmountLabel = document.getElementById('editAmountLabel');
+        let currentEditIndex = null;
 
         // Countdown Timer
         const weddingDate = new Date('2027-04-03T08:00:00').getTime();
@@ -506,7 +648,6 @@
 
         dateInput.valueAsDate = new Date();
 
-        // Switch Form Type (In vs Out)
         function toggleFormType() {
             if (typeInput.value === 'in') {
                 personGroup.style.display = 'flex';
@@ -520,6 +661,18 @@
                 amountLabel.textContent = 'Jumlah Pengeluaran (Rp)';
                 submitBtn.textContent = 'Tambah Pengeluaran';
                 submitBtn.style.backgroundColor = 'var(--warna-pengeluaran)';
+            }
+        }
+
+        function toggleEditFormType() {
+            if (editType.value === 'in') {
+                editPersonGroup.style.display = 'flex';
+                editCategoryGroup.style.display = 'none';
+                editAmountLabel.textContent = 'Jumlah Tabungan (Rp)';
+            } else {
+                editPersonGroup.style.display = 'none';
+                editCategoryGroup.style.display = 'flex';
+                editAmountLabel.textContent = 'Jumlah Pengeluaran (Rp)';
             }
         }
 
@@ -561,7 +714,6 @@
             }).format(number);
         }
 
-        // Format Hari, Tanggal, Bulan, Tahun
         function formatFullDate(dateString) {
             const date = new Date(dateString + 'T00:00:00');
             const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
@@ -599,7 +751,6 @@
                         totalOut += val;
                     }
 
-                    // Rekap Bulanan
                     const monthKey = item.date.substring(0, 7);
                     if (!monthlyData[monthKey]) {
                         monthlyData[monthKey] = { Hani: 0, Venus: 0, Pengeluaran: 0, total: 0 };
@@ -613,7 +764,6 @@
                         monthlyData[monthKey].total -= val;
                     }
 
-                    // Tabel Riwayat
                     const row = document.createElement('tr');
                     const labelKet = isIncome ? (item.person || 'Hani') : (item.category || 'Pengeluaran');
                     const badgeClass = isIncome ? 'badge-masuk' : 'badge-keluar';
@@ -626,13 +776,15 @@
                         <td><span class="${badgeClass}">${badgeText}</span></td>
                         <td style="color:${amountColor}; font-weight:700;">${formatRupiah(val)}</td>
                         <td>
-                            <button class="btn-delete" onclick="deleteItem(${index})">Hapus</button>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="openEditModal(${index})">Edit</button>
+                                <button class="btn-delete" onclick="deleteItem(${index})">Hapus</button>
+                            </div>
                         </td>
                     `;
                     historyListEl.appendChild(row);
                 });
 
-                // Render Rincian Bulanan
                 Object.keys(monthlyData).sort().reverse().forEach(mKey => {
                     const mInfo = monthlyData[mKey];
                     const itemDiv = document.createElement('div');
@@ -675,6 +827,48 @@
             amountInput.value = '';
             categoryInput.value = '';
         });
+
+        // Buka Popup Edit
+        function openEditModal(index) {
+            currentEditIndex = index;
+            const item = savingsData[index];
+
+            editType.value = item.type || 'in';
+            editDate.value = item.date;
+            editAmount.value = item.amount;
+
+            if (item.type === 'in') {
+                editPerson.value = item.person || 'Hani';
+                editCategory.value = '';
+            } else {
+                editCategory.value = item.category || '';
+            }
+
+            toggleEditFormType();
+            editModal.style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            editModal.style.display = 'none';
+            currentEditIndex = null;
+        }
+
+        // Simpan Perubahan Edit
+        function saveEditItem() {
+            if (currentEditIndex === null) return;
+
+            const isIncome = editType.value === 'in';
+            savingsData[currentEditIndex] = {
+                type: editType.value,
+                person: isIncome ? editPerson.value : '',
+                category: !isIncome ? editCategory.value : '',
+                date: editDate.value,
+                amount: parseFloat(editAmount.value)
+            };
+
+            saveAndRender();
+            closeEditModal();
+        }
 
         function deleteItem(index) {
             if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
