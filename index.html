@@ -11,16 +11,16 @@
         :root {
             --warna-utama: #0f4c81;
             --warna-pengeluaran: #d32f2f;
-            --kartu-gradasi-1: rgba(21, 101, 192, 0.88);
-            --kartu-gradasi-2: rgba(66, 165, 245, 0.88);
+            --kartu-gradasi-1: rgba(21, 101, 192, 0.9);
+            --kartu-gradasi-2: rgba(66, 165, 245, 0.9);
             --bg-halaman: #f0f4f8;
-            --bg-header-tabel: rgba(227, 242, 253, 0.9);
+            --bg-header-tabel: rgba(227, 242, 253, 0.95);
             --teks-header-tabel: #0d47a1;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         #bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-halaman); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: -1; }
         body { color: #111; display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
-        .container { width: 100%; max-width: 650px; background: rgba(255, 255, 255, 0.32); padding: 30px 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.5); margin: auto 0; backdrop-filter: blur(4px); }
+        .container { width: 100%; max-width: 650px; background: rgba(255, 255, 255, 0.35); padding: 30px 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.6); margin: auto 0; backdrop-filter: blur(6px); }
         h1 { text-align: center; color: var(--warna-utama); margin-bottom: 22px; font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; }
         .summary-card { background: linear-gradient(135deg, var(--kartu-gradasi-1), var(--kartu-gradasi-2)); color: white; padding: 22px 20px; border-radius: 14px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
         .summary-card h3 { font-size: 15px; font-weight: 600; opacity: 0.95; }
@@ -35,21 +35,21 @@
         .countdown-num { font-size: 20px; font-weight: 800; line-height: 1.2; }
         .countdown-label { font-size: 11px; text-transform: uppercase; opacity: 0.9; margin-top: 2px; font-weight: 700; }
         
-        .bg-setting-box { background: rgba(255, 255, 255, 0.5); border-radius: 10px; padding: 12px 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 255, 255, 0.5); font-size: 14px; font-weight: 700; }
+        .bg-setting-box { background: rgba(255, 255, 255, 0.6); border-radius: 10px; padding: 12px 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 255, 255, 0.5); font-size: 14px; font-weight: 700; }
         .bg-setting-box label { cursor: pointer; color: var(--warna-utama); display: flex; align-items: center; gap: 6px; }
         .bg-setting-box input[type="file"] { display: none; }
         .btn-reset-bg { background: #e0e0e0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: #333; }
 
-        .monthly-section { background: rgba(255, 255, 255, 0.5); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        .monthly-section { background: rgba(255, 255, 255, 0.55); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .monthly-section h2 { font-size: 18px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 4px; font-family: 'Playfair Display', serif; }
-        .monthly-item { background: rgba(255, 255, 255, 0.65); padding: 12px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
+        .monthly-item { background: rgba(255, 255, 255, 0.8); padding: 12px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .monthly-header { font-weight: 800; color: var(--warna-utama); margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 15px; }
         .monthly-details { display: flex; justify-content: space-between; color: #222; font-weight: 700; font-size: 13px; }
         
-        form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.45); padding: 18px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.5); }
+        form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.5); padding: 18px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 14px; font-weight: 800; color: #111; }
-        input, select { padding: 11px 12px; border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 8px; font-size: 15px; outline: none; background: rgba(255, 255, 255, 0.9); font-weight: 700; color: #111; }
+        input, select { padding: 11px 12px; border: 1px solid rgba(0, 0, 0, 0.2); border-radius: 8px; font-size: 15px; outline: none; background: rgba(255, 255, 255, 0.95); font-weight: 700; color: #111; }
         button.btn-add { background-color: var(--warna-utama); color: white; padding: 13px; border: none; border-radius: 8px; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 5px; transition: background 0.2s; }
         
         .history h2 { font-size: 18px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 6px; font-weight: 800; font-family: 'Playfair Display', serif; }
@@ -64,7 +64,6 @@
         .btn-delete { background-color: #d9534f; color: white; border: none; padding: 5px 8px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 800; }
         .empty-text { text-align: center; color: #333; padding: 15px; font-size: 14px; font-weight: 700; }
 
-        /* Overlay Loading & Notification */
         #notificationOverlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(3px); }
         .notif-box { background: white; padding: 25px 35px; border-radius: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-size: 18px; font-weight: 800; color: var(--warna-utama); }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--warna-utama); border-radius: 50%; width: 35px; height: 35px; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto; }
@@ -164,8 +163,8 @@
     </div>
 
     <script>
-        // Background Image Handler
-        const savedBg = localStorage.getItem('hani_venus_bg');
+        // Inisialisasi Latar Belakang
+        const savedBg = localStorage.getItem('hani_venus_bg_v2');
         if (savedBg) {
             document.getElementById('bg-layer').style.backgroundImage = `url(${savedBg})`;
         }
@@ -176,7 +175,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Image = e.target.result;
-                    localStorage.setItem('hani_venus_bg', base64Image);
+                    localStorage.setItem('hani_venus_bg_v2', base64Image);
                     document.getElementById('bg-layer').style.backgroundImage = `url(${base64Image})`;
                 };
                 reader.readAsDataURL(file);
@@ -184,11 +183,11 @@
         }
 
         function resetBackground() {
-            localStorage.removeItem('hani_venus_bg');
+            localStorage.removeItem('hani_venus_bg_v2');
             document.getElementById('bg-layer').style.backgroundImage = 'none';
         }
 
-        // Countdown Timer
+        // Countdown Timer Menuju 3 April 2027
         const weddingDate = new Date(2027, 3, 3, 0, 0, 0).getTime();
         function updateCountdown() {
             const now = new Date().getTime();
@@ -202,7 +201,7 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // Audio Notification (Simple Beep)
+        // Efek Suara Sukses
         function playSuccessSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -220,7 +219,7 @@
             } catch(e) {}
         }
 
-        // Form & Transactions Elements
+        // Deklarasi Elemen DOM
         const form = document.getElementById('savingForm');
         const editIndexInput = document.getElementById('editIndex');
         const typeInput = document.getElementById('type');
@@ -242,14 +241,17 @@
         const notifSpinner = document.getElementById('notifSpinner');
         const notifText = document.getElementById('notifText');
 
-        // Set default date safely (YYYY-MM-DD format)
-        if (dateInput) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            dateInput.value = `${year}-${month}-${day}`;
+        // Set Tanggal Default Hari Ini (Format YYYY-MM-DD aman untuk semua browser HP)
+        function setDefaultDate() {
+            if (dateInput && !dateInput.value) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                dateInput.value = `${year}-${month}-${day}`;
+            }
         }
+        setDefaultDate();
 
         function toggleFormType() {
             if (!typeInput) return;
@@ -272,22 +274,34 @@
 
         function formatFullDate(str) {
             if(!str) return '';
-            return new Date(str + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+            try {
+                return new Date(str + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+            } catch(e) {
+                return str;
+            }
         }
 
         function formatMonthYear(mKey) {
-            const [y, m] = mKey.split('-');
-            const names = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            return `${names[parseInt(m) - 1]} ${y}`;
+            try {
+                const [y, m] = mKey.split('-');
+                const names = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                return `${names[parseInt(m) - 1]} ${y}`;
+            } catch(e) {
+                return mKey;
+            }
         }
 
         function getTransactions() {
-            const data = localStorage.getItem('hani_venus_transactions');
-            return data ? JSON.parse(data) : [];
+            try {
+                const data = localStorage.getItem('hani_venus_transactions_v2');
+                return data ? JSON.parse(data) : [];
+            } catch(e) {
+                return [];
+            }
         }
 
         function saveTransactions(data) {
-            localStorage.setItem('hani_venus_transactions', JSON.stringify(data));
+            localStorage.setItem('hani_venus_transactions_v2', JSON.stringify(data));
             renderUI();
         }
 
@@ -297,14 +311,15 @@
             monthlyListEl.innerHTML = '';
             let totalIn = 0, totalOut = 0, monthlyData = {};
 
-            if (dataObj.length === 0) {
+            if (!dataObj || dataObj.length === 0) {
                 emptyMessageEl.style.display = 'block';
                 monthlyListEl.innerHTML = '<div style="font-size:13px; text-align:center; color:#333; font-weight:700;">Belum ada data bulanan.</div>';
             } else {
                 emptyMessageEl.style.display = 'none';
                 dataObj.sort((a, b) => new Date(b.date) - new Date(a.date));
-                dataObj.forEach((item, index) => {
-                    const val = Number(item.amount);
+                
+                dataObj.forEach((item) => {
+                    const val = Number(item.amount) || 0;
                     const isIncome = item.type === 'in';
                     if (isIncome) totalIn += val; else totalOut += val;
                     
@@ -320,10 +335,4 @@
                     }
 
                     const row = document.createElement('tr');
-                    const labelKet = isIncome ? (item.person || 'Hani') : (item.category || 'Pengeluaran');
-                    const itemId = item.id || index;
-                    row.innerHTML = `
-                        <td>${formatFullDate(item.date)}</td>
-                        <td><b>${labelKet}</b></td>
-                        <td><span class="${isIncome ? 'badge-masuk' : 'badge-keluar'}">${isIncome ? 'Masuk' : 'Keluar'}</span></td>
-                        <td style="color:${isIncome ? '#0d47a1' : '#d32f2f'}; font-weight:800;">${formatRupiah
+                    const labelKet = isIncome ? (item.person || 'Hani') : (item.categor
