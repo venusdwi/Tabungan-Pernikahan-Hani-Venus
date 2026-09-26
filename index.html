@@ -203,7 +203,8 @@
         const editAmountLabel = document.getElementById('editAmountLabel');
         let currentEditId = null;
 
-        const weddingDate = new Date('2027-04-03T08:00:00').getTime();
+        // Perbaikan format tanggal universal agar jalan di semua HP
+        const weddingDate = new Date(2027, 3, 3, 8, 0, 0).getTime();
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = weddingDate - now;
@@ -303,4 +304,4 @@
                     div.className = 'monthly-item';
                     div.innerHTML = `
                         <div class="monthly-header"><span>📅 ${formatMonthYear(mKey)}</span><span>Bersih: ${formatRupiah(mInfo.total)}</span></div>
-                        <div class="monthly-details"><span>Hani: ${formatRupiah(mInfo.Hani)}</span><span>Venus: ${formatRupiah(mInfo.Venus)}</span><span style="color:#d32f2f;">Keluar: ${formatRu
+                        <div class="monthly-details"><span>Hani: ${formatRupiah(mInfo.Hani)}</span><span>Venus: ${formatRupiah(
