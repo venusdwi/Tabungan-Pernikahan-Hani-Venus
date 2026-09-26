@@ -211,8 +211,8 @@
                 const oscillator = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
                 oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
-                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5 note
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); 
                 gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 oscillator.connect(gainNode);
@@ -244,9 +244,12 @@
         const notifSpinner = document.getElementById('notifSpinner');
         const notifText = document.getElementById('notifText');
 
-        dateInput.valueAsDate = new Date();
+        if(dateInput) {
+            dateInput.valueAsDate = new Date();
+        }
 
         function toggleFormType() {
+            if (!typeInput) return;
             if (typeInput.value === 'in') {
                 personGroup.style.display = 'flex';
                 categoryGroup.style.display = 'none';
@@ -315,6 +318,7 @@
 
                     const row = document.createElement('tr');
                     const labelKet = isIncome ? (item.person || 'Hani') : (item.category || 'Pengeluaran');
+                    const itemId = item.id || index;
                     row.innerHTML = `
                         <td>${formatFullDate(item.date)}</td>
                         <td><b>${labelKet}</b></td>
@@ -322,5 +326,4 @@
                         <td style="color:${isIncome ? '#0d47a1' : '#d32f2f'}; font-weight:800;">${formatRupiah(val)}</td>
                         <td>
                             <div class="btn-action-group">
-                                <button class="btn-edit" onclick="editItem(${item.id || index})">Edit</button>
-                                <button class="btn-delete" onclick="deleteItem(${
+                                <button type="button" class="btn-edit" onclick="editI
