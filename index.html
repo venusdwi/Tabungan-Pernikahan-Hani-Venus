@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabungan Pernikahan Hani & Venus</title>
+    <!-- Import Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,7 +29,6 @@
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
         }
 
-        /* LAYER FOTO LATAR BELAKANG TETAP */
         #bg-layer {
             position: fixed;
             top: 0;
@@ -40,7 +40,6 @@
             background-position: center center;
             background-repeat: no-repeat;
             z-index: -1;
-            will-change: transform;
         }
 
         body {
@@ -88,7 +87,6 @@
             font-size: 13px;
             font-weight: 500;
             opacity: 0.95;
-            letter-spacing: 0.3px;
         }
 
         .summary-card .total-main {
@@ -170,7 +168,6 @@
             font-size: 16px;
             margin-bottom: 12px;
             color: #111;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
             border-bottom: 2px solid rgba(0, 0, 0, 0.15);
             padding-bottom: 4px;
         }
@@ -220,7 +217,6 @@
             font-size: 13px;
             font-weight: 700;
             color: #111;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         }
 
         input, select {
@@ -247,42 +243,12 @@
             margin-top: 5px;
         }
 
-        .bg-uploader {
-            background: rgba(255, 255, 255, 0.4);
-            padding: 10px 14px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            font-size: 13px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .bg-uploader label {
-            font-weight: 500;
-            cursor: pointer;
-            color: #111;
-        }
-
-        .btn-reset-bg {
-            background: none;
-            border: none;
-            color: #d32f2f;
-            font-size: 12px;
-            cursor: pointer;
-            text-decoration: underline;
-            font-weight: 600;
-        }
-
         .history h2 {
             font-size: 17px;
             margin-bottom: 12px;
             color: #111;
             border-bottom: 2px solid rgba(0, 0, 0, 0.15);
             padding-bottom: 6px;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
             font-weight: 700;
         }
 
@@ -341,7 +307,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 11px;
-            font-weight: 600;
         }
 
         .btn-delete {
@@ -352,7 +317,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 11px;
-            font-weight: 600;
         }
 
         .empty-text {
@@ -363,7 +327,6 @@
             font-weight: 600;
         }
 
-        /* MODAL / POPUP EDIT */
         .modal {
             display: none;
             position: fixed;
@@ -385,7 +348,6 @@
             max-width: 450px;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         .modal-header {
@@ -397,16 +359,10 @@
             padding-bottom: 10px;
         }
 
-        .modal-header h3 {
-            font-size: 16px;
-            color: var(--warna-utama);
-        }
-
         .close-modal {
             font-size: 20px;
             font-weight: bold;
             cursor: pointer;
-            color: #666;
         }
 
         .modal-footer {
@@ -445,6 +401,7 @@
     <div class="container">
         <h1>Tabungan Pernikahan<br>Hani & Venus 💍</h1>
 
+        <!-- Card Total Tabungan -->
         <div class="summary-card">
             <h3>Sisa Saldo Tabungan</h3>
             <div class="total-main" id="totalBalance">Rp 0</div>
@@ -464,38 +421,20 @@
 
             <div class="countdown-title">💍 Menuju Hari Pernikahan (Sabtu, 03 April 2027)</div>
             <div class="countdown-grid">
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdDays">0</div>
-                    <div class="countdown-label">Hari</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdHours">0</div>
-                    <div class="countdown-label">Jam</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdMinutes">0</div>
-                    <div class="countdown-label">Menit</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdSeconds">0</div>
-                    <div class="countdown-label">Detik</div>
-                </div>
+                <div class="countdown-box"><div class="countdown-num" id="cdDays">0</div><div class="countdown-label">Hari</div></div>
+                <div class="countdown-box"><div class="countdown-num" id="cdHours">0</div><div class="countdown-label">Jam</div></div>
+                <div class="countdown-box"><div class="countdown-num" id="cdMinutes">0</div><div class="countdown-label">Menit</div></div>
+                <div class="countdown-box"><div class="countdown-num" id="cdSeconds">0</div><div class="countdown-label">Detik</div></div>
             </div>
         </div>
 
+        <!-- Rincian Per Bulan -->
         <div class="monthly-section">
             <h2>📊 Rincian Tabungan Per Bulan</h2>
             <div id="monthlyList"></div>
         </div>
 
-        <div class="bg-uploader">
-            <label>🖼️ <b>Foto Latar:</b> 
-                <input type="file" id="bgInput" accept="image/*" style="display:none;">
-                <span style="color: var(--warna-utama); text-decoration: underline; font-weight: 700;">Pilih Foto Berdua</span>
-            </label>
-            <button class="btn-reset-bg" id="resetBgBtn" style="display:none;" onclick="resetBackground()">Hapus Foto</button>
-        </div>
-
+        <!-- Form Transaksi Utama -->
         <form id="savingForm">
             <div class="form-group">
                 <label for="type">Jenis Transaksi</label>
@@ -515,7 +454,7 @@
 
             <div class="form-group" id="categoryGroup" style="display: none;">
                 <label for="category">Jenis / Kategori Pengeluaran</label>
-                <input type="text" id="category" placeholder="Contoh: Catering, Dekorasi, Undangan, dll.">
+                <input type="text" id="category" placeholder="Contoh: Catering, Dekorasi, dll.">
             </div>
 
             <div class="form-group">
@@ -531,8 +470,9 @@
             <button type="submit" class="btn-add" id="submitBtn">Tambah Pemasukan</button>
         </form>
 
+        <!-- Riwayat Transaksi -->
         <div class="history">
-            <h2>Riwayat Transaksi</h2>
+            <h2>Riwayat Transaksi (Realtime Online)</h2>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -547,10 +487,11 @@
                     <tbody id="historyList"></tbody>
                 </table>
             </div>
-            <div id="emptyMessage" class="empty-text">Belum ada riwayat transaksi.</div>
+            <div id="emptyMessage" class="empty-text">Memuat data online...</div>
         </div>
     </div>
 
+    <!-- MODAL EDIT POPUP -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -590,7 +531,28 @@
         </div>
     </div>
 
+    <!-- Firebase SDK (Version 9+ Compatibility Mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <script>
+        // KONEKSI REALTIME DATABASE FIREBASE ANDA
+        const firebaseConfig = {
+          apiKey: "AIzaSyB39y3l8a8jXdtcNNjGJB97GwJw9MOCNKk",
+          authDomain: "tabungan-hani-dan-venus.firebaseapp.com",
+          databaseURL: "https://tabungan-hani-dan-venus-default-rtdb.firebaseio.com",
+          projectId: "tabungan-hani-dan-venus",
+          storageBucket: "tabungan-hani-dan-venus.firebasestorage.app",
+          messagingSenderId: "914398412644",
+          appId: "1:914398412644:web:112a0f0862056be0470471",
+          measurementId: "G-B1QVVTSMVR"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref('transactions');
+
+        // Form Elements
         const form = document.getElementById('savingForm');
         const typeInput = document.getElementById('type');
         const personInput = document.getElementById('person');
@@ -608,11 +570,8 @@
         const monthlyListEl = document.getElementById('monthlyList');
         const historyListEl = document.getElementById('historyList');
         const emptyMessageEl = document.getElementById('emptyMessage');
-        const bgInput = document.getElementById('bgInput');
-        const resetBgBtn = document.getElementById('resetBgBtn');
-        const bgLayer = document.getElementById('bg-layer');
 
-        // Modal Edit Elements
+        // Modal Elements
         const editModal = document.getElementById('editModal');
         const editType = document.getElementById('editType');
         const editPerson = document.getElementById('editPerson');
@@ -622,7 +581,7 @@
         const editDate = document.getElementById('editDate');
         const editAmount = document.getElementById('editAmount');
         const editAmountLabel = document.getElementById('editAmountLabel');
-        let currentEditIndex = null;
+        let currentEditKey = null;
 
         // Countdown Timer
         const weddingDate = new Date('2027-04-03T08:00:00').getTime();
@@ -630,13 +589,7 @@
             const now = new Date().getTime();
             const distance = weddingDate - now;
 
-            if (distance < 0) {
-                document.getElementById('cdDays').textContent = "0";
-                document.getElementById('cdHours').textContent = "0";
-                document.getElementById('cdMinutes').textContent = "0";
-                document.getElementById('cdSeconds').textContent = "0";
-                return;
-            }
+            if (distance < 0) return;
 
             document.getElementById('cdDays').textContent = Math.floor(distance / (1000 * 60 * 60 * 24));
             document.getElementById('cdHours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -649,240 +602,4 @@
         dateInput.valueAsDate = new Date();
 
         function toggleFormType() {
-            if (typeInput.value === 'in') {
-                personGroup.style.display = 'flex';
-                categoryGroup.style.display = 'none';
-                amountLabel.textContent = 'Jumlah Tabungan (Rp)';
-                submitBtn.textContent = 'Tambah Pemasukan';
-                submitBtn.style.backgroundColor = 'var(--warna-utama)';
-            } else {
-                personGroup.style.display = 'none';
-                categoryGroup.style.display = 'flex';
-                amountLabel.textContent = 'Jumlah Pengeluaran (Rp)';
-                submitBtn.textContent = 'Tambah Pengeluaran';
-                submitBtn.style.backgroundColor = 'var(--warna-pengeluaran)';
-            }
-        }
-
-        function toggleEditFormType() {
-            if (editType.value === 'in') {
-                editPersonGroup.style.display = 'flex';
-                editCategoryGroup.style.display = 'none';
-                editAmountLabel.textContent = 'Jumlah Tabungan (Rp)';
-            } else {
-                editPersonGroup.style.display = 'none';
-                editCategoryGroup.style.display = 'flex';
-                editAmountLabel.textContent = 'Jumlah Pengeluaran (Rp)';
-            }
-        }
-
-        let savingsData = JSON.parse(localStorage.getItem('wedding_savings_v3')) || [];
-
-        // Load Foto Latar
-        const savedBg = localStorage.getItem('wedding_bg');
-        if (savedBg) {
-            bgLayer.style.backgroundImage = `url('${savedBg}')`;
-            resetBgBtn.style.display = 'inline';
-        }
-
-        bgInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageData = event.target.result;
-                    bgLayer.style.backgroundImage = `url('${imageData}')`;
-                    localStorage.setItem('wedding_bg', imageData);
-                    resetBgBtn.style.display = 'inline';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function resetBackground() {
-            localStorage.removeItem('wedding_bg');
-            bgLayer.style.backgroundImage = 'none';
-            resetBgBtn.style.display = 'none';
-            bgInput.value = '';
-        }
-
-        function formatRupiah(number) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                maximumFractionDigits: 0
-            }).format(number);
-        }
-
-        function formatFullDate(dateString) {
-            const date = new Date(dateString + 'T00:00:00');
-            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
-            return date.toLocaleDateString('id-ID', options);
-        }
-
-        function formatMonthYear(monthKey) {
-            const [year, month] = monthKey.split('-');
-            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            return `${monthNames[parseInt(month) - 1]} ${year}`;
-        }
-
-        function renderUI() {
-            historyListEl.innerHTML = '';
-            monthlyListEl.innerHTML = '';
-
-            let totalIn = 0;
-            let totalOut = 0;
-            let monthlyData = {};
-
-            if (savingsData.length === 0) {
-                emptyMessageEl.style.display = 'block';
-                monthlyListEl.innerHTML = '<div style="font-size:12px; text-align:center; color:#333;">Belum ada data bulanan.</div>';
-            } else {
-                emptyMessageEl.style.display = 'none';
-                savingsData.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                savingsData.forEach((item, index) => {
-                    const val = Number(item.amount);
-                    const isIncome = item.type === 'in';
-
-                    if (isIncome) {
-                        totalIn += val;
-                    } else {
-                        totalOut += val;
-                    }
-
-                    const monthKey = item.date.substring(0, 7);
-                    if (!monthlyData[monthKey]) {
-                        monthlyData[monthKey] = { Hani: 0, Venus: 0, Pengeluaran: 0, total: 0 };
-                    }
-
-                    if (isIncome) {
-                        monthlyData[monthKey][item.person] = (monthlyData[monthKey][item.person] || 0) + val;
-                        monthlyData[monthKey].total += val;
-                    } else {
-                        monthlyData[monthKey].Pengeluaran = (monthlyData[monthKey].Pengeluaran || 0) + val;
-                        monthlyData[monthKey].total -= val;
-                    }
-
-                    const row = document.createElement('tr');
-                    const labelKet = isIncome ? (item.person || 'Hani') : (item.category || 'Pengeluaran');
-                    const badgeClass = isIncome ? 'badge-masuk' : 'badge-keluar';
-                    const badgeText = isIncome ? 'Masuk' : 'Keluar';
-                    const amountColor = isIncome ? '#0d47a1' : '#d32f2f';
-
-                    row.innerHTML = `
-                        <td>${formatFullDate(item.date)}</td>
-                        <td><b>${labelKet}</b></td>
-                        <td><span class="${badgeClass}">${badgeText}</span></td>
-                        <td style="color:${amountColor}; font-weight:700;">${formatRupiah(val)}</td>
-                        <td>
-                            <div class="action-btns">
-                                <button class="btn-edit" onclick="openEditModal(${index})">Edit</button>
-                                <button class="btn-delete" onclick="deleteItem(${index})">Hapus</button>
-                            </div>
-                        </td>
-                    `;
-                    historyListEl.appendChild(row);
-                });
-
-                Object.keys(monthlyData).sort().reverse().forEach(mKey => {
-                    const mInfo = monthlyData[mKey];
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'monthly-item';
-                    itemDiv.innerHTML = `
-                        <div class="monthly-header">
-                            <span>📅 ${formatMonthYear(mKey)}</span>
-                            <span>Bersih: ${formatRupiah(mInfo.total)}</span>
-                        </div>
-                        <div class="monthly-details">
-                            <span>Hani: ${formatRupiah(mInfo.Hani)}</span>
-                            <span>Venus: ${formatRupiah(mInfo.Venus)}</span>
-                            <span style="color:#d32f2f;">Keluar: ${formatRupiah(mInfo.Pengeluaran)}</span>
-                        </div>
-                    `;
-                    monthlyListEl.appendChild(itemDiv);
-                });
-            }
-
-            totalIncomeEl.textContent = formatRupiah(totalIn);
-            totalExpenseEl.textContent = formatRupiah(totalOut);
-            totalBalanceEl.textContent = formatRupiah(totalIn - totalOut);
-        }
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const isIncome = typeInput.value === 'in';
-            const newEntry = {
-                type: typeInput.value,
-                person: isIncome ? personInput.value : '',
-                category: !isIncome ? categoryInput.value : '',
-                date: dateInput.value,
-                amount: parseFloat(amountInput.value)
-            };
-
-            savingsData.push(newEntry);
-            saveAndRender();
-
-            amountInput.value = '';
-            categoryInput.value = '';
-        });
-
-        // Buka Popup Edit
-        function openEditModal(index) {
-            currentEditIndex = index;
-            const item = savingsData[index];
-
-            editType.value = item.type || 'in';
-            editDate.value = item.date;
-            editAmount.value = item.amount;
-
-            if (item.type === 'in') {
-                editPerson.value = item.person || 'Hani';
-                editCategory.value = '';
-            } else {
-                editCategory.value = item.category || '';
-            }
-
-            toggleEditFormType();
-            editModal.style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            editModal.style.display = 'none';
-            currentEditIndex = null;
-        }
-
-        // Simpan Perubahan Edit
-        function saveEditItem() {
-            if (currentEditIndex === null) return;
-
-            const isIncome = editType.value === 'in';
-            savingsData[currentEditIndex] = {
-                type: editType.value,
-                person: isIncome ? editPerson.value : '',
-                category: !isIncome ? editCategory.value : '',
-                date: editDate.value,
-                amount: parseFloat(editAmount.value)
-            };
-
-            saveAndRender();
-            closeEditModal();
-        }
-
-        function deleteItem(index) {
-            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
-                savingsData.splice(index, 1);
-                saveAndRender();
-            }
-        }
-
-        function saveAndRender() {
-            localStorage.setItem('wedding_savings_v3', JSON.stringify(savingsData));
-            renderUI();
-        }
-
-        renderUI();
-    </script>
-</body>
-</html>
+            if (typeInput.value === 'in'
