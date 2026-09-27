@@ -199,28 +199,40 @@
                     </div>
 
                     <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                                    Tipe Transaksi <span class="text-blue-500">*</span>
-                                </label>
-                                <select id="tipeTransaksi" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="pemasukan">➕ Pemasukan (+)</option>
-                                    <option value="pengeluaran">➖ Pengeluaran (-)</option>
-                                </select>
-                            </div>
+                        <!-- Tipe Transaksi -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                Tipe Transaksi <span class="text-blue-500">*</span>
+                            </label>
+                            <select id="tipeTransaksi" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="pemasukan">➕ Pemasukan (+)</option>
+                                <option value="pengeluaran">➖ Pengeluaran (-)</option>
+                            </select>
+                        </div>
 
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                                    Tanggal & Jam <span class="text-blue-500">*</span>
-                                </label>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <input type="date" id="tglTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <input type="time" id="jamTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
+                        <!-- KOLOM BARU: NAMA PENABUNG -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                Nama Penabung <span class="text-blue-500">*</span>
+                            </label>
+                            <select id="namaPenabung" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="HANI">👩‍🦰 HANI</option>
+                                <option value="VENUS">👨‍🦱 VENUS</option>
+                            </select>
+                        </div>
+
+                        <!-- Tanggal & Jam -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                Tanggal & Jam <span class="text-blue-500">*</span>
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="date" id="tglTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="time" id="jamTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
 
+                        <!-- Jumlah Rp -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Jumlah (Rp) <span class="text-blue-500">*</span>
@@ -231,6 +243,7 @@
                             </div>
                         </div>
 
+                        <!-- Keterangan -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Keterangan / Catatan
@@ -238,6 +251,7 @@
                             <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Souvenir / Tabungan Bulanan" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
+                        <!-- Upload Bukti Transfer -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Lampirkan Bukti Transfer / Nota <span class="text-slate-400 font-normal">(Opsional)</span>
@@ -267,10 +281,8 @@
 
     <!-- LOGIKA JAVASCRIPT -->
     <script>
-        // Datastore transaksi dari LocalStorage
         let transactions = JSON.parse(localStorage.getItem('wedding_savings')) || [];
 
-        // Set default Tanggal & Jam saat dibuka
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
             document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
@@ -280,7 +292,6 @@
             startCountdown();
         });
 
-        // 1. Logika Countdown Timer
         function startCountdown() {
             const targetDate = new Date("2027-04-03T00:00:00").getTime();
 
@@ -305,7 +316,6 @@
             setInterval(update, 1000);
         }
 
-        // 2. Format Input Rupiah
         function formatRupiahInput(input) {
             let value = input.value.replace(/[^0-9]/g, '');
             if (value) {
@@ -315,7 +325,6 @@
             }
         }
 
-        // 3. Preview Gambar Bukti Transfer
         function previewMainBukti(event) {
             const file = event.target.files[0];
             const container = document.getElementById('buktiPreviewContainer');
@@ -333,11 +342,11 @@
             }
         }
 
-        // 4. Submit & Simpan Transaksi
         function handleFormSubmit(e) {
             e.preventDefault();
 
             const tipe = document.getElementById('tipeTransaksi').value;
+            const penabung = document.getElementById('namaPenabung').value;
             const tgl = document.getElementById('tglTransaksi').value;
             const jam = document.getElementById('jamTransaksi').value;
             const rawJumlah = document.getElementById('jumlahRupiah').value.replace(/\./g, '');
@@ -352,6 +361,7 @@
             const item = {
                 id: Date.now(),
                 tipe,
+                penabung,
                 tgl,
                 jam,
                 jumlah,
@@ -361,7 +371,7 @@
             transactions.push(item);
             localStorage.setItem('wedding_savings', JSON.stringify(transactions));
 
-            // Reset Form
+            // Reset Input
             document.getElementById('jumlahRupiah').value = '';
             document.getElementById('keteranganTransaksi').value = '';
             document.getElementById('buktiTransfer').value = '';
@@ -370,7 +380,6 @@
             updateUI();
         }
 
-        // 5. Update UI Total Saldo & List Transaksi
         function updateUI() {
             let totalMasuk = 0;
             let totalKeluar = 0;
@@ -386,11 +395,16 @@
                     if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
 
                     const isMasuk = item.tipe === 'pemasukan';
+                    const penabungName = item.penabung || 'HANI';
+                    
                     const elem = document.createElement('div');
                     elem.className = `flex justify-between items-center p-3 rounded-xl border ${isMasuk ? 'bg-emerald-50/50 border-emerald-100' : 'bg-rose-50/50 border-rose-100'}`;
                     elem.innerHTML = `
                         <div>
-                            <span class="text-xs font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
+                            <div class="flex items-center gap-1.5 mb-0.5">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">${penabungName}</span>
+                                <span class="text-xs font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
+                            </div>
                             <div class="text-[10px] text-slate-400">${item.tgl} | ${item.jam}</div>
                         </div>
                         <div class="font-num font-extrabold text-sm ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">
