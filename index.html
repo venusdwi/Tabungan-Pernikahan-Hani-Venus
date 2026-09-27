@@ -9,7 +9,6 @@
     <style>
         :root {
             --warna-utama: #0f4c81;          
-            --warna-hover: #0a3357;          
             --kartu-gradasi-1: rgba(21, 101, 192, 0.9);   
             --kartu-gradasi-2: rgba(66, 165, 245, 0.9);
             --bg-halaman: #f0f4f8;           
@@ -40,7 +39,7 @@
         .container {
             width: 100%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.92);
             padding: 24px;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -380,7 +379,7 @@
         </div>
 
         <div class="summary-card">
-            <h3>SALDO TABUNGAN</h3>
+            <h3>SISA SALDO TABUNGAN</h3>
             <div class="total-main" id="totalAmount">Rp 0</div>
             
             <div class="sub-summary">
@@ -392,7 +391,7 @@
 
             <div class="countdown-title">
                 ⏳ Menuju Hari Pernikahan<br>
-                03 April 2027
+                Sabtu, 03 April 2027
             </div>
             <div class="countdown-grid">
                 <div class="countdown-box">
@@ -425,7 +424,7 @@
                 <label for="type">Jenis Transaksi</label>
                 <select id="type" required onchange="handleTypeChange()">
                     <option value="in">Pemasukan (Tabungan)</option>
-                    <option value="out">Pengeluaran</option>
+                    <option value="out">Pengeluaran (Biaya Pernikahan)</option>
                 </select>
             </div>
 
@@ -444,11 +443,12 @@
             </div>
 
             <div class="form-group">
-                <label for="date">Tanggal Transaksi</label>
+                <label for="date">Hari & Tanggal Transaksi</label>
                 <input type="date" id="date" required>
             </div>
+            
             <div class="form-group">
-                <label for="amountInputFormatted">Jumlah (Rp)</label>
+                <label for="amountInputFormatted">Jumlah Tabungan (Rp)</label>
                 <input type="text" id="amountInputFormatted" placeholder="Contoh: 5.200.000" inputmode="numeric" required>
                 <input type="hidden" id="amount" value="">
             </div>
@@ -498,7 +498,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Tanggal</th>
+                        <th>Hari & Tanggal</th>
                         <th>Keterangan</th>
                         <th>Tipe</th>
                         <th>Jumlah</th>
@@ -585,6 +585,6 @@
             }
         }
 
-        // Format otomatis titik ribuan saat diketik
+        // Format angka otomatis dengan titik ribuan
         amountFormatted.addEventListener('input', function() {
-            let val = this.value.rep
+            let
