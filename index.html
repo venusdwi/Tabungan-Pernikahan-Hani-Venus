@@ -450,7 +450,7 @@
             startCountdown();
         });
 
-        // 0. LOGIKA PIN AUTOMATIC FOCUS & LOADING 1 DETIK
+        // 0. LOGIKA PIN AUTOMATIC FOCUS & LOADING
         function initPinInputHandling() {
             const inputs = document.querySelectorAll('.pin-digit');
             
@@ -493,7 +493,6 @@
             const btnSpinner = document.getElementById('btnPinSpinner');
 
             if (enteredPin === DEFAULT_PIN) {
-                // Tampilkan loading 1 detik
                 btnSubmit.disabled = true;
                 btnText.classList.add('hidden');
                 btnSpinner.classList.remove('hidden');
@@ -688,7 +687,7 @@
             }
         }
 
-        // 5. Submit Transaksi
+        // 5. Submit Transaksi (Proses Loading Diset 1 Detik)
         function handleFormSubmit(e) {
             e.preventDefault();
 
@@ -716,6 +715,7 @@
             btnSubmitText.classList.add('hidden');
             btnSubmitSpinner.classList.remove('hidden');
 
+            // Proses simpan dengan jeda animasi 1 detik (1000 ms)
             setTimeout(() => {
                 const penabung = document.getElementById('namaPenabung').value;
                 const tgl = document.getElementById('tglTransaksi').value;
@@ -749,7 +749,7 @@
                 updateUI();
                 playModernBeep();
                 showSuccessModal();
-            }, 2000);
+            }, 1000); // 1000 ms = 1 Detik
         }
 
         function showSuccessModal() {
