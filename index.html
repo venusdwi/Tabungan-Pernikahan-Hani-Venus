@@ -10,6 +10,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tabungan HV">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2904/2904973.png">
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
@@ -272,10 +285,48 @@
         </div>
 
         <div class="glass-box rounded-2xl p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
-                <span class="text-[11px] text-slate-500 italic">*Klik pada transaksi untuk edit/hapus</span>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-200/60 pb-3">
+                <div>
+                    <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
+                    <span class="text-[11px] text-slate-500 italic">*Klik transaksi untuk edit/hapus</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <select id="filterBulan" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+                            <option value="all">Semua Bulan</option>
+                            <option value="01">Januari</option>
+                            <option value="02">Februari</option>
+                            <option value="03">Maret</option>
+                            <option value="04">April</option>
+                            <option value="05">Mei</option>
+                            <option value="06">Juni</option>
+                            <option value="07">Juli</option>
+                            <option value="08">Agustus</option>
+                            <option value="09">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                    </div>
+
+                    <div class="relative">
+                        <select id="filterTahun" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+                            <option value="all">Semua Tahun</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                        </select>
+                    </div>
+
+                    <button onclick="resetFilter()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2.5 py-1.5 rounded-xl transition border border-slate-200" title="Reset Filter">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
             </div>
+
             <div id="transactionList" class="space-y-3">
                 <p class="text-xs text-slate-500 text-center py-4">Mengambil data cloud...</p>
             </div>
@@ -395,13 +446,17 @@
         const DEFAULT_PIN = "150522";
         let tempBuktiBase64 = "";
 
+        // FUNGSI UNTUK MERESET / UPDATE TANGGAL & JAM SEKARANG SECARA REALTIME
+        function setNowDateTime() {
+            const now = new Date();
+            document.getElementById('tglTransaksi').value = now.toISOString().split('T')[0];
+            document.getElementById('jamTransaksi').value = now.toTimeString().split(' ')[0].substring(0, 5);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initPinInputHandling();
+            setNowDateTime();
 
-            const today = new Date();
-            document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
-            document.getElementById('jamTransaksi').value = today.toTimeString().split(' ')[0].substring(0, 5);
-            
             loadSavedOpacity();
             loadSavedLocalBg();
             updateKeteranganValidation();
@@ -548,7 +603,7 @@
                         db.collection("settings").doc("appSettings").set({
                             bgImage: compressedUrl
                         }).catch(err => {
-                            console.warn("Latar belakang disimpan lokal (Firestore terbatas):", err);
+                            console.warn("Latar belakang disimpan lokal:", err);
                         });
                     };
                     img.src = e.target.result;
@@ -746,6 +801,9 @@
                     document.getElementById('buktiPreviewContainer').classList.add('hidden');
                     tempBuktiBase64 = "";
 
+                    // UPDATE TANGGAL & JAM SEKARANG SECARA REAL-TIME DENGAN OTOMATIS
+                    setNowDateTime();
+
                     btnSubmit.disabled = false;
                     btnSubmitText.classList.remove('hidden');
                     btnSubmitSpinner.classList.add('hidden');
@@ -834,20 +892,45 @@
             }
         }
 
+        function resetFilter() {
+            document.getElementById('filterBulan').value = 'all';
+            document.getElementById('filterTahun').value = 'all';
+            updateUI();
+        }
+
         function updateUI() {
             let totalMasuk = 0;
             let totalKeluar = 0;
 
+            const selBulan = document.getElementById('filterBulan').value;
+            const selTahun = document.getElementById('filterTahun').value;
+
             const listContainer = document.getElementById('transactionList');
             listContainer.innerHTML = '';
 
-            if (transactions.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>`;
-            } else {
-                transactions.slice().reverse().forEach(item => {
-                    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
-                    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+            // Hitung akumulasi total saldo dari SEMUA transaksi (Permanen/Keseluruhan)
+            transactions.forEach(item => {
+                if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
+                if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+            });
 
+            // Filter khusus untuk menyaring daftar tampilan transaksi di bawah
+            const filteredTransactions = transactions.filter(item => {
+                if (!item.tgl) return true;
+                const parts = item.tgl.split('-'); // Format YYYY-MM-DD
+                const itemYear = parts[0];
+                const itemMonth = parts[1];
+
+                const matchMonth = (selBulan === 'all' || itemMonth === selBulan);
+                const matchYear = (selTahun === 'all' || itemYear === selTahun);
+
+                return matchMonth && matchYear;
+            });
+
+            if (filteredTransactions.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Tidak ada transaksi pada periode ini.</p>`;
+            } else {
+                filteredTransactions.slice().reverse().forEach(item => {
                     const isMasuk = item.tipe === 'pemasukan';
                     const penabungName = item.penabung || 'HANI💙';
                     
@@ -874,6 +957,7 @@
                 });
             }
 
+            // Tampilkan total saldo keseluruhan tanpa terpengaruh filter bulan/tahun
             const netBalance = totalMasuk - totalKeluar;
             document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
             document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
