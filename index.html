@@ -358,4 +358,55 @@
                 ket
             };
 
-            transact
+            transactions.push(item);
+            localStorage.setItem('wedding_savings', JSON.stringify(transactions));
+
+            // Reset Form
+            document.getElementById('jumlahRupiah').value = '';
+            document.getElementById('keteranganTransaksi').value = '';
+            document.getElementById('buktiTransfer').value = '';
+            document.getElementById('buktiPreviewContainer').classList.add('hidden');
+
+            updateUI();
+        }
+
+        // 5. Update UI Total Saldo & List Transaksi
+        function updateUI() {
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+
+            const listContainer = document.getElementById('transactionList');
+            listContainer.innerHTML = '';
+
+            if (transactions.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>`;
+            } else {
+                transactions.slice().reverse().forEach(item => {
+                    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
+                    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+
+                    const isMasuk = item.tipe === 'pemasukan';
+                    const elem = document.createElement('div');
+                    elem.className = `flex justify-between items-center p-3 rounded-xl border ${isMasuk ? 'bg-emerald-50/50 border-emerald-100' : 'bg-rose-50/50 border-rose-100'}`;
+                    elem.innerHTML = `
+                        <div>
+                            <span class="text-xs font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
+                            <div class="text-[10px] text-slate-400">${item.tgl} | ${item.jam}</div>
+                        </div>
+                        <div class="font-num font-extrabold text-sm ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${isMasuk ? '+' : '-'} Rp ${new Intl.NumberFormat('id-ID').format(item.jumlah)}
+                        </div>
+                    `;
+                    listContainer.appendChild(elem);
+                });
+            }
+
+            const netBalance = totalMasuk - totalKeluar;
+
+            document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
+            document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
+            document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
+        }
+    </script>
+</body>
+</html>
