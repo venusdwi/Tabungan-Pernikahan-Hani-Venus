@@ -236,6 +236,7 @@
             outline: none;
             background: #fff;
             font-weight: 600;
+            width: 100%;
         }
 
         button.btn-add {
@@ -248,10 +249,6 @@
             font-weight: 700;
             cursor: pointer;
             margin-top: 5px;
-        }
-
-        button.btn-add:hover {
-            background-color: var(--warna-hover);
         }
 
         .btn-edit-action {
@@ -332,16 +329,14 @@
             font-size: 13px;
         }
 
-        /* Notifikasi Modal Besar */
         #notificationModal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            display: none;
         }
         .notif-box {
             background: white;
@@ -369,7 +364,6 @@
 </head>
 <body>
 
-    <!-- Modal Notifikasi Besar -->
     <div id="notificationModal">
         <div class="notif-box">
             <h2>✨ SELESAI! ✨</h2>
@@ -425,54 +419,63 @@
             <div id="monthlyList"></div>
         </div>
 
-        <!-- FORM TAMBAH UTAMA -->
         <form id="savingForm">
             <h3 style="font-size: 16px; color: var(--warna-utama); margin-bottom: 4px;">➕ Tambah Transaksi Baru</h3>
             <div class="form-group">
                 <label for="type">Jenis Transaksi</label>
-                <select id="type" required>
+                <select id="type" required onchange="handleTypeChange()">
                     <option value="in">Pemasukan (Tabungan)</option>
                     <option value="out">Pengeluaran</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="person">Nama Penabung / Keterangan</label>
-                <select id="person" required>
+
+            <div class="form-group" id="groupPerson">
+                <label for="person">Nama Penabung</label>
+                <select id="person">
                     <option value="Hani">Hani</option>
                     <option value="Venus">Venus</option>
                     <option value="Bersama">Bersama / Lainnya</option>
                 </select>
             </div>
+
+            <div class="form-group" id="groupDesc" style="display: none;">
+                <label for="description">Keterangan Pengeluaran</label>
+                <input type="text" id="description" placeholder="Contoh: DP Gedung, Katering, dll">
+            </div>
+
             <div class="form-group">
                 <label for="date">Tanggal Transaksi</label>
                 <input type="date" id="date" required>
             </div>
             <div class="form-group">
                 <label for="amountInputFormatted">Jumlah (Rp)</label>
-                <input type="text" id="amountInputFormatted" placeholder="Contoh: 500.000" inputmode="numeric" required>
+                <input type="text" id="amountInputFormatted" placeholder="Contoh: 5.200.000" inputmode="numeric" required>
                 <input type="hidden" id="amount" value="">
             </div>
             <button type="submit" class="btn-add" id="submitBtn">Konfirmasi</button>
         </form>
 
-        <!-- FORM EDIT TERPISAH (Hanya muncul jika baris riwayat diklik) -->
         <div class="edit-form-box" id="editFormBox">
             <h3 style="font-size: 16px; color: #b45309; margin-bottom: 10px;">✏️ Edit / Hapus Riwayat Transaksi</h3>
             <input type="hidden" id="editIndex">
             <div class="form-group" style="margin-bottom: 10px;">
                 <label>Jenis Transaksi</label>
-                <select id="editType">
+                <select id="editType" onchange="handleEditTypeChange()">
                     <option value="in">Pemasukan (Tabungan)</option>
                     <option value="out">Pengeluaran</option>
                 </select>
             </div>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <label>Nama Penabung / Keterangan</label>
+            <div class="form-group" id="editGroupPerson" style="margin-bottom: 10px;">
+                <label>Nama Penabung</label>
                 <select id="editPerson">
                     <option value="Hani">Hani</option>
                     <option value="Venus">Venus</option>
                     <option value="Bersama">Bersama / Lainnya</option>
                 </select>
+            </div>
+            <div class="form-group" id="editGroupDesc" style="margin-bottom: 10px; display:none;">
+                <label>Keterangan Pengeluaran</label>
+                <input type="text" id="editDescription" placeholder="Contoh: DP Gedung">
             </div>
             <div class="form-group" style="margin-bottom: 10px;">
                 <label>Tanggal Transaksi</label>
@@ -484,14 +487,14 @@
                 <input type="hidden" id="editAmount">
             </div>
             <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn-edit-action" style="flex: 1;" onclick="updateDataItem()">Simpan Perubahan</button>
-                <button type="button" class="btn-delete-action" style="flex: 1;" onclick="deleteDataItem()">Hapus Data</button>
+                <button type="button" class="btn-edit-action" style="flex: 1;" onclick="updateDataItem()">Simpan</button>
+                <button type="button" class="btn-delete-action" style="flex: 1;" onclick="deleteDataItem()">Hapus</button>
                 <button type="button" style="background:#64748b; color:white; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer;" onclick="closeEditForm()">Batal</button>
             </div>
         </div>
 
         <div class="history">
-            <h2>Riwayat Transaksi <span style="font-size: 12px; font-weight: normal; color: #64748b;">(Klik baris untuk edit/hapus)</span></h2>
+            <h2>Riwayat Transaksi <span style="font-size: 11px; font-weight: normal; color: #64748b;">(Klik baris untuk edit)</span></h2>
             <table>
                 <thead>
                     <tr>
@@ -511,17 +514,23 @@
         const form = document.getElementById('savingForm');
         const typeInput = document.getElementById('type');
         const personInput = document.getElementById('person');
+        const descInput = document.getElementById('description');
+        const groupPerson = document.getElementById('groupPerson');
+        const groupDesc = document.getElementById('groupDesc');
+
         const dateInput = document.getElementById('date');
         const amountFormatted = document.getElementById('amountInputFormatted');
         const amountRaw = document.getElementById('amount');
         const submitBtn = document.getElementById('submitBtn');
         const notificationModal = document.getElementById('notificationModal');
         
-        // Form Edit Terpisah
         const editFormBox = document.getElementById('editFormBox');
         const editIndexInput = document.getElementById('editIndex');
         const editType = document.getElementById('editType');
         const editPerson = document.getElementById('editPerson');
+        const editDesc = document.getElementById('editDescription');
+        const editGroupPerson = document.getElementById('editGroupPerson');
+        const editGroupDesc = document.getElementById('editGroupDesc');
         const editDate = document.getElementById('editDate');
         const editAmountFormatted = document.getElementById('editAmountFormatted');
         const editAmountRaw = document.getElementById('editAmount');
@@ -554,42 +563,28 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        const today = new Date();
-        dateInput.value = today.toISOString().split('T')[0];
+        dateInput.value = new Date().toISOString().split('T')[0];
 
-        // Format Input Utama
-        amountFormatted.addEventListener('input', function() {
-            let val = this.value.replace(/[^0-9]/g, '');
-            amountRaw.value = val;
-            this.value = val ? Number(val).toLocaleString('id-ID') : '';
-        });
-
-        // Format Input Edit Terpisah
-        editAmountFormatted.addEventListener('input', function() {
-            let val = this.value.replace(/[^0-9]/g, '');
-            editAmountRaw.value = val;
-            this.value = val ? Number(val).toLocaleString('id-ID') : '';
-        });
-
-        let savingsData = [];
-        try {
-            savingsData = JSON.parse(localStorage.getItem('wedding_savings_v8')) || [];
-        } catch(e) { savingsData = []; }
-
-        const savedBg = localStorage.getItem('wedding_bg_v8');
-        if (savedBg) {
-            document.body.style.backgroundImage = `url('${savedBg}')`;
-            resetBgBtn.style.display = 'inline-block';
+        function handleTypeChange() {
+            if (typeInput.value === 'in') {
+                groupPerson.style.display = 'flex';
+                groupDesc.style.display = 'none';
+            } else {
+                groupPerson.style.display = 'none';
+                groupDesc.style.display = 'flex';
+            }
         }
 
-        bgInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imgData = event.target.result;
-                    document.body.style.backgroundImage = `url('${imgData}')`;
-                    localStorage.setItem('wedding_bg_v8', imgData);
-                    resetBgBtn.style.display = 'inline-block';
-                };
-                reader.rea
+        function handleEditTypeChange() {
+            if (editType.value === 'in') {
+                editGroupPerson.style.display = 'flex';
+                editGroupDesc.style.display = 'none';
+            } else {
+                editGroupPerson.style.display = 'none';
+                editGroupDesc.style.display = 'flex';
+            }
+        }
+
+        // Format otomatis titik ribuan saat diketik
+        amountFormatted.addEventListener('input', function() {
+            let val = this.value.rep
