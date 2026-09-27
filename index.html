@@ -55,7 +55,6 @@
             font-variant-numeric: tabular-nums;
         }
         .glass-box {
-            /* Tanpa blur, transparansi diatur via variabel CSS --box-opacity */
             background-color: rgba(255, 255, 255, var(--box-opacity, 0.75));
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
@@ -93,35 +92,36 @@
     </div>
 
     <div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
-        <!-- TOP BAR DENGAN TOMBOL GALERI & SLIDER TRANSPARANSI -->
-        <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-            <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-200 text-xs font-semibold text-sky-700 shadow-sm">
+        <!-- TOP BAR DENGAN TAMPILAN SEJAJAR (1 BARIS) -->
+        <div class="flex flex-row items-center justify-between gap-2 mb-6">
+            <!-- KIRI: OUR JOURNEY TO HALAL -->
+            <div class="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-sky-200 text-[11px] sm:text-xs font-semibold text-sky-700 shadow-sm whitespace-nowrap">
                 <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
                 <span>Our Journey to Halal</span>
             </div>
 
-            <!-- FITUR KANAN: TOMBOL GALERI FOTO & SLIDER TRANSPARANSI -->
-            <div class="flex items-center gap-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
+            <!-- KANAN: GALERI FOTO & SLIDER TRANSPARANSI (SEJAJAR) -->
+            <div class="flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 shadow-sm">
                 <!-- Input File Tersembunyi -->
                 <input type="file" id="bgImageInput" accept="image/*" class="hidden" onchange="uploadBgImage(event)">
                 
                 <!-- Tombol Pilih Foto Galeri -->
-                <button type="button" onclick="document.getElementById('bgImageInput').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-full text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                <button type="button" onclick="document.getElementById('bgImageInput').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
                     <i class="fa-solid fa-image"></i>
                     <span>Galeri Foto</span>
                 </button>
 
-                <!-- Reset Background (Jika Ada Foto) -->
-                <button type="button" id="btnResetBg" onclick="resetBgImage()" class="hidden text-slate-400 hover:text-rose-500 text-xs transition px-1" title="Hapus Foto Background">
+                <!-- Reset Background -->
+                <button type="button" id="btnResetBg" onclick="resetBgImage()" class="hidden text-slate-400 hover:text-rose-500 text-xs transition px-0.5" title="Hapus Foto Background">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
 
-                <div class="h-4 w-[1px] bg-slate-300 mx-1"></div>
+                <div class="h-3.5 w-[1px] bg-slate-300 mx-0.5"></div>
 
-                <!-- Slider Ketebalan Transparansi (Opacity) -->
-                <div class="flex items-center gap-1.5 text-xs text-slate-600 font-semibold">
-                    <i class="fa-solid fa-circle-half-stroke text-slate-500"></i>
-                    <input type="range" id="opacitySlider" min="0.2" max="1.0" step="0.05" value="0.75" oninput="changeBoxOpacity(this.value)" class="w-16 sm:w-20 accent-blue-600 cursor-pointer">
+                <!-- Slider Transparansi -->
+                <div class="flex items-center gap-1 text-slate-600 font-semibold">
+                    <i class="fa-solid fa-circle-half-stroke text-slate-500 text-xs"></i>
+                    <input type="range" id="opacitySlider" min="0.2" max="1.0" step="0.05" value="0.75" oninput="changeBoxOpacity(this.value)" class="w-12 sm:w-20 accent-blue-600 cursor-pointer">
                 </div>
             </div>
         </div>
@@ -397,7 +397,6 @@
             document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
             document.getElementById('jamTransaksi').value = today.toTimeString().split(' ')[0].substring(0, 5);
             
-            // Load Background Foto & Transparansi Tersimpan
             loadSavedBackground();
             loadSavedOpacity();
 
@@ -405,7 +404,7 @@
             startCountdown();
         });
 
-        // 1. Logika Pengatur Background Foto & Transparansi (Opacity)
+        // 1. Pengatur Background & Transparansi
         function uploadBgImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -446,7 +445,7 @@
             document.getElementById('opacitySlider').value = savedOpacity;
         }
 
-        // 2. Audio Beep Modern
+        // 2. Audio Beep
         function playModernBeep() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -478,8 +477,7 @@
                 console.log("Audio API error:", e);
             }
         }
-
-        // 3. Countdown Timer
+// 3. Countdown Timer
         function startCountdown() {
             const targetDate = new Date("2027-04-03T00:00:00").getTime();
 
@@ -641,17 +639,6 @@
                 closeEditModal();
             }
         }
-
-        function confirmDeleteTransaction() {
-            const id = parseInt(document.getElementById('editId').value);
-            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
-                transactions = transactions.filter(t => t.id !== id);
-                localStorage.setItem('wedding_savings', JSON.stringify(transactions));
-                updateUI();
-                closeEditModal();
-            }
-        }
-
         // 6. Render UI
         function updateUI() {
             let totalMasuk = 0;
@@ -701,3 +688,13 @@
     </script>
 </body>
 </html>
+
+        function confirmDeleteTransaction() {
+            const id = parseInt(document.getElementById('editId').value);
+            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                localStorage.setItem('wedding_savings', JSON.stringify(transactions));
+                updateUI();
+                closeEditModal();
+            }
+        }
