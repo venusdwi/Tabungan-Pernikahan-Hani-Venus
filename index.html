@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,7 +8,7 @@ html
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Playfair Display, Plus Jakarta Sans & Outfit (Khusus Angka/Number) -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -61,7 +60,6 @@ html
             box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
             transition: background-color 0.2s ease, opacity 0.2s ease;
         }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -78,64 +76,26 @@ html
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
-    <!-- Background Dark Blue Overlay & Wedding Elements Tint -->
     <div id="bgOverlay" class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/60 via-slate-950 to-slate-950 pointer-events-none -z-10">
-        <!-- Floating Animated Background Decorative SVG Wedding Elements -->
         <div class="absolute inset-0 opacity-25 overflow-hidden">
-            <!-- Floating Rings Top Left -->
             <svg class="absolute top-10 left-5 sm:left-20 w-32 h-32 text-sky-300 animate-pulse" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l1.5 2.5h-3L12 3z" />
             </svg>
-
-            <!-- Floating Floral Ornament Top Right -->
             <svg class="absolute top-12 right-5 sm:right-20 w-40 h-40 text-blue-400" fill="currentColor" viewBox="0 0 100 100">
                 <path d="M50,15 C55,30 70,35 85,35 C70,45 65,60 70,75 C55,65 45,65 30,75 C35,60 30,45 15,35 C30,35 45,30 50,15 Z" opacity="0.3"/>
                 <circle cx="50" cy="45" r="8" fill="#38bdf8"/>
             </svg>
-
-            <!-- Bottom Left Wedding Arch & Vines -->
-            <svg class="absolute -bottom-10 -left-10 w-72 h-72 text-sky-400/30" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 200 200">
-                <path d="M20,180 Q20,60 100,60 Q180,60 180,180" stroke-dasharray="4,4"/>
-                <circle cx="100" cy="60" r="15" fill="none" stroke="currentColor"/>
-                <path d="M85,60 C70,40 50,50 60,70 C75,70 85,60 85,60 Z"/>
-                <path d="M115,60 C130,40 150,50 140,70 C125,70 115,60 115,60 Z"/>
-            </svg>
-
-            <!-- Bottom Right Floating Hearts & Sparkles -->
-            <svg class="absolute bottom-20 right-10 w-36 h-36 text-indigo-300/40" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-
-            <!-- Glowing Sparkle Dust -->
-            <div class="absolute top-1/4 left-1/3 w-2 h-2 bg-sky-300 rounded-full blur-xs animate-ping"></div>
-            <div class="absolute top-1/2 right-1/4 w-3 h-3 bg-blue-300 rounded-full blur-xs animate-pulse"></div>
-            <div class="absolute bottom-1/3 left-1/4 w-2.5 h-2.5 bg-indigo-200 rounded-full blur-xs animate-ping"></div>
         </div>
     </div>
 
-    <!-- MAIN CONTAINER -->
     <div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
-        
-        <!-- TOP NAVIGATION / ACTIONS BAR -->
+        <!-- TOP BAR -->
         <div class="flex justify-between items-center mb-6">
             <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-200 text-xs font-semibold text-sky-700 shadow-sm">
                 <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
                 <span>Our Journey to Halal</span>
-            </div>
-            
-            <div class="flex gap-2">
-                <!-- Custom Background Button -->
-                <button onclick="toggleBgControlModal()" class="bg-white/80 hover:bg-white text-slate-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 hover:text-sky-600 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-image"></i>
-                    <span class="hidden sm:inline">Ubah Background</span>
-                </button>
-                <!-- GitHub Pages Guide Button -->
-                <button onclick="openGithubGuide()" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-md transition flex items-center gap-1.5">
-                    <i class="fa-brands fa-github text-sm"></i>
-                    <span>Cara Link Share</span>
-                </button>
             </div>
         </div>
 
@@ -184,11 +144,7 @@ html
 
         <!-- SALDO SUMMARY CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <!-- Total Saldo Utama -->
             <div class="glass-box rounded-2xl p-6 bg-white/75 relative overflow-hidden group shadow-sm hover:shadow-md transition" id="cardTotal">
-                <div class="absolute -right-4 -bottom-4 text-sky-100/80 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-vault text-7xl"></i>
-                </div>
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
@@ -197,17 +153,11 @@ html
                     <h2 id="totalSaldo" class="font-num text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-1">
                         Rp 0
                     </h2>
-                    <p class="text-xs text-slate-500">
-                        Total dana gabungan pernikahan saat ini
-                    </p>
+                    <p class="text-xs text-slate-500">Total dana gabungan pernikahan saat ini</p>
                 </div>
             </div>
 
-            <!-- Total Pemasukan Summary Card -->
             <div class="glass-box rounded-2xl p-6 bg-white/75 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="absolute -right-4 -bottom-4 text-emerald-100/80 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-arrow-trend-up text-7xl"></i>
-                </div>
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
@@ -216,17 +166,11 @@ html
                     <h2 id="topTotalIn" class="font-num text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-1">
                         Rp 0
                     </h2>
-                    <p class="text-xs text-slate-500">
-                        Akumulasi semua pemasukan
-                    </p>
+                    <p class="text-xs text-slate-500">Akumulasi semua pemasukan</p>
                 </div>
             </div>
 
-            <!-- Total Pengeluaran Summary Card -->
             <div class="glass-box rounded-2xl p-6 bg-white/75 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="absolute -right-4 -bottom-4 text-rose-100/80 group-hover:scale-110 transition duration-300">
-                    <i class="fa-solid fa-arrow-trend-down text-7xl"></i>
-                </div>
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
@@ -235,18 +179,14 @@ html
                     <h2 id="topTotalOut" class="font-num text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-1">
                         Rp 0
                     </h2>
-                    <p class="text-xs text-slate-500">
-                        Akumulasi semua pengeluaran
-                    </p>
+                    <p class="text-xs text-slate-500">Akumulasi semua pengeluaran</p>
                 </div>
             </div>
         </div>
 
-        <!-- FORM INPUT TABUNGAN & STATS QUICK VIEW -->
+        <!-- FORM INPUT TABUNGAN -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
-            
-            <!-- FORM INPUT -->
-            <div class="lg:col-span-7">
+            <div class="lg:col-span-12">
                 <div class="glass-box rounded-2xl p-6 sm:p-7 bg-white/75" id="formCard">
                     <div class="flex items-center gap-2 mb-5 border-b border-sky-100 pb-3">
                         <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
@@ -259,33 +199,28 @@ html
                     </div>
 
                     <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        
-                        <!-- Tipe Transaksi, Tanggal & Jam Grid -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                            <!-- Tipe Transaksi -->
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                     Tipe Transaksi <span class="text-blue-500">*</span>
                                 </label>
-                                <select id="tipeTransaksi" onchange="handleTipeChange()" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select id="tipeTransaksi" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="pemasukan">➕ Pemasukan (+)</option>
                                     <option value="pengeluaran">➖ Pengeluaran (-)</option>
                                 </select>
                             </div>
 
-                            <!-- Tanggal & Jam Bersebelahan -->
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                     Tanggal & Jam <span class="text-blue-500">*</span>
                                 </label>
                                 <div class="grid grid-cols-2 gap-2">
                                     <input type="date" id="tglTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <input type="time" id="jamTransaksi" required oninput="this.dataset.userModified = 'true'" class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="time" id="jamTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Jumlah Tabungan Rp -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Jumlah (Rp) <span class="text-blue-500">*</span>
@@ -294,25 +229,133 @@ html
                                 <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">Rp</span>
                                 <input type="text" id="jumlahRupiah" inputmode="numeric" placeholder="0" required oninput="formatRupiahInput(this)" class="w-full bg-white/80 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-slate-900 font-num font-extrabold text-lg sm:text-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
-                            <p class="text-[11px] text-slate-400 mt-1">*Format titik ribuan otomatis dimasukkan (misal: 300.000)</p>
                         </div>
 
-                        <!-- Keterangan / Catatan -->
                         <div>
-                            <label id="keteranganLabel" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                                Keterangan / Catatan <span id="keteranganBadge" class="text-slate-400 font-normal">(Opsional)</span>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                Keterangan / Catatan
                             </label>
                             <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Souvenir / Tabungan Bulanan" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
-                        <!-- Upload Bukti Transfer -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Lampirkan Bukti Transfer / Nota <span class="text-slate-400 font-normal">(Opsional)</span>
                             </label>
-                            <div class="flex items-center gap-3">
-                                <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                            <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                            <div id="buktiPreviewContainer" class="hidden mt-2 relative w-24 h-24 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden">
+                                <img id="buktiPreviewImg" src="" alt="Preview Bukti" class="w-full h-full object-cover">
                             </div>
-                            <!-- Image Preview Box -->
-                            <div id="buktiPreviewContainer" class="hidden mt-2 relative w-24 h-24 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden group">
-                                <img id="buktiPreviewImg" src="" alt="Preview Bukti" class="w-full h-full object-cover
+                        </div>
+
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
+                            Simpan Transaksi
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIWAYAT TRANSAKSI -->
+        <div class="glass-box rounded-2xl p-6 bg-white/75">
+            <h3 class="font-serif text-lg font-bold text-slate-900 mb-4">Riwayat Transaksi</h3>
+            <div id="transactionList" class="space-y-3">
+                <p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIKA JAVASCRIPT -->
+    <script>
+        // Datastore transaksi dari LocalStorage
+        let transactions = JSON.parse(localStorage.getItem('wedding_savings')) || [];
+
+        // Set default Tanggal & Jam saat dibuka
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
+            document.getElementById('jamTransaksi').value = today.toTimeString().split(' ')[0].substring(0, 5);
+            
+            updateUI();
+            startCountdown();
+        });
+
+        // 1. Logika Countdown Timer
+        function startCountdown() {
+            const targetDate = new Date("2027-04-03T00:00:00").getTime();
+
+            function update() {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+
+                if (diff > 0) {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    document.getElementById('cd-days').innerText = String(days).padStart(2, '0');
+                    document.getElementById('cd-hours').innerText = String(hours).padStart(2, '0');
+                    document.getElementById('cd-minutes').innerText = String(minutes).padStart(2, '0');
+                    document.getElementById('cd-seconds').innerText = String(seconds).padStart(2, '0');
+                }
+            }
+
+            update();
+            setInterval(update, 1000);
+        }
+
+        // 2. Format Input Rupiah
+        function formatRupiahInput(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            if (value) {
+                input.value = new Intl.NumberFormat('id-ID').format(value);
+            } else {
+                input.value = '';
+            }
+        }
+
+        // 3. Preview Gambar Bukti Transfer
+        function previewMainBukti(event) {
+            const file = event.target.files[0];
+            const container = document.getElementById('buktiPreviewContainer');
+            const img = document.getElementById('buktiPreviewImg');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    container.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // 4. Submit & Simpan Transaksi
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const tipe = document.getElementById('tipeTransaksi').value;
+            const tgl = document.getElementById('tglTransaksi').value;
+            const jam = document.getElementById('jamTransaksi').value;
+            const rawJumlah = document.getElementById('jumlahRupiah').value.replace(/\./g, '');
+            const jumlah = parseFloat(rawJumlah) || 0;
+            const ket = document.getElementById('keteranganTransaksi').value || (tipe === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran');
+
+            if (jumlah <= 0) {
+                alert('Masukkan jumlah uang yang valid!');
+                return;
+            }
+
+            const item = {
+                id: Date.now(),
+                tipe,
+                tgl,
+                jam,
+                jumlah,
+                ket
+            };
+
+            transact
