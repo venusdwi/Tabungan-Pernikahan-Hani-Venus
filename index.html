@@ -74,7 +74,7 @@
     <div id="bgImageLayer" class="transition-opacity duration-300 opacity-0"></div>
 
     <!-- OVERLAY LAYAR KUNCI PIN -->
-    <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 transition-all duration-300">
         <div class="bg-white/90 backdrop-blur-md border border-white/40 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
             <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
                 <i class="fa-solid fa-lock"></i>
@@ -411,33 +411,11 @@
         let transactions = [];
         const DEFAULT_PIN = "150522";
         let tempBuktiBase64 = "";
-
-        // PEMERIKSAAN OTOMATIS: KUNCI ULANG JIKA TAB DITINGGALKAN / KELUAR
-        function lockAppImmediately() {
-            sessionStorage.removeItem('wedding_session_unlocked');
-            const screen = document.getElementById('pinLockScreen');
-            if (screen) {
-                screen.classList.remove('hidden');
-                screen.classList.remove('opacity-0');
-                const inputs = document.querySelectorAll('.pin-digit');
-                inputs.forEach(i => i.value = '');
-            }
-        }
-
-        // OTOMATIS MENGUNCI SAAT USER PINDAH TAB, PINDAH APLIKASI, ATAU MINIMIZE
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                lockAppImmediately();
-            }
-        });
-
-        window.addEventListener('pagehide', () => {
-            lockAppImmediately();
-        });
+        let isAppUnlocked = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             initPinInputHandling();
-            checkSessionPin();
+            lockApp();
 
             const today = new Date();
             document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
@@ -452,685 +430,7 @@
             startCountdown();
         });
 
-        function listenToFirestore() {
-            db.collection("transactions").onSnapshot((snapshot) => {
-                transactions = [];
-                snapshot.forEach((doc) => {
-                    transactions.push({
-                        docId: doc.id,
-                        ...doc.data()
-                    });
-                });
-                transactions.sort((a, b) => a.id - b.id);
-                updateUI();
-            });
-        }
-
-        function listenToSharedBackground() {
-            db.collection("settings").doc("appSettings").onSnapshot((doc) => {
-                if (doc.exists && doc.data().bgImage) {
-                    applyBackgroundStyle(doc.data().bgImage);
-                    document.getElementById('btnResetBg').classList.remove('hidden');
-                }
-            });
-        }
-
-        function initPinInputHandling() {
-            const inputs = document.querySelectorAll('.pin-digit');
-            inputs.forEach((input, index) => {
-                input.addEventListener('input', (e) => {
-                    if (input.value.length === 1 && index < inputs.length - 1) {
-                        inputs[index + 1].focus();
-                    }
-                });
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
-                        inputs[index - 1].focus();
-                    }
-                });
-            });
-        }
-
-        function checkSessionPin() {
-            const isUnlocked = sessionStorage.getItem('wedding_session_unlocked');
-            if (isUnlocked === 'true') {
-                document.getElementById('pinLockScreen').classList.add('hidden');
-            } else {
-                const screen = document.getElementById('pinLockScreen');
-                screen.classList.remove('hidden');
-                screen.classList.remove('opacity-0');
-                setTimeout(() => {
-                    const inputs = document.querySelectorAll('.pin-digit');
-                    if (inputs.length > 0) inputs[0].focus();
-                }, 300);
-            }
-        }
-
-        function verifyPin() {
-            const inputs = document.querySelectorAll('.pin-digit');
-            let enteredPin = '';
-            inputs.forEach(i => enteredPin += i.value);
-
-            const btnSubmit = document.getElementById('btnPinSubmit');
-            const btnText = document.getElementById('btnPinText');
-            const btnSpinner = document.getElementById('btnPinSpinner');
-
-            if (enteredPin === DEFAULT_PIN) {
-                btnSubmit.disabled = true;
-                btnText.classList.add('hidden');
-                btnSpinner.classList.remove('hidden');
-
-                setTimeout(() => {
-                    sessionStorage.setItem('wedding_session_unlocked', 'true');
-                    btnSubmit.disabled = false;
-                    btnText.classList.remove('hidden');
-                    btnSpinner.classList.add('hidden');
-                    unlockApp();
-                }, 1000);
-            } else {
-                document.getElementById('pinErrMsg').classList.remove('hidden');
-                inputs.forEach(i => i.value = '');
-                inputs[0].focus();
-            }
-        }
-
-        function unlockApp() {
-            const screen = document.getElementById('pinLockScreen');
-            screen.classList.add('opacity-0');
-            setTimeout(() => screen.classList.add('hidden'), 300);
-        }
-
-        function openImageModal(src) {
-            if (!src) return;
-            const modal = document.getElementById('imageModal');
-            const img = document.getElementById('imageModalSrc');
-            img.src = src;
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        function closeImageModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function openBgPicker() {
-            const fileInput = document.getElementById('bgImageInput');
-            fileInput.value = '';
-            fileInput.click();
-        }
-
-        function uploadBgImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const maxDim = 800;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height && width > maxDim) {
-                            height = Math.round((height * maxDim) / width);
-                            width = maxDim;
-                        } else if (height > maxDim) {
-                            width = Math.round((width * maxDim) / height);
-                            height = maxDim;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.4);
-                        
-                        applyBackgroundStyle(compressedUrl);
-                        try {
-                            localStorage.setItem('wedding_bg_local', compressedUrl);
-                        } catch (e) {}
-                        document.getElementById('btnResetBg').classList.remove('hidden');
-
-                        db.collection("settings").doc("appSettings").set({
-                            bgImage: compressedUrl
-                        }).catch(err => {
-                            console.warn("Latar belakang disimpan lokal (Firestore terbatas):", err);
-                        });
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function applyBackgroundStyle(url) {
-            const bgLayer = document.getElementById('bgImageLayer');
-            bgLayer.style.backgroundImage = `url('${url}')`;
-            bgLayer.classList.remove('opacity-0');
-            document.getElementById('bgOverlay').classList.add('opacity-40');
-        }
-
-        function loadSavedLocalBg() {
-            const localBg = localStorage.getItem('wedding_bg_local');
-            if (localBg) {
-                applyBackgroundStyle(localBg);
-                document.getElementById('btnResetBg').classList.remove('hidden');
-            }
-        }
-
-        function resetBgStyleUI() {
-            const bgLayer = document.getElementById('bgImageLayer');
-            bgLayer.style.backgroundImage = '';
-            bgLayer.classList.add('opacity-0');
-            document.getElementById('bgOverlay').classList.remove('opacity-40');
-            document.getElementById('btnResetBg').classList.add('hidden');
-            document.getElementById('bgImageInput').value = '';
-            localStorage.removeItem('wedding_bg_local');
-        }
-
-        function resetBgImage() {
-            resetBgStyleUI();
-            db.collection("settings").doc("appSettings").delete().catch(e => {});
-        }
-
-        function changeBoxOpacity(val) {
-            document.documentElement.style.setProperty('--box-opacity', val);
-            localStorage.setItem('wedding_box_opacity', val);
-        }
-
-        function loadSavedOpacity() {
-            const savedOpacity = localStorage.getItem('wedding_box_opacity') || '0.75';
-            document.documentElement.style.setProperty('--box-opacity', savedOpacity);
-            document.getElementById('opacitySlider').value = savedOpacity;
-        }
-
-        function updateKeteranganValidation() {
-            const tipe = document.getElementById('tipeTransaksi').value;
-            const ketInput = document.getElementById('keteranganTransaksi');
-            const reqMark = document.getElementById('ketRequiredMark');
-            const optMark = document.getElementById('ketOptionalMark');
-
-            if (tipe === 'pengeluaran') {
-                ketInput.required = true;
-                reqMark.classList.remove('hidden');
-                optMark.classList.add('hidden');
-            } else {
-                ketInput.required = false;
-                reqMark.classList.add('hidden');
-                optMark.classList.remove('hidden');
-            }
-        }
-
-        function playModernBeep() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.15);
-            } catch (e) {}
-        }
-
-        function startCountdown() {
-            const targetDate = new Date("2027-04-03T00:00:00").getTime();
-            function update() {
-                const now = new Date().getTime();
-                const diff = targetDate - now;
-                if (diff > 0) {
-                    document.getElementById('cd-days').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
-                    document.getElementById('cd-hours').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-                    document.getElementById('cd-minutes').innerText = String(Math.floor((diff % (1000 * 60 * 6Untuk membuat layar PIN otomatis terkunci kembali setiap kali Anda berpindah tab, membuka aplikasi lain, atau keluar sebentar dari browser, kita cukup mengubah mekanisme penyimpanannya dari **`sessionStorage`** menjadi **pemeriksaan status visibilitas layar (*visibilitychange*)**.
-
----
-
-### Kode Utuh `index.html` Terbaru (Siap Salin & Tempel)
-
-Salin seluruh kode di bawah ini dan timpa file `index.html` di repository GitHub Anda:
-
-```html
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TABUNGAN PERNIKAHAN Hani & Venus 💍</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-    <link href="[https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap)" rel="stylesheet">
-
-    <!-- FIREBASE SDK (FIRESTORE & APP) -->
-    <script src="[https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js](https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js)"></script>
-    <script src="[https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js](https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js)"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        themeBlue: {
-                            50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
-                            400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
-                            800: '#075985', 900: '#0c4a6e',
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['"Playfair Display"', 'serif'],
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        num: ['"Outfit"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #090d16; }
-        .font-num { font-family: 'Outfit', sans-serif; font-variant-numeric: tabular-nums; }
-        .glass-box {
-            background-color: rgba(255, 255, 255, var(--box-opacity, 0.75));
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
-            transition: background-color 0.15s ease;
-        }
-        #bgImageLayer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            transform: translateZ(0);
-            will-change: transform;
-            pointer-events: none;
-            z-index: -20;
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
-        ::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(2, 132, 199, 0.6); }
-        .pin-digit { -webkit-text-security: disc; text-security: disc; }
-    </style>
-</head>
-<body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
-
-    <!-- LAYER LATAR BELAKANG TERKUNCI (FLATTEN) -->
-    <div id="bgImageLayer" class="transition-opacity duration-300 opacity-0"></div>
-
-    <!-- OVERLAY LAYAR KUNCI PIN -->
-    <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white/90 backdrop-blur-md border border-white/40 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
-            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            
-            <h2 class="font-serif text-2xl font-bold text-slate-900 mb-1">Akses Terkunci</h2>
-            <p class="text-xs text-slate-500 mb-6">Masukkan PIN keamanan 6 digit</p>
-
-            <div class="flex justify-center gap-2 mb-6">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <p id="pinErrMsg" class="text-xs text-rose-500 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
-
-            <button id="btnPinSubmit" onclick="verifyPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                <span id="btnPinText">Masuk Web</span>
-                <span id="btnPinSpinner" class="hidden"><i class="fa-solid fa-spinner animate-spin"></i> Memeriksa...</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- BACKGROUND OVERLAY -->
-    <div id="bgOverlay" class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/60 via-slate-950 to-slate-950 pointer-events-none -z-10 transition-opacity duration-300"></div>
-
-    <div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
-        <!-- TOP BAR -->
-        <div class="flex flex-row items-center justify-between gap-2 mb-6">
-            <div class="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-sky-200 text-[11px] sm:text-xs font-semibold text-sky-700 shadow-sm whitespace-nowrap">
-                <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
-                <span>Our Journey to Halal</span>
-            </div>
-
-            <div class="flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 shadow-sm">
-                <!-- Input foto latar belakang -->
-                <input type="file" id="bgImageInput" accept="image/*" class="hidden" onchange="uploadBgImage(event)">
-                <button type="button" onclick="openBgPicker()" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
-                    <i class="fa-solid fa-image"></i>
-                    <span>Galeri Foto</span>
-                </button>
-                <button type="button" id="btnResetBg" onclick="resetBgImage()" class="hidden text-slate-400 hover:text-rose-500 text-xs transition px-0.5">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <div class="h-3.5 w-[1px] bg-slate-300 mx-0.5"></div>
-                <div class="flex items-center gap-1 text-slate-600 font-semibold">
-                    <i class="fa-solid fa-circle-half-stroke text-slate-500 text-xs"></i>
-                    <input type="range" id="opacitySlider" min="0.2" max="1.0" step="0.05" value="0.75" oninput="changeBoxOpacity(this.value)" class="w-12 sm:w-20 accent-blue-600 cursor-pointer">
-                </div>
-            </div>
-        </div>
-
-        <!-- HEADER BANNER -->
-        <div class="text-center mb-8">
-            <h1 class="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-md">
-                TABUNGAN PERNIKAHAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-indigo-300">Hani & Venus</span> 💍
-            </h1>
-            <p class="text-sky-200/90 text-sm sm:text-base font-medium">Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia.</p>
-
-            <div class="mt-6 inline-block w-full max-w-xl">
-                <div class="glass-box rounded-2xl p-4 sm:p-5 text-center">
-                    <div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-600 mb-3 flex flex-col items-center justify-center gap-1">
-                        <div class="flex items-center justify-center gap-2 whitespace-nowrap">
-                            <i class="fa-solid fa-hourglass-half text-blue-500"></i>
-                            <span>Countdown Menuju Hari Pernikahan</span>
-                        </div>
-                        <div class="text-blue-700 font-extrabold text-xs sm:text-sm tracking-widest whitespace-nowrap">(03 APRIL 2027)</div>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2 sm:gap-4 text-center">
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-days" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Hari</span>
-                        </div>
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-hours" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Jam</span>
-                        </div>
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-minutes" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Menit</span>
-                        </div>
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-seconds" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Detik</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-3 text-center">
-                    <button onclick="location.reload()" class="bg-white/80 hover:bg-white text-slate-700 hover:text-blue-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 transition inline-flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        <span>Refresh Halaman</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- SALDO SUMMARY CARDS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
-                        <span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
-                    </div>
-                    <h2 id="totalSaldo" class="font-num text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight mb-1">Rp 0</h2>
-                    <p class="text-xs text-slate-500">Total dana gabungan pernikahan saat ini</p>
-                </div>
-            </div>
-
-            <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
-                        <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
-                    </div>
-                    <h2 id="topTotalIn" class="font-num text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight mb-1">Rp 0</h2>
-                    <p class="text-xs text-slate-500">Akumulasi semua pemasukan</p>
-                </div>
-            </div>
-
-            <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
-                        <span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">- Keluar</span>
-                    </div>
-                    <h2 id="topTotalOut" class="font-num text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight mb-1">Rp 0</h2>
-                    <p class="text-xs text-slate-500">Akumulasi semua pengeluaran</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- FORM INPUT TABUNGAN -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
-            <div class="lg:col-span-12">
-                <div class="glass-box rounded-2xl p-6 sm:p-7">
-                    <div class="flex items-center gap-2 mb-5 border-b border-sky-100 pb-3">
-                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-serif text-lg font-bold text-slate-900">Input Catatan Tabungan</h3>
-                            <p class="text-xs text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
-                        </div>
-                    </div>
-
-                    <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Tipe Transaksi *</label>
-                            <select id="tipeTransaksi" onchange="updateKeteranganValidation()" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="pemasukan">➕ Pemasukan (+)</option>
-                                <option value="pengeluaran">➖ Pengeluaran (-)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nama Penabung *</label>
-                            <select id="namaPenabung" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="HANI💙">HANI💙</option>
-                                <option value="VENUS💙">VENUS💙</option>
-                                <option value="BERSAMA👩‍❤️‍💋‍👨">BERSAMA👩‍❤️‍💋‍👨</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Tanggal & Jam *</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="date" id="tglTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <input type="time" id="jamTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Jumlah (Rp) *</label>
-                            <div class="relative">
-                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">Rp</span>
-                                <input type="text" id="jumlahRupiah" inputmode="numeric" placeholder="0" required oninput="formatRupiahInput(this)" class="w-full bg-white/80 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-slate-900 font-num font-extrabold text-lg sm:text-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                                Keterangan / Catatan <span id="ketRequiredMark" class="text-rose-500 hidden">*</span> <span id="ketOptionalMark" class="text-slate-400 font-normal">(Opsional)</span>
-                            </label>
-                            <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Souvenir / Tabungan Bulanan" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Lampirkan Bukti Transfer / Nota (Opsional)</label>
-                            <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                            <div id="buktiPreviewContainer" class="hidden mt-2 relative w-24 h-24 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden cursor-pointer" onclick="openImageModal(document.getElementById('buktiPreviewImg').src)">
-                                <img id="buktiPreviewImg" src="" alt="Preview Bukti" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-
-                        <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
-                            <span id="btnSubmitText">Simpan Transaksi</span>
-                            <span id="btnSubmitSpinner" class="hidden"><i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- RIWAYAT TRANSAKSI -->
-        <div class="glass-box rounded-2xl p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
-                <span class="text-[11px] text-slate-500 italic">*Klik pada transaksi untuk edit/hapus</span>
-            </div>
-            <div id="transactionList" class="space-y-3">
-                <p class="text-xs text-slate-500 text-center py-4">Mengambil data cloud...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL NOTIFIKASI SELESAI -->
-    <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <i class="fa-solid fa-check text-4xl"></i>
-            </div>
-            <h3 class="font-serif text-3xl font-extrabold text-slate-900 mb-2">SELESAI!</h3>
-            <p class="text-sm text-slate-500 mb-6 font-medium">Transaksi berhasil tersimpan & tersinkronisasi online!</p>
-            <button onclick="closeSuccessModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
-                Oke, Mengerti
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL EDIT / HAPUS TRANSAKSI -->
-    <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg z-10">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
-            <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Edit / Hapus Transaksi</h3>
-            <p class="text-xs text-slate-500 mb-4">Ubah detail data transaksi atau hapus jika salah input.</p>
-
-            <form id="editForm" onsubmit="handleEditSubmit(event)" class="space-y-3">
-                <input type="hidden" id="editId">
-
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tipe Transaksi</label>
-                    <select id="editTipe" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold">
-                        <option value="pemasukan">➕ Pemasukan (+)</option>
-                        <option value="pengeluaran">➖ Pengeluaran (-)</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Penabung</label>
-                    <select id="editPenabung" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold">
-                        <option value="HANI💙">HANI💙</option>
-                        <option value="VENUS💙">VENUS💙</option>
-                        <option value="BERSAMA👩‍❤️‍💋‍👨">BERSAMA👩‍❤️‍💋‍👨</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tanggal</label>
-                        <input type="date" id="editTgl" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jam</label>
-                        <input type="time" id="editJam" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jumlah (Rp)</label>
-                    <input type="text" id="editJumlah" required oninput="formatRupiahInput(this)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-num font-bold text-base">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keterangan / Catatan</label>
-                    <input type="text" id="editKet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
-                </div>
-
-                <div id="editBuktiContainer" class="hidden pt-2">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="block text-xs font-bold uppercase text-slate-600">Bukti Transfer Terlampir</label>
-                        <span class="text-[10px] text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto untuk memperbesar</span>
-                    </div>
-                    <div class="relative w-full h-52 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" onclick="openImageModal(document.getElementById('editBuktiImg').src)">
-                        <img id="editBuktiImg" src="" alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
-                    </div>
-                </div>
-
-                <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="confirmDeleteTransaction()" class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl border border-rose-200 text-xs transition">
-                        <i class="fa-solid fa-trash mr-1"></i> Hapus
-                    </button>
-                    <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL FULLSCREEN BUKTI FOTO -->
-    <div id="imageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300" onclick="closeImageModal()">
-        <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center" onclick="event.stopPropagation()">
-            <button onclick="closeImageModal()" class="absolute -top-10 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl backdrop-blur-md transition z-10 shadow-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <img id="imageModalSrc" src="" alt="Bukti Transfer Full" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20">
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT & CLOUD FIRESTORE INTEGRATION -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBrnOBF6b9NRnFvWEqB17ycW8lrqmEsRJg",
-            authDomain: "tabungan-hani-venus.firebaseapp.com",
-            databaseURL: "[https://tabungan-hani-venus-default-rtdb.firebaseio.com](https://tabungan-hani-venus-default-rtdb.firebaseio.com)",
-            projectId: "tabungan-hani-venus",
-            storageBucket: "tabungan-hani-venus.firebasestorage.app",
-            messagingSenderId: "938627266857",
-            appId: "1:938627266857:web:dfd026cfeff225ca9edf38",
-            measurementId: "G-GH9TK6QQCR"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        let transactions = [];
-        const DEFAULT_PIN = "150522";
-        let tempBuktiBase64 = "";
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initPinInputHandling();
-            lockApp(); // Selalu minta PIN saat pertama buka
-
-            const today = new Date();
-            document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
-            document.getElementById('jamTransaksi').value = today.toTimeString().split(' ')[0].substring(0, 5);
-            
-            loadSavedOpacity();
-            loadSavedLocalBg();
-            updateKeteranganValidation();
-
-            listenToFirestore();
-            listenToSharedBackground();
-            startCountdown();
-        });
-
-        // OTOMATIS KUNCI PIN SAAT KELUAR TAB / PINDAH APLIKASI BROWSER
+        // OTOMATIS KUNCI KEMBALI KETIKA TAB TIDAK AKTIF ATAU USER KELUAR APLIKASI
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
                 lockApp();
@@ -1138,15 +438,53 @@ Salin seluruh kode di bawah ini dan timpa file `index.html` di repository GitHub
         });
 
         function lockApp() {
+            isAppUnlocked = false;
             const screen = document.getElementById('pinLockScreen');
-            screen.classList.remove('hidden');
-            setTimeout(() => screen.classList.remove('opacity-0'), 10);
-            
-            // Clear input PIN
+            if (screen) {
+                screen.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+            }
             const inputs = document.querySelectorAll('.pin-digit');
             inputs.forEach(i => i.value = '');
             if (inputs.length > 0) inputs[0].focus();
             document.getElementById('pinErrMsg').classList.add('hidden');
+        }
+
+        function verifyPin() {
+            const inputs = document.querySelectorAll('.pin-digit');
+            let enteredPin = '';
+            inputs.forEach(i => enteredPin += i.value);
+
+            const btnSubmit = document.getElementById('btnPinSubmit');
+            const btnText = document.getElementById('btnPinText');
+            const btnSpinner = document.getElementById('btnPinSpinner');
+
+            if (enteredPin === DEFAULT_PIN) {
+                btnSubmit.disabled = true;
+                btnText.classList.add('hidden');
+                btnSpinner.classList.remove('hidden');
+
+                setTimeout(() => {
+                    btnSubmit.disabled = false;
+                    btnText.classList.remove('hidden');
+                    btnSpinner.classList.add('hidden');
+                    unlockApp();
+                }, 800);
+            } else {
+                document.getElementById('pinErrMsg').classList.remove('hidden');
+                inputs.forEach(i => i.value = '');
+                inputs[0].focus();
+            }
+        }
+
+        function unlockApp() {
+            isAppUnlocked = true;
+            const screen = document.getElementById('pinLockScreen');
+            screen.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                if (isAppUnlocked) {
+                    screen.classList.add('hidden');
+                }
+            }, 300);
         }
 
         function listenToFirestore() {
@@ -1186,39 +524,6 @@ Salin seluruh kode di bawah ini dan timpa file `index.html` di repository GitHub
                     }
                 });
             });
-        }
-
-        function verifyPin() {
-            const inputs = document.querySelectorAll('.pin-digit');
-            let enteredPin = '';
-            inputs.forEach(i => enteredPin += i.value);
-
-            const btnSubmit = document.getElementById('btnPinSubmit');
-            const btnText = document.getElementById('btnPinText');
-            const btnSpinner = document.getElementById('btnPinSpinner');
-
-            if (enteredPin === DEFAULT_PIN) {
-                btnSubmit.disabled = true;
-                btnText.classList.add('hidden');
-                btnSpinner.classList.remove('hidden');
-
-                setTimeout(() => {
-                    btnSubmit.disabled = false;
-                    btnText.classList.remove('hidden');
-                    btnSpinner.classList.add('hidden');
-                    unlockApp();
-                }, 1000);
-            } else {
-                document.getElementById('pinErrMsg').classList.remove('hidden');
-                inputs.forEach(i => i.value = '');
-                inputs[0].focus();
-            }
-        }
-
-        function unlockApp() {
-            const screen = document.getElementById('pinLockScreen');
-            screen.classList.add('opacity-0');
-            setTimeout(() => screen.classList.add('hidden'), 300);
         }
 
         function openImageModal(src) {
