@@ -4,114 +4,420 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabungan Pernikahan Hani & Venus</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --warna-utama: #0f4c81;
-            --warna-pengeluaran: #d32f2f;
-            --kartu-gradasi-1: rgba(21, 101, 192, 0.88);
-            --kartu-gradasi-2: rgba(66, 165, 245, 0.88);
-            --bg-halaman: #f0f4f8;
-            --bg-header-tabel: rgba(227, 242, 253, 0.9);
-            --teks-header-tabel: #0d47a1;
+            --warna-utama: #0f4c81;          
+            --warna-hover: #0a3357;          
+            --kartu-gradasi-1: rgba(21, 101, 192, 0.9);   
+            --kartu-gradasi-2: rgba(66, 165, 245, 0.9);
+            --bg-halaman: #f0f4f8;           
+            --bg-header-tabel: #e3f2fd;      
+            --teks-header-tabel: #0d47a1;     
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
-        #bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-halaman); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: -1; }
-        body { color: #111; display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
-        .container { width: 100%; max-width: 650px; background: rgba(255, 255, 255, 0.35); padding: 30px 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.5); backdrop-filter: blur(8px); margin: auto 0; }
-        h1 { text-align: center; color: var(--warna-utama); margin-bottom: 22px; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; }
-        .summary-card { background: linear-gradient(135deg, var(--kartu-gradasi-1), var(--kartu-gradasi-2)); color: white; padding: 22px 20px; border-radius: 14px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
-        .summary-card h3 { font-size: 15px; font-weight: 500; opacity: 0.95; }
-        .summary-card .total-main { font-size: 36px; font-weight: 700; margin-top: 4px; }
-        .financial-details { display: flex; justify-content: space-around; margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.4); }
-        .fin-box { font-size: 13px; }
-        .fin-box val { display: block; font-size: 17px; font-weight: 700; margin-top: 2px; }
-        .divider { height: 1px; background: rgba(255, 255, 255, 0.3); margin: 16px 0 12px 0; }
-        .countdown-title { font-size: 14px; font-weight: 600; opacity: 0.95; margin-bottom: 4px; }
-        .countdown-date { font-size: 13px; font-weight: 500; opacity: 0.9; margin-bottom: 10px; }
-        .countdown-grid { display: flex; justify-content: center; gap: 8px; }
-        .countdown-box { background: rgba(255, 255, 255, 0.2); padding: 8px 12px; border-radius: 8px; min-width: 65px; border: 1px solid rgba(255, 255, 255, 0.3); }
-        .countdown-num { font-size: 20px; font-weight: 700; line-height: 1.2; }
-        .countdown-label { font-size: 10px; text-transform: uppercase; opacity: 0.85; margin-top: 2px; font-weight: 600; }
-        
-        .bg-picker-section { background: rgba(255, 255, 255, 0.5); border-radius: 12px; padding: 12px 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 255, 255, 0.5); }
-        .bg-picker-section label { font-size: 14px; cursor: pointer; color: var(--warna-utama); display: flex; align-items: center; gap: 6px; font-weight: 700; }
-        .bg-picker-section input[type="file"] { display: none; }
-        .btn-reset-bg { background: #e0e0e0; border: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        .monthly-section { background: rgba(255, 255, 255, 0.5); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.5); }
-        .monthly-section h2 { font-size: 18px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 4px; font-family: 'Playfair Display', serif; }
-        .monthly-item { background: rgba(255, 255, 255, 0.6); padding: 12px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
-        .monthly-header { font-weight: 700; color: var(--warna-utama); margin-bottom: 4px; display: flex; justify-content: space-between; }
-        .monthly-details { display: flex; justify-content: space-between; color: #333; font-weight: 600; font-size: 13px; }
-        
-        form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.4); padding: 18px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.5); }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 14px; font-weight: 700; color: #111; }
-        input, select { padding: 11px 12px; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 8px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.9); font-weight: 600; color: #222; }
-        
-        .btn-action-container { display: flex; gap: 10px; margin-top: 5px; }
-        button.btn-add { flex: 1; background-color: var(--warna-utama); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
-        button.btn-cancel-edit { background-color: #757575; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-        .history h2 { font-size: 19px; margin-bottom: 12px; color: #111; border-bottom: 2px solid rgba(0, 0, 0, 0.15); padding-bottom: 6px; font-weight: 700; font-family: 'Playfair Display', serif; }
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 520px; }
-        th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-size: 13px; font-weight: 600; }
-        th { background-color: var(--bg-header-tabel); color: var(--teks-header-tabel); font-weight: 700; }
-        .badge-masuk { background: rgba(15, 76, 129, 0.15); color: var(--warna-utama); padding: 3px 7px; border-radius: 4px; font-size: 12px; font-weight: 700; }
-        .badge-keluar { background: rgba(211, 47, 47, 0.15); color: var(--warna-pengeluaran); padding: 3px 7px; border-radius: 4px; font-size: 12px; font-weight: 700; }
-        
-        .btn-group-action { display: flex; gap: 5px; }
-        .btn-edit { background-color: #ff9800; color: white; border: none; padding: 5px 9px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; }
-        .btn-delete { background-color: #ff4d4d; color: white; border: none; padding: 5px 9px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; }
-        .empty-text { text-align: center; color: #333; padding: 15px; font-size: 14px; font-weight: 600; }
+        body {
+            background-color: var(--bg-halaman);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #111;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            min-height: 100vh;
+        }
 
-        /* Notification & Loading Overlay */
-        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 999; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .loading-box { background: white; padding: 25px 35px; border-radius: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--warna-utama); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { font-weight: 700; font-size: 16px; color: #333; }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.88);
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--warna-utama);
+            margin-bottom: 22px;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+        }
+
+        .bg-uploader {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .bg-uploader label {
+            cursor: pointer;
+            color: var(--warna-utama);
+            font-weight: 700;
+        }
+
+        .btn-reset-bg {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--kartu-gradasi-1), var(--kartu-gradasi-2));
+            color: white;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .summary-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .summary-card .total-main {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 6px 0 14px 0;
+        }
+
+        .sub-summary {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .sub-summary div span {
+            display: block;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 12px 0;
+        }
+
+        .countdown-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 6px 10px;
+            border-radius: 8px;
+            min-width: 55px;
+        }
+
+        .countdown-num {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .countdown-label {
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
+        .monthly-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .monthly-section h2 {
+            font-size: 17px;
+            margin-bottom: 10px;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .monthly-item {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .monthly-header {
+            font-weight: 700;
+            color: var(--warna-utama);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .monthly-details {
+            display: flex;
+            justify-content: space-between;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .edit-form-box {
+            background: #fffbeb;
+            border: 2px dashed #f59e0b;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            font-weight: 600;
+        }
+
+        button.btn-add {
+            background-color: var(--warna-utama);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        button.btn-add:hover {
+            background-color: var(--warna-hover);
+        }
+
+        .btn-edit-action {
+            background-color: #d97706;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-delete-action {
+            background-color: #ef4444;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .history h2 {
+            font-size: 17px;
+            margin-bottom: 12px;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px 6px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        th {
+            background-color: var(--bg-header-tabel);
+            color: var(--teks-header-tabel);
+        }
+
+        tr.clickable-row {
+            cursor: pointer;
+        }
+        tr.clickable-row:hover {
+            background-color: rgba(0,0,0,0.04);
+        }
+
+        .badge-type-in {
+            background: #dcfce7;
+            color: #166534;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .badge-type-out {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .empty-text {
+            text-align: center;
+            color: #64748b;
+            padding: 14px;
+            font-size: 13px;
+        }
+
+        /* Notifikasi Modal Besar */
+        #notificationModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+        .notif-box {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            animation: popIn 0.3s ease;
+        }
+        .notif-box h2 {
+            color: #10b981;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .notif-box p {
+            font-size: 16px;
+            color: #334155;
+            font-weight: 600;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <div id="bg-layer"></div>
 
-    <div id="loadingOverlay">
-        <div class="loading-box">
-            <div id="spinnerIcon" class="spinner"></div>
-            <div id="loadingText" class="loading-text">Menyimpan data...</div>
+    <!-- Modal Notifikasi Besar -->
+    <div id="notificationModal">
+        <div class="notif-box">
+            <h2>✨ SELESAI! ✨</h2>
+            <p>Data berhasil dikonfirmasi & disimpan.</p>
         </div>
     </div>
 
     <div class="container">
         <h1>Tabungan Pernikahan<br>Hani & Venus 💍</h1>
-        
-        <div class="summary-card">
-            <h3>Sisa Saldo Tabungan</h3>
-            <div class="total-main" id="totalBalance">Rp 0</div>
-            <div class="financial-details">
-                <div class="fin-box">Total Pemasukan<val id="totalIncome" style="color: #e3f2fd;">Rp 0</val></div>
-                <div class="fin-box">Total Pengeluaran<val id="totalExpense" style="color: #ffcdd2;">Rp 0</val></div>
-            </div>
-            <div class="divider"></div>
-            <div class="countdown-title">💍 Menuju Hari Pernikahan</div>
-            <div class="countdown-date">Sabtu, 03 April 2027</div>
-            <div class="countdown-grid">
-                <div class="countdown-box"><div class="countdown-num" id="cdDays">0</div><div class="countdown-label">Hari</div></div>
-                <div class="countdown-box"><div class="countdown-num" id="cdHours">0</div><div class="countdown-label">Jam</div></div>
-                <div class="countdown-box"><div class="countdown-num" id="cdMinutes">0</div><div class="countdown-label">Menit</div></div>
-                <div class="countdown-box"><div class="countdown-num" id="cdSeconds">0</div><div class="countdown-label">Detik</div></div>
-            </div>
+
+        <div class="bg-uploader">
+            <label>🖼️ Ganti Foto Latar <input type="file" id="bgInput" accept="image/*" style="display:none;"></label>
+            <button class="btn-reset-bg" id="resetBgBtn" style="display:none;" onclick="resetBackground()">Reset Foto</button>
         </div>
 
-        <div class="bg-picker-section">
-            <label for="bgFile">🖼️ Pilih Foto Latar Belakang</label>
-            <input type="file" id="bgFile" accept="image/*" onchange="changeBackground(event)">
-            <button class="btn-reset-bg" onclick="resetBackground()">Reset Foto</button>
+        <div class="summary-card">
+            <h3>SALDO TABUNGAN</h3>
+            <div class="total-main" id="totalAmount">Rp 0</div>
+            
+            <div class="sub-summary">
+                <div>Total Pemasukan <span id="totalIn" style="color: #bbf7d0;">Rp 0</span></div>
+                <div>Total Pengeluaran <span id="totalOut" style="color: #fed7aa;">Rp 0</span></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="countdown-title">
+                ⏳ Menuju Hari Pernikahan<br>
+                03 April 2027
+            </div>
+            <div class="countdown-grid">
+                <div class="countdown-box">
+                    <div class="countdown-num" id="cdDays">0</div>
+                    <div class="countdown-label">Hari</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-num" id="cdHours">0</div>
+                    <div class="countdown-label">Jam</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-num" id="cdMinutes">0</div>
+                    <div class="countdown-label">Menit</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-num" id="cdSeconds">0</div>
+                    <div class="countdown-label">Detik</div>
+                </div>
+            </div>
         </div>
 
         <div class="monthly-section">
@@ -119,340 +425,171 @@
             <div id="monthlyList"></div>
         </div>
 
+        <!-- FORM TAMBAH UTAMA -->
         <form id="savingForm">
-            <input type="hidden" id="editIndex" value="">
+            <h3 style="font-size: 16px; color: var(--warna-utama); margin-bottom: 4px;">➕ Tambah Transaksi Baru</h3>
             <div class="form-group">
                 <label for="type">Jenis Transaksi</label>
-                <select id="type" onchange="toggleFormType()" required>
+                <select id="type" required>
                     <option value="in">Pemasukan (Tabungan)</option>
-                    <option value="out">Pengeluaran (Biaya Pernikahan)</option>
+                    <option value="out">Pengeluaran</option>
                 </select>
-            </div>
-            <div class="form-group" id="personGroup">
-                <label for="person">Nama Penabung</label>
-                <select id="person">
-                    <option value="Hani">Hani</option>
-                    <option value="Venus">Venus</option>
-                </select>
-            </div>
-            <div class="form-group" id="categoryGroup" style="display: none;">
-                <label for="category">Jenis / Kategori Pengeluaran</label>
-                <input type="text" id="category" placeholder="Contoh: Catering, Dekorasi, dll.">
             </div>
             <div class="form-group">
-                <label for="date">Hari & Tanggal Transaksi</label>
+                <label for="person">Nama Penabung / Keterangan</label>
+                <select id="person" required>
+                    <option value="Hani">Hani</option>
+                    <option value="Venus">Venus</option>
+                    <option value="Bersama">Bersama / Lainnya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Tanggal Transaksi</label>
                 <input type="date" id="date" required>
             </div>
             <div class="form-group">
-                <label for="amount" id="amountLabel">Jumlah Tabungan (Rp)</label>
-                <input type="number" id="amount" placeholder="Contoh: 500000" min="1" required>
+                <label for="amountInputFormatted">Jumlah (Rp)</label>
+                <input type="text" id="amountInputFormatted" placeholder="Contoh: 500.000" inputmode="numeric" required>
+                <input type="hidden" id="amount" value="">
             </div>
-            <div class="btn-action-container">
-                <button type="button" id="cancelEditBtn" class="btn-cancel-edit" onclick="cancelEdit()">Batal</button>
-                <button type="submit" class="btn-add" id="submitBtn">Konfirmasi</button>
-            </div>
+            <button type="submit" class="btn-add" id="submitBtn">Konfirmasi</button>
         </form>
 
-        <div class="history">
-            <h2>Riwayat Transaksi</h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Hari & Tanggal</th>
-                            <th>Keterangan</th>
-                            <th>Tipe</th>
-                            <th>Jumlah</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyList"></tbody>
-                </table>
+        <!-- FORM EDIT TERPISAH (Hanya muncul jika baris riwayat diklik) -->
+        <div class="edit-form-box" id="editFormBox">
+            <h3 style="font-size: 16px; color: #b45309; margin-bottom: 10px;">✏️ Edit / Hapus Riwayat Transaksi</h3>
+            <input type="hidden" id="editIndex">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Jenis Transaksi</label>
+                <select id="editType">
+                    <option value="in">Pemasukan (Tabungan)</option>
+                    <option value="out">Pengeluaran</option>
+                </select>
             </div>
-            <div id="emptyMessage" class="empty-text" style="display: none;">Belum ada riwayat transaksi.</div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Nama Penabung / Keterangan</label>
+                <select id="editPerson">
+                    <option value="Hani">Hani</option>
+                    <option value="Venus">Venus</option>
+                    <option value="Bersama">Bersama / Lainnya</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Tanggal Transaksi</label>
+                <input type="date" id="editDate">
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label>Jumlah (Rp)</label>
+                <input type="text" id="editAmountFormatted" inputmode="numeric">
+                <input type="hidden" id="editAmount">
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-edit-action" style="flex: 1;" onclick="updateDataItem()">Simpan Perubahan</button>
+                <button type="button" class="btn-delete-action" style="flex: 1;" onclick="deleteDataItem()">Hapus Data</button>
+                <button type="button" style="background:#64748b; color:white; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer;" onclick="closeEditForm()">Batal</button>
+            </div>
+        </div>
+
+        <div class="history">
+            <h2>Riwayat Transaksi <span style="font-size: 12px; font-weight: normal; color: #64748b;">(Klik baris untuk edit/hapus)</span></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Tipe</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody id="historyList"></tbody>
+            </table>
+            <div id="emptyMessage" class="empty-text">Belum ada riwayat transaksi.</div>
         </div>
     </div>
 
     <script>
-        // Background Image Persistence
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedBg = localStorage.getItem('hani_venus_bg');
-            if(savedBg) {
-                document.getElementById('bg-layer').style.backgroundImage = `url(${savedBg})`;
-            }
-        });
+        const form = document.getElementById('savingForm');
+        const typeInput = document.getElementById('type');
+        const personInput = document.getElementById('person');
+        const dateInput = document.getElementById('date');
+        const amountFormatted = document.getElementById('amountInputFormatted');
+        const amountRaw = document.getElementById('amount');
+        const submitBtn = document.getElementById('submitBtn');
+        const notificationModal = document.getElementById('notificationModal');
+        
+        // Form Edit Terpisah
+        const editFormBox = document.getElementById('editFormBox');
+        const editIndexInput = document.getElementById('editIndex');
+        const editType = document.getElementById('editType');
+        const editPerson = document.getElementById('editPerson');
+        const editDate = document.getElementById('editDate');
+        const editAmountFormatted = document.getElementById('editAmountFormatted');
+        const editAmountRaw = document.getElementById('editAmount');
 
-        function changeBackground(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const result = e.target.result;
-                    document.getElementById('bg-layer').style.backgroundImage = `url(${result})`;
-                    localStorage.setItem('hani_venus_bg', result);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
+        const totalAmountEl = document.getElementById('totalAmount');
+        const totalInEl = document.getElementById('totalIn');
+        const totalOutEl = document.getElementById('totalOut');
+        const monthlyListEl = document.getElementById('monthlyList');
+        const historyListEl = document.getElementById('historyList');
+        const emptyMessageEl = document.getElementById('emptyMessage');
+        const bgInput = document.getElementById('bgInput');
+        const resetBgBtn = document.getElementById('resetBgBtn');
 
-        function resetBackground() {
-            localStorage.removeItem('hani_venus_bg');
-            document.getElementById('bg-layer').style.backgroundImage = 'none';
-        }
+        const cdDays = document.getElementById('cdDays');
+        const cdHours = document.getElementById('cdHours');
+        const cdMinutes = document.getElementById('cdMinutes');
+        const cdSeconds = document.getElementById('cdSeconds');
 
-        // Sound Notification Helper (Web Audio API Beep)
-        function playSuccessSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
-                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5 note
-                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.3);
-            } catch(e) {}
-        }
+        const weddingDate = new Date('2027-04-03T08:00:00').getTime();
 
-        // Countdown Timer
-        const weddingDate = new Date(2027, 3, 3, 0, 0, 0).getTime();
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = weddingDate - now;
             if (distance < 0) return;
-            document.getElementById('cdDays').textContent = Math.floor(distance / (1000 * 60 * 60 * 24));
-            document.getElementById('cdHours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById('cdMinutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById('cdSeconds').textContent = Math.floor((distance % (1000 * 60)) / 1000);
+            cdDays.textContent = Math.floor(distance / (1000 * 60 * 60 * 24));
+            cdHours.textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            cdMinutes.textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            cdSeconds.textContent = Math.floor((distance % (1000 * 60)) / 1000);
         }
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        const form = document.getElementById('savingForm');
-        const typeInput = document.getElementById('type');
-        const personInput = document.getElementById('person');
-        const categoryInput = document.getElementById('category');
-        const personGroup = document.getElementById('personGroup');
-        const categoryGroup = document.getElementById('categoryGroup');
-        const dateInput = document.getElementById('date');
-        const amountInput = document.getElementById('amount');
-        const amountLabel = document.getElementById('amountLabel');
-        const submitBtn = document.getElementById('submitBtn');
-        const cancelEditBtn = document.getElementById('cancelEditBtn');
-        const editIndexInput = document.getElementById('editIndex');
-        const totalBalanceEl = document.getElementById('totalBalance');
-        const totalIncomeEl = document.getElementById('totalIncome');
-        const totalExpenseEl = document.getElementById('totalExpense');
-        const monthlyListEl = document.getElementById('monthlyList');
-        const historyListEl = document.getElementById('historyList');
-        const emptyMessageEl = document.getElementById('emptyMessage');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const spinnerIcon = document.getElementById('spinnerIcon');
-        const loadingText = document.getElementById('loadingText');
+        const today = new Date();
+        dateInput.value = today.toISOString().split('T')[0];
 
-        dateInput.valueAsDate = new Date();
-
-        function toggleFormType() {
-            if (typeInput.value === 'in') {
-                personGroup.style.display = 'flex';
-                categoryGroup.style.display = 'none';
-                amountLabel.textContent = 'Jumlah Tabungan (Rp)';
-                submitBtn.style.backgroundColor = 'var(--warna-utama)';
-            } else {
-                personGroup.style.display = 'none';
-                categoryGroup.style.display = 'flex';
-                amountLabel.textContent = 'Jumlah Pengeluaran (Rp)';
-                submitBtn.style.backgroundColor = 'var(--warna-pengeluaran)';
-            }
-        }
-
-        function formatRupiah(num) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
-        }
-
-        function formatFullDate(str) {
-            if(!str) return '';
-            return new Date(str + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
-        }
-
-        function formatMonthYear(mKey) {
-            const [y, m] = mKey.split('-');
-            const names = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            return `${names[parseInt(m) - 1]} ${y}`;
-        }
-
-        function getTransactions() {
-            const data = localStorage.getItem('hani_venus_transactions');
-            return data ? JSON.parse(data) : [];
-        }
-
-        function saveTransactions(data) {
-            localStorage.setItem('hani_venus_transactions', JSON.stringify(data));
-            renderUI();
-        }
-
-        function renderUI() {
-            const dataObj = getTransactions();
-            historyListEl.innerHTML = '';
-            monthlyListEl.innerHTML = '';
-            let totalIn = 0, totalOut = 0, monthlyData = {};
-
-            if (dataObj.length === 0) {
-                emptyMessageEl.style.display = 'block';
-                monthlyListEl.innerHTML = '<div style="font-size:13px; text-align:center; color:#333;">Belum ada data bulanan.</div>';
-            } else {
-                emptyMessageEl.style.display = 'none';
-                dataObj.sort((a, b) => new Date(b.date) - new Date(a.date));
-                dataObj.forEach((item, index) => {
-                    const val = Number(item.amount);
-                    const isIncome = item.type === 'in';
-                    if (isIncome) totalIn += val; else totalOut += val;
-                    
-                    const mKey = item.date ? item.date.substring(0, 7) : '2026-09';
-                    if (!monthlyData[mKey]) monthlyData[mKey] = { Hani: 0, Venus: 0, Pengeluaran: 0, total: 0 };
-                    
-                    if (isIncome) {
-                        monthlyData[mKey][item.person || 'Hani'] = (monthlyData[mKey][item.person || 'Hani'] || 0) + val;
-                        monthlyData[mKey].total += val;
-                    } else {
-                        monthlyData[mKey].Pengeluaran += val;
-                        monthlyData[mKey].total -= val;
-                    }
-
-                    const row = document.createElement('tr');
-                    const labelKet = isIncome ? (item.person || 'Hani') : (item.category || 'Pengeluaran');
-                    row.innerHTML = `
-                        <td>${formatFullDate(item.date)}</td>
-                        <td><b>${labelKet}</b></td>
-                        <td><span class="${isIncome ? 'badge-masuk' : 'badge-keluar'}">${isIncome ? 'Masuk' : 'Keluar'}</span></td>
-                        <td style="color:${isIncome ? '#0d47a1' : '#d32f2f'}; font-weight:700;">${formatRupiah(val)}</td>
-                        <td>
-                            <div class="btn-group-action">
-                                <button class="btn-edit" onclick="editItem(${item.id || index})">Edit</button>
-                                <button class="btn-delete" onclick="deleteItem(${item.id || index})">Hapus</button>
-                            </div>
-                        </td>
-                    `;
-                    historyListEl.appendChild(row);
-                });
-
-                Object.keys(monthlyData).sort().reverse().forEach(mKey => {
-                    const mInfo = monthlyData[mKey];
-                    const div = document.createElement('div');
-                    div.className = 'monthly-item';
-                    div.innerHTML = `
-                        <div class="monthly-header"><span>📅 ${formatMonthYear(mKey)}</span><span>Bersih: ${formatRupiah(mInfo.total)}</span></div>
-                        <div class="monthly-details"><span>Hani: ${formatRupiah(mInfo.Hani)}</span><span>Venus: ${formatRupiah(mInfo.Venus)}</span><span style="color:#d32f2f;">Keluar: ${formatRupiah(mInfo.Pengeluaran)}</span></div>
-                    `;
-                    monthlyListEl.appendChild(div);
-                });
-            }
-            totalIncomeEl.textContent = formatRupiah(totalIn);
-            totalExpenseEl.textContent = formatRupiah(totalOut);
-            totalBalanceEl.textContent = formatRupiah(totalIn - totalOut);
-        }
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            // Show Loading
-            loadingOverlay.style.display = 'flex';
-            spinnerIcon.style.display = 'block';
-            loadingText.textContent = 'Menyimpan data...';
-
-            setTimeout(() => {
-                const isIncome = typeInput.value === 'in';
-                let data = getTransactions();
-                const editingId = editIndexInput.value;
-
-                if (editingId !== "") {
-                    // Update existing
-                    data = data.map(d => {
-                        if ((d.id && d.id == editingId) || (!d.id && data.indexOf(d) == editingId)) {
-                            return {
-                                id: d.id || Date.now(),
-                                type: typeInput.value,
-                                person: isIncome ? personInput.value : '',
-                                category: !isIncome ? categoryInput.value : '',
-                                date: dateInput.value,
-                                amount: parseFloat(amountInput.value)
-                            };
-                        }
-                        return d;
-                    });
-                    cancelEdit();
-                } else {
-                    // Add new
-                    data.push({
-                        id: Date.now(),
-                        type: typeInput.value,
-                        person: isIncome ? personInput.value : '',
-                        category: !isIncome ? categoryInput.value : '',
-                        date: dateInput.value,
-                        amount: parseFloat(amountInput.value)
-                    });
-                }
-
-                saveTransactions(data);
-
-                // Show Done & Play Sound
-                spinnerIcon.style.display = 'none';
-                loadingText.textContent = '✨ Selesai!';
-                playSuccessSound();
-
-                setTimeout(() => {
-                    loadingOverlay.style.display = 'none';
-                    form.reset();
-                    dateInput.valueAsDate = new Date();
-                    toggleFormType();
-                }, 800);
-
-            }, 600);
+        // Format Input Utama
+        amountFormatted.addEventListener('input', function() {
+            let val = this.value.replace(/[^0-9]/g, '');
+            amountRaw.value = val;
+            this.value = val ? Number(val).toLocaleString('id-ID') : '';
         });
 
-        function editItem(idOrIndex) {
-            const data = getTransactions();
-            const item = data.find((d, idx) => (d.id ? d.id === idOrIndex : idx === idOrIndex));
-            if (!item) return;
+        // Format Input Edit Terpisah
+        editAmountFormatted.addEventListener('input', function() {
+            let val = this.value.replace(/[^0-9]/g, '');
+            editAmountRaw.value = val;
+            this.value = val ? Number(val).toLocaleString('id-ID') : '';
+        });
 
-            typeInput.value = item.type;
-            toggleFormType();
-            if (item.type === 'in') {
-                personInput.value = item.person || 'Hani';
-            } else {
-                categoryInput.value = item.category || '';
-            }
-            dateInput.value = item.date;
-            amountInput.value = item.amount;
-            editIndexInput.value = item.id || data.indexOf(item);
+        let savingsData = [];
+        try {
+            savingsData = JSON.parse(localStorage.getItem('wedding_savings_v8')) || [];
+        } catch(e) { savingsData = []; }
 
-            submitBtn.textContent = 'Simpan Perubahan';
-            cancelEditBtn.style.display = 'block';
-            window.scrollTo({ top: form.offsetTop - 20, behavior: 'smooth' });
+        const savedBg = localStorage.getItem('wedding_bg_v8');
+        if (savedBg) {
+            document.body.style.backgroundImage = `url('${savedBg}')`;
+            resetBgBtn.style.display = 'inline-block';
         }
 
-        function cancelEdit() {
-            editIndexInput.value = '';
-            submitBtn.textContent = 'Konfirmasi';
-            cancelEditBtn.style.display = 'none';
-            form.reset();
-            dateInput.valueAsDate = new Date();
-            toggleFormType();
-        }
-
-        function deleteItem(idOrIndex) {
-            if (confirm('Yakin ingin menghapus transaksi ini?')) {
-                let data = getTransactions();
-                data = data.filter((d, idx) => (d.id ? d.id !== idOrIndex : idx !== idOrIndex));
-                save transaction sayang (data);
-            }
-        }
-
-        renderUI();
-    </script>
-</body>
-</html>
+        bgInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgData = event.target.result;
+                    document.body.style.backgroundImage = `url('${imgData}')`;
+                    localStorage.setItem('wedding_bg_v8', imgData);
+                    resetBgBtn.style.display = 'inline-block';
+                };
+                reader.rea
