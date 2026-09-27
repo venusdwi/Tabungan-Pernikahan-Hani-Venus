@@ -46,6 +46,22 @@
             box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
             transition: background-color 0.15s ease;
         }
+        /* Mengunci posisi layer background agar flatten total & tidak bergerak saat scroll HP */
+        #bgImageLayer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            transform: translateZ(0);
+            will-change: transform;
+            pointer-events: none;
+            z-index: -20;
+        }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
         ::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.3); border-radius: 10px; }
@@ -55,7 +71,8 @@
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
 
-    <div id="bgImageLayer" class="fixed inset-0 bg-cover bg-center bg-no-repeat -z-20 pointer-events-none transition-opacity duration-300 opacity-0"></div>
+    <!-- LAYER LATAR BELAKANG TERKUNCI (FLATTEN) -->
+    <div id="bgImageLayer" class="transition-opacity duration-300 opacity-0"></div>
 
     <!-- OVERLAY LAYAR KUNCI PIN -->
     <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 transition-opacity duration-300">
@@ -405,12 +422,12 @@
             document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
             document.getElementById('jamTransaksi').value = today.toTimeString().split(' ')[0].substring(0, 5);
             
-            loadSavedBackground();
             loadSavedOpacity();
             updateKeteranganValidation();
 
-            // MENDENGARKAN PERUBAHAN DATA FIRESTORE SECARA REALTIME
+            // SINKRONISASI TRANSMISI DATA TRANSAKSI & BACKGROUND ONLINE REALTIME
             listenToFirestore();
+            listenToSharedBackground();
             startCountdown();
         });
 
@@ -427,6 +444,18 @@
                 // Urutkan transaksi berdasarkan ID/Waktu
                 transactions.sort((a, b) => a.id - b.id);
                 updateUI();
+            });
+        }
+
+        // MENDENGARKAN BACKGROUND ONLINE FIRESTORE SUPAYA TERSINKRON DI SEMUA HP
+        function listenToSharedBackground() {
+            db.collection("settings").doc("appSettings").onSnapshot((doc) => {
+                if (doc.exists && doc.data().bgImage) {
+                    applyBackgroundStyle(doc.data().bgImage);
+                    document.getElementById('btnResetBg').classList.remove('hidden');
+                } else {
+                    resetBgStyleUI();
+                }
             });
         }
 
@@ -507,6 +536,7 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
+        // UPLOAD BACKGROUND KE CLOUD FIRESTORE SUPAYA TERSINKRON ONLINE KE PASANGAN
         function uploadBgImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -515,7 +545,7 @@
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
-                        const maxDim = 1280;
+                        const maxDim = 1000;
                         let width = img.width;
                         let height = img.height;
 
@@ -532,10 +562,17 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.8);
-                        applyBackgroundStyle(compressedUrl);
-                        localStorage.setItem('wedding_bg_img', compressedUrl);
-                        document.getElementById('btnResetBg').classList.remove('hidden');
+                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.6);
+                        
+                        // Simpan ke Firestore Cloud
+                        db.collection("settings").doc("appSettings").set({
+                            bgImage: compressedUrl
+                        }).then(() => {
+                            applyBackgroundStyle(compressedUrl);
+                            document.getElementById('btnResetBg').classList.remove('hidden');
+                        }).catch(err => {
+                            console.error("Gagal simpan background online:", err);
+                        });
                     };
                     img.src = e.target.result;
                 };
@@ -550,22 +587,19 @@
             document.getElementById('bgOverlay').classList.add('opacity-40');
         }
 
-        function loadSavedBackground() {
-            const savedImg = localStorage.getItem('wedding_bg_img');
-            if (savedImg) {
-                applyBackgroundStyle(savedImg);
-                document.getElementById('btnResetBg').classList.remove('hidden');
-            }
-        }
-
-        function resetBgImage() {
+        function resetBgStyleUI() {
             const bgLayer = document.getElementById('bgImageLayer');
             bgLayer.style.backgroundImage = '';
             bgLayer.classList.add('opacity-0');
             document.getElementById('bgOverlay').classList.remove('opacity-40');
-            localStorage.removeItem('wedding_bg_img');
             document.getElementById('btnResetBg').classList.add('hidden');
             document.getElementById('bgImageInput').value = '';
+        }
+
+        function resetBgImage() {
+            db.collection("settings").doc("appSettings").delete().then(() => {
+                resetBgStyleUI();
+            });
         }
 
         function changeBoxOpacity(val) {
@@ -677,7 +711,7 @@
             }
         }
 
-        // TAMBAH DATA KE FIRESTORE CLOUD
+        // SIMPAN TRANSAKSI KE FIRESTORE (DENGAN ANIMASI LOADING TEPAT 2 DETIK)
         function handleFormSubmit(e) {
             e.preventDefault();
             const tipe = document.getElementById('tipeTransaksi').value;
@@ -720,26 +754,28 @@
                 bukti: tempBuktiBase64
             };
 
-            // Simpan ke Firestore
-            db.collection("transactions").add(newItem).then(() => {
-                document.getElementById('jumlahRupiah').value = '';
-                document.getElementById('keteranganTransaksi').value = '';
-                document.getElementById('buktiTransfer').value = '';
-                document.getElementById('buktiPreviewContainer').classList.add('hidden');
-                tempBuktiBase64 = "";
+            // Diberikan penundaan 2000 ms (2 detik) sesuai permintaan
+            setTimeout(() => {
+                db.collection("transactions").add(newItem).then(() => {
+                    document.getElementById('jumlahRupiah').value = '';
+                    document.getElementById('keteranganTransaksi').value = '';
+                    document.getElementById('buktiTransfer').value = '';
+                    document.getElementById('buktiPreviewContainer').classList.add('hidden');
+                    tempBuktiBase64 = "";
 
-                btnSubmit.disabled = false;
-                btnSubmitText.classList.remove('hidden');
-                btnSubmitSpinner.classList.add('hidden');
+                    btnSubmit.disabled = false;
+                    btnSubmitText.classList.remove('hidden');
+                    btnSubmitSpinner.classList.add('hidden');
 
-                playModernBeep();
-                showSuccessModal();
-            }).catch(err => {
-                alert("Gagal menyimpan ke Cloud Firestore!");
-                btnSubmit.disabled = false;
-                btnSubmitText.classList.remove('hidden');
-                btnSubmitSpinner.classList.add('hidden');
-            });
+                    playModernBeep();
+                    showSuccessModal();
+                }).catch(err => {
+                    alert("Gagal menyimpan ke Cloud Firestore!");
+                    btnSubmit.disabled = false;
+                    btnSubmitText.classList.remove('hidden');
+                    btnSubmitSpinner.classList.add('hidden');
+                });
+            }, 2000);
         }
 
         function showSuccessModal() {
