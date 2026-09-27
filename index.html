@@ -210,7 +210,7 @@
                             </select>
                         </div>
 
-                        <!-- KOLOM BARU: NAMA PENABUNG -->
+                        <!-- Nama Penabung -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Nama Penabung <span class="text-blue-500">*</span>
@@ -262,8 +262,11 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
-                            Simpan Transaksi
+                        <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
+                            <span id="btnSubmitText">Simpan Transaksi</span>
+                            <span id="btnSubmitSpinner" class="hidden">
+                                <i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...
+                            </span>
                         </button>
                     </form>
                 </div>
@@ -276,6 +279,20 @@
             <div id="transactionList" class="space-y-3">
                 <p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
+    <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300 id='modalBox'">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-check text-4xl"></i>
+            </div>
+            <h3 class="font-serif text-3xl font-extrabold text-slate-900 mb-2">SELESAI!</h3>
+            <p class="text-sm text-slate-500 mb-6 font-medium">Transaksi berhasil tersimpan ke dalam catatan tabungan.</p>
+            <button onclick="closeSuccessModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
+                Oke, Mengerti
+            </button>
         </div>
     </div>
 
@@ -292,6 +309,42 @@
             startCountdown();
         });
 
+        // 1. Fungsi Suara Beep Modern (Web Audio API)
+        function playModernBeep() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                // Beep Nada Pertama
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+                gain1.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start(ctx.currentTime);
+                osc1.stop(ctx.currentTime + 0.15);
+
+                // Beep Nada Kedua (Lebih Tinggi)
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.1); // A5
+                gain2.gain.setValueAtTime(0.15, ctx.currentTime + 0.1);
+                gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start(ctx.currentTime + 0.1);
+                osc2.stop(ctx.currentTime + 0.3);
+            } catch (e) {
+                console.log("Audio not supported or blocked by browser", e);
+            }
+        }
+
+        // 2. Countdown Timer
         function startCountdown() {
             const targetDate = new Date("2027-04-03T00:00:00").getTime();
 
@@ -342,42 +395,83 @@
             }
         }
 
+        // 3. Handle Submit Transaksi dengan Delay 2 Detik
         function handleFormSubmit(e) {
             e.preventDefault();
 
-            const tipe = document.getElementById('tipeTransaksi').value;
-            const penabung = document.getElementById('namaPenabung').value;
-            const tgl = document.getElementById('tglTransaksi').value;
-            const jam = document.getElementById('jamTransaksi').value;
             const rawJumlah = document.getElementById('jumlahRupiah').value.replace(/\./g, '');
             const jumlah = parseFloat(rawJumlah) || 0;
-            const ket = document.getElementById('keteranganTransaksi').value || (tipe === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran');
 
             if (jumlah <= 0) {
                 alert('Masukkan jumlah uang yang valid!');
                 return;
             }
 
-            const item = {
-                id: Date.now(),
-                tipe,
-                penabung,
-                tgl,
-                jam,
-                jumlah,
-                ket
-            };
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnSubmitText = document.getElementById('btnSubmitText');
+            const btnSubmitSpinner = document.getElementById('btnSubmitSpinner');
 
-            transactions.push(item);
-            localStorage.setItem('wedding_savings', JSON.stringify(transactions));
+            // Aktifkan Loading
+            btnSubmit.disabled = true;
+            btnSubmitText.classList.add('hidden');
+            btnSubmitSpinner.classList.remove('hidden');
 
-            // Reset Input
-            document.getElementById('jumlahRupiah').value = '';
-            document.getElementById('keteranganTransaksi').value = '';
-            document.getElementById('buktiTransfer').value = '';
-            document.getElementById('buktiPreviewContainer').classList.add('hidden');
+            // Delay 2 Detik
+            setTimeout(() => {
+                const tipe = document.getElementById('tipeTransaksi').value;
+                const penabung = document.getElementById('namaPenabung').value;
+                const tgl = document.getElementById('tglTransaksi').value;
+                const jam = document.getElementById('jamTransaksi').value;
+                const ket = document.getElementById('keteranganTransaksi').value || (tipe === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran');
 
-            updateUI();
+                const item = {
+                    id: Date.now(),
+                    tipe,
+                    penabung,
+                    tgl,
+                    jam,
+                    jumlah,
+                    ket
+                };
+
+                transactions.push(item);
+                localStorage.setItem('wedding_savings', JSON.stringify(transactions));
+
+                // Reset Input Form
+                document.getElementById('jumlahRupiah').value = '';
+                document.getElementById('keteranganTransaksi').value = '';
+                document.getElementById('buktiTransfer').value = '';
+                document.getElementById('buktiPreviewContainer').classList.add('hidden');
+
+                // Matikan Loading
+                btnSubmit.disabled = false;
+                btnSubmitText.classList.remove('hidden');
+                btnSubmitSpinner.classList.add('hidden');
+
+                // Update Tampilan UI
+                updateUI();
+
+                // Bunyikan Beep dan Tampilkan Modal Notifikasi Besar
+                playModernBeep();
+                showSuccessModal();
+            }, 2000);
+        }
+
+        // 4. Modal Pop-up Notifikasi "Selesai"
+        function showSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         function updateUI() {
