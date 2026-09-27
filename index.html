@@ -73,6 +73,11 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(2, 132, 199, 0.6);
         }
+        /* Style masking untuk input PIN bertipe tel agar tetap tersembunyi */
+        .pin-digit {
+            -webkit-text-security: disc;
+            text-security: disc;
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
@@ -87,14 +92,14 @@
             <h2 class="font-serif text-2xl font-bold text-slate-900 mb-1">Akses Terkunci</h2>
             <p class="text-xs text-slate-500 mb-6">Masukkan PIN keamanan 6 digit</p>
 
-            <!-- Input PIN 6 Digit -->
+            <!-- Input PIN 6 Digit (Aktivasi Keyboard Number) -->
             <div class="flex justify-center gap-2 mb-6">
-                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 1)" onkeydown="movePrevPin(this, 1)">
-                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 2)" onkeydown="movePrevPin(this, 2)">
-                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 3)" onkeydown="movePrevPin(this, 3)">
-                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 4)" onkeydown="movePrevPin(this, 4)">
-                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 5)" onkeydown="movePrevPin(this, 5)">
-                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 6)" onkeydown="movePrevPin(this, 6)">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 1)" onkeydown="movePrevPin(this, 1)">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 2)" onkeydown="movePrevPin(this, 2)">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 3)" onkeydown="movePrevPin(this, 3)">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 4)" onkeydown="movePrevPin(this, 4)">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 5)" onkeydown="movePrevPin(this, 5)">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 6)" onkeydown="movePrevPin(this, 6)">
             </div>
 
             <p id="pinErrMsg" class="text-xs text-rose-500 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
@@ -162,9 +167,8 @@
             </h1>
             <p class="text-sky-200/90 text-sm sm:text-base font-medium">
                 Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia.
-            </p>
-
-            <!-- COUNTDOWN TIMER CONTAINER -->
+			</p>
+			   <!-- COUNTDOWN TIMER CONTAINER -->
             <div class="mt-6 inline-block w-full max-w-xl">
                 <div class="glass-box rounded-2xl p-4 sm:p-5 text-center" id="countdownCard">
                     <div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-600 mb-3 flex flex-col items-center justify-center gap-1">
@@ -325,7 +329,7 @@
                                 Lampirkan Bukti Transfer / Nota <span class="text-slate-400 font-normal">(Opsional)</span>
                             </label>
                             <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                            <div id="buktiPreviewContainer" class="hidden mt-2 relative w-24 h-24 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden">
+                            <div id="buktiPreviewContainer" class="hidden mt-2 relative w-24 h-24 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden cursor-pointer" onclick="openImageModal(document.getElementById('buktiPreviewImg').src)">
                                 <img id="buktiPreviewImg" src="" alt="Preview Bukti" class="w-full h-full object-cover">
                             </div>
                         </div>
@@ -339,8 +343,8 @@
                     </form>
                 </div>
             </div>
-        </div>
-<!-- RIWAYAT TRANSAKSI -->
+		</div>
+		 <!-- RIWAYAT TRANSAKSI -->
         <div class="glass-box rounded-2xl p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
@@ -369,7 +373,7 @@
     <!-- MODAL EDIT / HAPUS TRANSAKSI -->
     <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg">
+            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg z-10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
@@ -417,11 +421,17 @@
                     <input type="text" id="editKet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
                 </div>
 
-                <!-- DISPLAY BUKTI TRANSFER PADA EDIT MODAL -->
+                <!-- DISPLAY BUKTI TRANSFER DENGAN DUKUNGAN KLIK MEMBESAR -->
                 <div id="editBuktiContainer" class="hidden pt-2">
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Bukti Transfer Terlampir</label>
-                    <div class="relative w-full h-48 rounded-xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center">
-                        <img id="editBuktiImg" src="" alt="Bukti Transfer" class="w-full h-full object-contain">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-bold uppercase text-slate-600">Bukti Transfer Terlampir</label>
+                        <span class="text-[10px] text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto untuk memperbesar</span>
+                    </div>
+                    <div class="relative w-full h-52 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" onclick="openImageModal(document.getElementById('editBuktiImg').src)">
+                        <img id="editBuktiImg" src="" alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
+                        <div class="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white font-bold text-xs gap-1">
+                            <i class="fa-solid fa-expand"></i> Perbesar
+                        </div>
                     </div>
                 </div>
 
@@ -434,6 +444,17 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL FULLSCREEN BUKTI FOTO (ZOOM-IN) -->
+    <div id="imageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300" onclick="closeImageModal()">
+        <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+            <!-- Tombol Tutup -->
+            <button onclick="closeImageModal()" class="absolute -top-10 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl backdrop-blur-md transition z-10 shadow-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="imageModalSrc" src="" alt="Bukti Transfer Full" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20">
         </div>
     </div>
 
@@ -457,7 +478,8 @@
             updateUI();
             startCountdown();
         });
-		  // 0. LOGIKA KEAMANAN PIN (SESI DENGAN SESSIONSTORAGE)
+
+        // 0. LOGIKA KEAMANAN PIN
         function checkSessionPin() {
             const isUnlocked = sessionStorage.getItem('wedding_session_unlocked');
             if (isUnlocked === 'true') {
@@ -498,6 +520,22 @@
             const screen = document.getElementById('pinLockScreen');
             screen.classList.add('opacity-0');
             setTimeout(() => screen.classList.add('hidden'), 300);
+        }
+
+        // modal foto fullscreen
+        function openImageModal(src) {
+            if (!src) return;
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('imageModalSrc');
+            img.src = src;
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
         // 1. Pengatur Background & Transparansi
@@ -566,8 +604,9 @@
                 reqMark.classList.add('hidden');
                 optMark.classList.remove('hidden');
             }
-		}
-		 // 3. Audio Beep
+        }
+
+        // 3. Audio Beep
         function playModernBeep() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -721,126 +760,4 @@
             const modal = document.getElementById('successModal');
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        function closeSuccessModal() {
-            const modal = document.getElementById('successModal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-		}
-		// 6. Modal Edit Transaksi
-        function openEditModal(id) {
-            const item = transactions.find(t => t.id === id);
-            if (!item) return;
-
-            document.getElementById('editId').value = item.id;
-            document.getElementById('editTipe').value = item.tipe;
-            document.getElementById('editPenabung').value = item.penabung || 'HANI💙';
-            document.getElementById('editTgl').value = item.tgl;
-            document.getElementById('editJam').value = item.jam;
-            document.getElementById('editJumlah').value = new Intl.NumberFormat('id-ID').format(item.jumlah);
-            document.getElementById('editKet').value = item.ket;
-
-            // Display Bukti Transfer jika ada
-            const editBuktiContainer = document.getElementById('editBuktiContainer');
-            const editBuktiImg = document.getElementById('editBuktiImg');
-
-            if (item.bukti) {
-                editBuktiImg.src = item.bukti;
-                editBuktiContainer.classList.remove('hidden');
-            } else {
-                editBuktiContainer.classList.add('hidden');
-            }
-
-            const modal = document.getElementById('editModal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        function closeEditModal() {
-            const modal = document.getElementById('editModal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function handleEditSubmit(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editId').value);
-            const index = transactions.findIndex(t => t.id === id);
-
-            if (index !== -1) {
-                const rawJumlah = document.getElementById('editJumlah').value.replace(/\./g, '');
-                
-                transactions[index].tipe = document.getElementById('editTipe').value;
-                transactions[index].penabung = document.getElementById('editPenabung').value;
-                transactions[index].tgl = document.getElementById('editTgl').value;
-                transactions[index].jam = document.getElementById('editJam').value;
-                transactions[index].jumlah = parseFloat(rawJumlah) || 0;
-                transactions[index].ket = document.getElementById('editKet').value;
-
-                localStorage.setItem('wedding_savings', JSON.stringify(transactions));
-                updateUI();
-                closeEditModal();
-            }
-        }
-
-        function confirmDeleteTransaction() {
-            const id = parseInt(document.getElementById('editId').value);
-            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
-                transactions = transactions.filter(t => t.id !== id);
-                localStorage.setItem('wedding_savings', JSON.stringify(transactions));
-                updateUI();
-                closeEditModal();
-            }
-        }
-
-        // 7. Render UI
-        function updateUI() {
-            let totalMasuk = 0;
-            let totalKeluar = 0;
-
-            const listContainer = document.getElementById('transactionList');
-            listContainer.innerHTML = '';
-
-            if (transactions.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>`;
-            } else {
-                transactions.slice().reverse().forEach(item => {
-                    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
-                    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
-
-                    const isMasuk = item.tipe === 'pemasukan';
-                    const penabungName = item.penabung || 'HANI💙';
-                    
-                    const elem = document.createElement('div');
-                    elem.className = `flex justify-between items-center p-3 rounded-xl border cursor-pointer hover:shadow-md transition ${isMasuk ? 'bg-emerald-50/50 border-emerald-100 hover:bg-emerald-100/50' : 'bg-rose-50/50 border-rose-100 hover:bg-rose-100/50'}`;
-                    elem.onclick = () => openEditModal(item.id);
-                    elem.innerHTML = `
-                        <div>
-                            <div class="flex items-center gap-1.5 mb-0.5">
-                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">${penabungName}</span>
-                                <span class="text-xs font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
-                                ${item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px]" title="Ada Bukti Transfer"></i>' : ''}
-                            </div>
-                            <div class="text-[10px] text-slate-400">${item.tgl} | ${item.jam}</div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="font-num font-extrabold text-sm ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">
-                                ${isMasuk ? '+' : '-'} Rp ${new Intl.NumberFormat('id-ID').format(item.jumlah)}
-                            </div>
-                            <i class="fa-solid fa-pen-to-square text-slate-400 text-xs"></i>
-                        </div>
-                    `;
-                    listContainer.appendChild(elem);
-                });
-            }
-
-            const netBalance = totalMasuk - totalKeluar;
-
-            document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
-            document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
-            document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
-        }
-    </script>
-</body>
-</html>
+       
