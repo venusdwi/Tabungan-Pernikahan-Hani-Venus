@@ -41,11 +41,6 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #090d16;
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            transition: background-image 0.3s ease;
         }
         .font-num {
             font-family: 'Outfit', sans-serif;
@@ -77,6 +72,8 @@
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
+
+    <div id="bgImageLayer" class="fixed inset-0 bg-cover bg-center bg-no-repeat -z-20 pointer-events-none transition-opacity duration-300 opacity-0"></div>
 
     <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white/90 backdrop-blur-md border border-white/40 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
@@ -533,26 +530,53 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // 1. Pengatur Background & Transparansi
+        // 1. PENGATUR BACKGROUND FOTO (FLATTEN FIXED + PERSISTENT PERMANEN)
         function uploadBgImage(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const imgUrl = e.target.result;
-                    applyBackgroundStyle(imgUrl);
-                    localStorage.setItem('wedding_bg_img', imgUrl);
-                    document.getElementById('btnResetBg').classList.remove('hidden');
+                    const img = new Image();
+                    img.onload = function() {
+                        // Kompresi ukuran gambar agar muat tersimpan aman di LocalStorage tanpa hilang saat refresh
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 1280;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height && width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.8);
+                        applyBackgroundStyle(compressedUrl);
+
+                        try {
+                            localStorage.setItem('wedding_bg_img', compressedUrl);
+                            document.getElementById('btnResetBg').classList.remove('hidden');
+                        } catch (err) {
+                            console.error("Gagal menyimpan background:", err);
+                        }
+                    };
+                    img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
 
         function applyBackgroundStyle(url) {
-            document.body.style.backgroundImage = `url('${url}')`;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundPosition = 'center center';
-            document.body.style.backgroundAttachment = 'fixed';
+            const bgLayer = document.getElementById('bgImageLayer');
+            bgLayer.style.backgroundImage = `url('${url}')`;
+            bgLayer.classList.remove('opacity-0');
             document.getElementById('bgOverlay').classList.add('opacity-40');
         }
 
@@ -565,7 +589,9 @@
         }
 
         function resetBgImage() {
-            document.body.style.backgroundImage = '';
+            const bgLayer = document.getElementById('bgImageLayer');
+            bgLayer.style.backgroundImage = '';
+            bgLayer.classList.add('opacity-0');
             document.getElementById('bgOverlay').classList.remove('opacity-40');
             localStorage.removeItem('wedding_bg_img');
             document.getElementById('btnResetBg').classList.add('hidden');
@@ -676,9 +702,32 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    img.src = e.target.result;
-                    tempBuktiBase64 = e.target.result;
-                    container.classList.remove('hidden');
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 800;
+                        let width = tempImg.width;
+                        let height = tempImg.height;
+
+                        if (width > height && width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(tempImg, 0, 0, width, height);
+
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        img.src = compressedBase64;
+                        tempBuktiBase64 = compressedBase64;
+                        container.classList.remove('hidden');
+                    };
+                    tempImg.src = e.target.result;
                 }
                 reader.readAsDataURL(file);
             } else {
@@ -687,7 +736,7 @@
             }
         }
 
-        // 5. Submit Transaksi (1 Detik Loading)
+        // 5. Submit Transaksi
         function handleFormSubmit(e) {
             e.preventDefault();
 
