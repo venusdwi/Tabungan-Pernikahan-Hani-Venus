@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TABUNGAN PERNIKAHAN Hani & Venus 💍</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -73,7 +70,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(2, 132, 199, 0.6);
         }
-        /* Style masking untuk input PIN bertipe tel agar tetap tersembunyi */
         .pin-digit {
             -webkit-text-security: disc;
             text-security: disc;
@@ -82,7 +78,6 @@
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
 
-    <!-- OVERLAY LAYAR KUNCI PIN 6 DIGIT -->
     <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white/90 backdrop-blur-md border border-white/40 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
             <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
@@ -92,25 +87,26 @@
             <h2 class="font-serif text-2xl font-bold text-slate-900 mb-1">Akses Terkunci</h2>
             <p class="text-xs text-slate-500 mb-6">Masukkan PIN keamanan 6 digit</p>
 
-            <!-- Input PIN 6 Digit (Aktivasi Keyboard Number) -->
             <div class="flex justify-center gap-2 mb-6">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 1)" onkeydown="movePrevPin(this, 1)">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 2)" onkeydown="movePrevPin(this, 2)">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 3)" onkeydown="movePrevPin(this, 3)">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 4)" onkeydown="movePrevPin(this, 4)">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 5)" onkeydown="movePrevPin(this, 5)">
-                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 6)" onkeydown="movePrevPin(this, 6)">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
             <p id="pinErrMsg" class="text-xs text-rose-500 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
 
-            <button onclick="verifyPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
-                Masuk Web
+            <button id="btnPinSubmit" onclick="verifyPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                <span id="btnPinText">Masuk Web</span>
+                <span id="btnPinSpinner" class="hidden">
+                    <i class="fa-solid fa-spinner animate-spin"></i> Memeriksa...
+                </span>
             </button>
         </div>
     </div>
 
-    <!-- Background Overlay Gradient & Decorative SVG -->
     <div id="bgOverlay" class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/60 via-slate-950 to-slate-950 pointer-events-none -z-10 transition-opacity duration-300">
         <div class="absolute inset-0 opacity-25 overflow-hidden">
             <svg class="absolute top-10 left-5 sm:left-20 w-32 h-32 text-sky-300 animate-pulse" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -126,33 +122,26 @@
     </div>
 
     <div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
-        <!-- TOP BAR DENGAN TAMPILAN SEJAJAR (1 BARIS) -->
         <div class="flex flex-row items-center justify-between gap-2 mb-6">
-            <!-- KIRI: OUR JOURNEY TO HALAL -->
             <div class="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-sky-200 text-[11px] sm:text-xs font-semibold text-sky-700 shadow-sm whitespace-nowrap">
                 <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
                 <span>Our Journey to Halal</span>
             </div>
 
-            <!-- KANAN: GALERI FOTO & SLIDER TRANSPARANSI (SEJAJAR) -->
             <div class="flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 shadow-sm">
-                <!-- Input File Tersembunyi -->
                 <input type="file" id="bgImageInput" accept="image/*" class="hidden" onchange="uploadBgImage(event)">
                 
-                <!-- Tombol Pilih Foto Galeri -->
                 <button type="button" onclick="document.getElementById('bgImageInput').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
                     <i class="fa-solid fa-image"></i>
                     <span>Galeri Foto</span>
                 </button>
 
-                <!-- Reset Background -->
                 <button type="button" id="btnResetBg" onclick="resetBgImage()" class="hidden text-slate-400 hover:text-rose-500 text-xs transition px-0.5" title="Hapus Foto Background">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
 
                 <div class="h-3.5 w-[1px] bg-slate-300 mx-0.5"></div>
 
-                <!-- Slider Transparansi -->
                 <div class="flex items-center gap-1 text-slate-600 font-semibold">
                     <i class="fa-solid fa-circle-half-stroke text-slate-500 text-xs"></i>
                     <input type="range" id="opacitySlider" min="0.2" max="1.0" step="0.05" value="0.75" oninput="changeBoxOpacity(this.value)" class="w-12 sm:w-20 accent-blue-600 cursor-pointer">
@@ -160,15 +149,14 @@
             </div>
         </div>
 
-        <!-- HEADER BANNER & TITLE -->
         <div class="text-center mb-8">
             <h1 class="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-md">
                 TABUNGAN PERNIKAHAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-indigo-300">Hani & Venus</span> 💍
             </h1>
             <p class="text-sky-200/90 text-sm sm:text-base font-medium">
                 Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia.
-			</p>
-			   <!-- COUNTDOWN TIMER CONTAINER -->
+            </p>
+
             <div class="mt-6 inline-block w-full max-w-xl">
                 <div class="glass-box rounded-2xl p-4 sm:p-5 text-center" id="countdownCard">
                     <div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-600 mb-3 flex flex-col items-center justify-center gap-1">
@@ -200,7 +188,6 @@
                     </div>
                 </div>
 
-                <!-- TOMBOL REFRESH DI BAWAH COUNTDOWN -->
                 <div class="mt-3 text-center">
                     <button onclick="location.reload()" class="bg-white/80 hover:bg-white text-slate-700 hover:text-blue-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 transition inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate-right"></i>
@@ -210,9 +197,7 @@
             </div>
         </div>
 
-        <!-- SALDO SUMMARY CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <!-- Total Saldo Utama (HIJAU) -->
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition" id="cardTotal">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
@@ -226,7 +211,6 @@
                 </div>
             </div>
 
-            <!-- Total Pemasukan Summary Card (BIRU) -->
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
@@ -240,7 +224,6 @@
                 </div>
             </div>
 
-            <!-- Total Pengeluaran Summary Card (MERAH) -->
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
@@ -255,7 +238,6 @@
             </div>
         </div>
 
-        <!-- FORM INPUT TABUNGAN -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
             <div class="lg:col-span-12">
                 <div class="glass-box rounded-2xl p-6 sm:p-7" id="formCard">
@@ -270,7 +252,6 @@
                     </div>
 
                     <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        <!-- Tipe Transaksi -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Tipe Transaksi <span class="text-blue-500">*</span>
@@ -281,7 +262,6 @@
                             </select>
                         </div>
 
-                        <!-- Nama Penabung -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Nama Penabung <span class="text-blue-500">*</span>
@@ -293,7 +273,6 @@
                             </select>
                         </div>
 
-                        <!-- Tanggal & Jam -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Tanggal & Jam <span class="text-blue-500">*</span>
@@ -304,7 +283,6 @@
                             </div>
                         </div>
 
-                        <!-- Jumlah Rp -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Jumlah (Rp) <span class="text-blue-500">*</span>
@@ -315,7 +293,6 @@
                             </div>
                         </div>
 
-                        <!-- Keterangan / Catatan -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Keterangan / Catatan <span id="ketRequiredMark" class="text-rose-500 hidden">*</span> <span id="ketOptionalMark" class="text-slate-400 font-normal">(Opsional)</span>
@@ -323,7 +300,6 @@
                             <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Souvenir / Tabungan Bulanan" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
-                        <!-- Upload Bukti Transfer -->
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
                                 Lampirkan Bukti Transfer / Nota <span class="text-slate-400 font-normal">(Opsional)</span>
@@ -343,8 +319,8 @@
                     </form>
                 </div>
             </div>
-		</div>
-		 <!-- RIWAYAT TRANSAKSI -->
+        </div>
+
         <div class="glass-box rounded-2xl p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
@@ -356,7 +332,6 @@
         </div>
     </div>
 
-    <!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
     <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
@@ -370,7 +345,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDIT / HAPUS TRANSAKSI -->
     <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg z-10">
@@ -421,7 +395,6 @@
                     <input type="text" id="editKet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
                 </div>
 
-                <!-- DISPLAY BUKTI TRANSFER DENGAN DUKUNGAN KLIK MEMBESAR -->
                 <div id="editBuktiContainer" class="hidden pt-2">
                     <div class="flex justify-between items-center mb-1">
                         <label class="block text-xs font-bold uppercase text-slate-600">Bukti Transfer Terlampir</label>
@@ -447,10 +420,8 @@
         </div>
     </div>
 
-    <!-- MODAL FULLSCREEN BUKTI FOTO (ZOOM-IN) -->
     <div id="imageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300" onclick="closeImageModal()">
         <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center" onclick="event.stopPropagation()">
-            <!-- Tombol Tutup -->
             <button onclick="closeImageModal()" class="absolute -top-10 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl backdrop-blur-md transition z-10 shadow-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -458,13 +429,13 @@
         </div>
     </div>
 
-    <!-- LOGIKA JAVASCRIPT -->
     <script>
         let transactions = JSON.parse(localStorage.getItem('wedding_savings')) || [];
         const DEFAULT_PIN = "250523";
         let tempBuktiBase64 = "";
 
         document.addEventListener('DOMContentLoaded', () => {
+            initPinInputHandling();
             checkSessionPin();
 
             const today = new Date();
@@ -479,25 +450,36 @@
             startCountdown();
         });
 
-        // 0. LOGIKA KEAMANAN PIN
+        // 0. LOGIKA PIN AUTOMATIC FOCUS & LOADING 1 DETIK
+        function initPinInputHandling() {
+            const inputs = document.querySelectorAll('.pin-digit');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (input.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+        }
+
         function checkSessionPin() {
             const isUnlocked = sessionStorage.getItem('wedding_session_unlocked');
             if (isUnlocked === 'true') {
                 document.getElementById('pinLockScreen').classList.add('hidden');
-            }
-        }
-
-        function moveNextPin(elem, index) {
-            if (elem.value.length === 1 && index < 6) {
-                const inputs = document.querySelectorAll('.pin-digit');
-                inputs[index].focus();
-            }
-        }
-
-        function movePrevPin(elem, index) {
-            if (event.key === "Backspace" && elem.value.length === 0 && index > 1) {
-                const inputs = document.querySelectorAll('.pin-digit');
-                inputs[index - 2].focus();
+            } else {
+                setTimeout(() => {
+                    const inputs = document.querySelectorAll('.pin-digit');
+                    if (inputs.length > 0) inputs[0].focus();
+                }, 300);
             }
         }
 
@@ -506,9 +488,23 @@
             let enteredPin = '';
             inputs.forEach(i => enteredPin += i.value);
 
+            const btnSubmit = document.getElementById('btnPinSubmit');
+            const btnText = document.getElementById('btnPinText');
+            const btnSpinner = document.getElementById('btnPinSpinner');
+
             if (enteredPin === DEFAULT_PIN) {
-                sessionStorage.setItem('wedding_session_unlocked', 'true');
-                unlockApp();
+                // Tampilkan loading 1 detik
+                btnSubmit.disabled = true;
+                btnText.classList.add('hidden');
+                btnSpinner.classList.remove('hidden');
+
+                setTimeout(() => {
+                    sessionStorage.setItem('wedding_session_unlocked', 'true');
+                    btnSubmit.disabled = false;
+                    btnText.classList.remove('hidden');
+                    btnSpinner.classList.add('hidden');
+                    unlockApp();
+                }, 1000);
             } else {
                 document.getElementById('pinErrMsg').classList.remove('hidden');
                 inputs.forEach(i => i.value = '');
@@ -522,7 +518,7 @@
             setTimeout(() => screen.classList.add('hidden'), 300);
         }
 
-        // modal foto fullscreen
+        // Modal foto fullscreen
         function openImageModal(src) {
             if (!src) return;
             const modal = document.getElementById('imageModal');
@@ -760,4 +756,127 @@
             const modal = document.getElementById('successModal');
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
-       
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // 6. Modal Edit Transaksi
+        function openEditModal(id) {
+            const item = transactions.find(t => t.id === id);
+            if (!item) return;
+
+            document.getElementById('editId').value = item.id;
+            document.getElementById('editTipe').value = item.tipe;
+            document.getElementById('editPenabung').value = item.penabung || 'HANI💙';
+            document.getElementById('editTgl').value = item.tgl;
+            document.getElementById('editJam').value = item.jam;
+            document.getElementById('editJumlah').value = new Intl.NumberFormat('id-ID').format(item.jumlah);
+            document.getElementById('editKet').value = item.ket;
+
+            // Display Bukti Transfer
+            const editBuktiContainer = document.getElementById('editBuktiContainer');
+            const editBuktiImg = document.getElementById('editBuktiImg');
+
+            if (item.bukti) {
+                editBuktiImg.src = item.bukti;
+                editBuktiContainer.classList.remove('hidden');
+            } else {
+                editBuktiContainer.classList.add('hidden');
+            }
+
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function handleEditSubmit(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editId').value);
+            const index = transactions.findIndex(t => t.id === id);
+
+            if (index !== -1) {
+                const rawJumlah = document.getElementById('editJumlah').value.replace(/\./g, '');
+                
+                transactions[index].tipe = document.getElementById('editTipe').value;
+                transactions[index].penabung = document.getElementById('editPenabung').value;
+                transactions[index].tgl = document.getElementById('editTgl').value;
+                transactions[index].jam = document.getElementById('editJam').value;
+                transactions[index].jumlah = parseFloat(rawJumlah) || 0;
+                transactions[index].ket = document.getElementById('editKet').value;
+
+                localStorage.setItem('wedding_savings', JSON.stringify(transactions));
+                updateUI();
+                closeEditModal();
+            }
+        }
+
+        function confirmDeleteTransaction() {
+            const id = parseInt(document.getElementById('editId').value);
+            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                localStorage.setItem('wedding_savings', JSON.stringify(transactions));
+                updateUI();
+                closeEditModal();
+            }
+        }
+
+        // 7. Render UI
+        function updateUI() {
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+
+            const listContainer = document.getElementById('transactionList');
+            listContainer.innerHTML = '';
+
+            if (transactions.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>`;
+            } else {
+                transactions.slice().reverse().forEach(item => {
+                    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
+                    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+
+                    const isMasuk = item.tipe === 'pemasukan';
+                    const penabungName = item.penabung || 'HANI💙';
+                    
+                    const elem = document.createElement('div');
+                    elem.className = `flex justify-between items-center p-3 rounded-xl border cursor-pointer hover:shadow-md transition ${isMasuk ? 'bg-emerald-50/50 border-emerald-100 hover:bg-emerald-100/50' : 'bg-rose-50/50 border-rose-100 hover:bg-rose-100/50'}`;
+                    elem.onclick = () => openEditModal(item.id);
+                    elem.innerHTML = `
+                        <div>
+                            <div class="flex items-center gap-1.5 mb-0.5">
+                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">${penabungName}</span>
+                                <span class="text-xs font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
+                                ${item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px]" title="Ada Bukti Transfer"></i>' : ''}
+                            </div>
+                            <div class="text-[10px] text-slate-400">${item.tgl} | ${item.jam}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="font-num font-extrabold text-sm ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">
+                                ${isMasuk ? '+' : '-'} Rp ${new Intl.NumberFormat('id-ID').format(item.jumlah)}
+                            </div>
+                            <i class="fa-solid fa-pen-to-square text-slate-400 text-xs"></i>
+                        </div>
+                    `;
+                    listContainer.appendChild(elem);
+                });
+            }
+
+            const netBalance = totalMasuk - totalKeluar;
+
+            document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
+            document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
+            document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
+        }
+    </script>
+</body>
+</html>
