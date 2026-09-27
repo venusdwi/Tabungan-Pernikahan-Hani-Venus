@@ -171,39 +171,42 @@
 
         <!-- SALDO SUMMARY CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <!-- Total Saldo Utama (HIJAU) -->
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition" id="cardTotal">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
                         <span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
                     </div>
-                    <h2 id="totalSaldo" class="font-num text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-1">
+                    <h2 id="totalSaldo" class="font-num text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight mb-1">
                         Rp 0
                     </h2>
                     <p class="text-xs text-slate-500">Total dana gabungan pernikahan saat ini</p>
                 </div>
             </div>
 
+            <!-- Total Pemasukan Summary Card (BIRU) -->
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
                         <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
                     </div>
-                    <h2 id="topTotalIn" class="font-num text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-1">
+                    <h2 id="topTotalIn" class="font-num text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight mb-1">
                         Rp 0
                     </h2>
                     <p class="text-xs text-slate-500">Akumulasi semua pemasukan</p>
                 </div>
             </div>
 
+            <!-- Total Pengeluaran Summary Card (MERAH) -->
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
                         <span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">- Keluar</span>
                     </div>
-                    <h2 id="topTotalOut" class="font-num text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-1">
+                    <h2 id="topTotalOut" class="font-num text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight mb-1">
                         Rp 0
                     </h2>
                     <p class="text-xs text-slate-500">Akumulasi semua pengeluaran</p>
@@ -311,7 +314,8 @@
             </div>
         </div>
     </div>
-<!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
+
+    <!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
     <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
@@ -424,7 +428,7 @@
             document.body.style.backgroundSize = 'cover';
             document.body.style.backgroundPosition = 'center center';
             document.body.style.backgroundAttachment = 'fixed';
-            document.getElementById('bgOverlay').classList.add('opacity-40'); // Mengurangi kegelapan overlay saat pakai foto
+            document.getElementById('bgOverlay').classList.add('opacity-40');
         }
 
         function loadSavedBackground() {
@@ -454,7 +458,7 @@
             document.getElementById('opacitySlider').value = savedOpacity;
         }
 
-        // 2. Validasi Keterangan (Pengeluaran = Wajib, Pemasukan = Opsional)
+        // 2. Validasi Keterangan
         function updateKeteranganValidation() {
             const tipe = document.getElementById('tipeTransaksi').value;
             const ketInput = document.getElementById('keteranganTransaksi');
@@ -684,7 +688,8 @@
                 closeEditModal();
             }
         }
-		// 7. Render UI
+
+        // 7. Render UI
         function updateUI() {
             let totalMasuk = 0;
             let totalKeluar = 0;
