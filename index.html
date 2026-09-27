@@ -450,7 +450,7 @@
             startCountdown();
         });
 
-        // 0. LOGIKA PIN AUTOMATIC FOCUS & LOADING
+        // 0. LOGIKA PIN AUTOMATIC FOCUS & VERIFIKASI
         function initPinInputHandling() {
             const inputs = document.querySelectorAll('.pin-digit');
             
@@ -687,7 +687,7 @@
             }
         }
 
-        // 5. Submit Transaksi (Proses Loading Diset 1 Detik)
+        // 5. Submit Transaksi (1 Detik Loading)
         function handleFormSubmit(e) {
             e.preventDefault();
 
@@ -715,7 +715,6 @@
             btnSubmitText.classList.add('hidden');
             btnSubmitSpinner.classList.remove('hidden');
 
-            // Proses simpan dengan jeda animasi 1 detik (1000 ms)
             setTimeout(() => {
                 const penabung = document.getElementById('namaPenabung').value;
                 const tgl = document.getElementById('tglTransaksi').value;
@@ -749,7 +748,7 @@
                 updateUI();
                 playModernBeep();
                 showSuccessModal();
-            }, 1000); // 1000 ms = 1 Detik
+            }, 1000);
         }
 
         function showSuccessModal() {
@@ -777,7 +776,6 @@
             document.getElementById('editJumlah').value = new Intl.NumberFormat('id-ID').format(item.jumlah);
             document.getElementById('editKet').value = item.ket;
 
-            // Display Bukti Transfer
             const editBuktiContainer = document.getElementById('editBuktiContainer');
             const editBuktiImg = document.getElementById('editBuktiImg');
 
