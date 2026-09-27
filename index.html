@@ -19,7 +19,6 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
         
-        /* Background tetap diam / fixed */
         #bg-layer { 
             position: fixed; 
             top: 0; 
@@ -36,7 +35,6 @@
 
         body { color: #111; display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
         
-        /* Kotak utama ditransparansikan menjadi 75% (0.75) */
         .container { 
             width: 100%; 
             max-width: 650px; 
@@ -201,8 +199,17 @@
     </div>
 
     <script>
+        // Safe Date Initialization for Mobile Browsers
         const dateInput = document.getElementById('date');
-        dateInput.value = new Date().toISOString().split('T')[0];
+        try {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+        } catch (err) {
+            dateInput.value = '2026-09-27';
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedBg = localStorage.getItem('hani_venus_bg');
@@ -341,10 +348,4 @@
                     
                     if (isIncome) {
                         monthlyData[mKey][item.person || 'Hani'] = (monthlyData[mKey][item.person || 'Hani'] || 0) + val;
-                        monthlyData[mKey].total += val;
-                    } else {
-                        monthlyData[mKey].Pengeluaran += val;
-                        monthlyData[mKey].total -= val;
-                    }
-
-                
+   
