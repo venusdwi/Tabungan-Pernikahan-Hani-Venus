@@ -84,8 +84,8 @@
                 <i class="fa-solid fa-lock"></i>
             </div>
             
-            <h2 id="pinTitle" class="font-serif text-2xl font-bold text-slate-900 mb-1">Akses Terkunci</h2>
-            <p id="pinSub" class="text-xs text-slate-500 mb-6">Masukkan 6 digit PIN keamanan Anda</p>
+            <h2 class="font-serif text-2xl font-bold text-slate-900 mb-1">Akses Terkunci</h2>
+            <p class="text-xs text-slate-500 mb-6">Masukkan PIN keamanan 6 digit</p>
 
             <!-- Input PIN 6 Digit -->
             <div class="flex justify-center gap-2 mb-6">
@@ -99,12 +99,8 @@
 
             <p id="pinErrMsg" class="text-xs text-rose-500 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
 
-            <button onclick="verifyOrSetPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
+            <button onclick="verifyPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
                 Masuk Web
-            </button>
-
-            <button id="btnResetPin" onclick="resetPinPrompt()" class="mt-4 text-xs text-slate-400 hover:text-slate-600 underline block mx-auto">
-                Lupa PIN / Reset PIN
             </button>
         </div>
     </div>
@@ -198,6 +194,14 @@
                             <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Detik</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- TOMBOL REFRESH DI BAWAH COUNTDOWN -->
+                <div class="mt-3 text-center">
+                    <button onclick="location.reload()" class="bg-white/80 hover:bg-white text-slate-700 hover:text-blue-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 transition inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Refresh Halaman</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -336,7 +340,7 @@
                 </div>
             </div>
         </div>
-  <!-- RIWAYAT TRANSAKSI -->
+<!-- RIWAYAT TRANSAKSI -->
         <div class="glass-box rounded-2xl p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
@@ -346,8 +350,9 @@
                 <p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>
             </div>
         </div>
-		</div>
-	<!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
+    </div>
+
+    <!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
     <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
@@ -363,7 +368,7 @@
 
     <!-- MODAL EDIT / HAPUS TRANSAKSI -->
     <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative">
+        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -412,6 +417,14 @@
                     <input type="text" id="editKet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
                 </div>
 
+                <!-- DISPLAY BUKTI TRANSFER PADA EDIT MODAL -->
+                <div id="editBuktiContainer" class="hidden pt-2">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Bukti Transfer Terlampir</label>
+                    <div class="relative w-full h-48 rounded-xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center">
+                        <img id="editBuktiImg" src="" alt="Bukti Transfer" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
                 <div class="pt-3 flex gap-2">
                     <button type="button" onclick="confirmDeleteTransaction()" class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl border border-rose-200 text-xs transition">
                         <i class="fa-solid fa-trash mr-1"></i> Hapus
@@ -422,13 +435,16 @@
                 </div>
             </form>
         </div>
-		</div>
-	<!-- LOGIKA JAVASCRIPT -->
+    </div>
+
+    <!-- LOGIKA JAVASCRIPT -->
     <script>
         let transactions = JSON.parse(localStorage.getItem('wedding_savings')) || [];
+        const DEFAULT_PIN = "250523";
+        let tempBuktiBase64 = "";
 
         document.addEventListener('DOMContentLoaded', () => {
-            checkPinSetup();
+            checkSessionPin();
 
             const today = new Date();
             document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
@@ -441,13 +457,11 @@
             updateUI();
             startCountdown();
         });
-
-        // 0. LOGIKA KEAMANAN PIN 6 DIGIT
-        function checkPinSetup() {
-            const savedPin = localStorage.getItem('wedding_app_pin');
-            if (!savedPin) {
-                document.getElementById('pinTitle').innerText = "Buat PIN Baru";
-                document.getElementById('pinSub').innerText = "Buat 6 digit PIN rahasia untuk akses web ini";
+		  // 0. LOGIKA KEAMANAN PIN (SESI DENGAN SESSIONSTORAGE)
+        function checkSessionPin() {
+            const isUnlocked = sessionStorage.getItem('wedding_session_unlocked');
+            if (isUnlocked === 'true') {
+                document.getElementById('pinLockScreen').classList.add('hidden');
             }
         }
 
@@ -465,32 +479,18 @@
             }
         }
 
-        function verifyOrSetPin() {
+        function verifyPin() {
             const inputs = document.querySelectorAll('.pin-digit');
             let enteredPin = '';
             inputs.forEach(i => enteredPin += i.value);
 
-            if (enteredPin.length < 6) {
-                alert("Lengkapi 6 digit PIN terlebih dahulu!");
-                return;
-            }
-
-            const savedPin = localStorage.getItem('wedding_app_pin');
-
-            if (!savedPin) {
-                // Set PIN Baru
-                localStorage.setItem('wedding_app_pin', enteredPin);
-                alert("PIN 6 Digit Berhasil Dibuat!");
+            if (enteredPin === DEFAULT_PIN) {
+                sessionStorage.setItem('wedding_session_unlocked', 'true');
                 unlockApp();
             } else {
-                // Verifikasi PIN
-                if (enteredPin === savedPin) {
-                    unlockApp();
-                } else {
-                    document.getElementById('pinErrMsg').classList.remove('hidden');
-                    inputs.forEach(i => i.value = '');
-                    inputs[0].focus();
-                }
+                document.getElementById('pinErrMsg').classList.remove('hidden');
+                inputs.forEach(i => i.value = '');
+                inputs[0].focus();
             }
         }
 
@@ -498,13 +498,6 @@
             const screen = document.getElementById('pinLockScreen');
             screen.classList.add('opacity-0');
             setTimeout(() => screen.classList.add('hidden'), 300);
-        }
-
-        function resetPinPrompt() {
-            if (confirm("Reset PIN akan menghapus PIN keamanan lama Anda. Lanjutkan reset PIN?")) {
-                localStorage.removeItem('wedding_app_pin');
-                location.reload();
-            }
         }
 
         // 1. Pengatur Background & Transparansi
@@ -573,9 +566,8 @@
                 reqMark.classList.add('hidden');
                 optMark.classList.remove('hidden');
             }
-        }
-
-        // 3. Audio Beep
+		}
+		 // 3. Audio Beep
         function playModernBeep() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -651,11 +643,13 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     img.src = e.target.result;
+                    tempBuktiBase64 = e.target.result;
                     container.classList.remove('hidden');
                 }
                 reader.readAsDataURL(file);
             } else {
                 container.classList.add('hidden');
+                tempBuktiBase64 = "";
             }
         }
 
@@ -700,7 +694,8 @@
                     tgl,
                     jam,
                     jumlah,
-                    ket
+                    ket,
+                    bukti: tempBuktiBase64
                 };
 
                 transactions.push(item);
@@ -710,6 +705,7 @@
                 document.getElementById('keteranganTransaksi').value = '';
                 document.getElementById('buktiTransfer').value = '';
                 document.getElementById('buktiPreviewContainer').classList.add('hidden');
+                tempBuktiBase64 = "";
 
                 btnSubmit.disabled = false;
                 btnSubmitText.classList.remove('hidden');
@@ -731,9 +727,8 @@
             const modal = document.getElementById('successModal');
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        // 6. Modal Edit Transaksi
+		}
+		// 6. Modal Edit Transaksi
         function openEditModal(id) {
             const item = transactions.find(t => t.id === id);
             if (!item) return;
@@ -745,6 +740,17 @@
             document.getElementById('editJam').value = item.jam;
             document.getElementById('editJumlah').value = new Intl.NumberFormat('id-ID').format(item.jumlah);
             document.getElementById('editKet').value = item.ket;
+
+            // Display Bukti Transfer jika ada
+            const editBuktiContainer = document.getElementById('editBuktiContainer');
+            const editBuktiImg = document.getElementById('editBuktiImg');
+
+            if (item.bukti) {
+                editBuktiImg.src = item.bukti;
+                editBuktiContainer.classList.remove('hidden');
+            } else {
+                editBuktiContainer.classList.add('hidden');
+            }
 
             const modal = document.getElementById('editModal');
             modal.classList.remove('hidden');
@@ -814,6 +820,7 @@
                             <div class="flex items-center gap-1.5 mb-0.5">
                                 <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">${penabungName}</span>
                                 <span class="text-xs font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
+                                ${item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px]" title="Ada Bukti Transfer"></i>' : ''}
                             </div>
                             <div class="text-[10px] text-slate-400">${item.tgl} | ${item.jam}</div>
                         </div>
@@ -837,4 +844,3 @@
     </script>
 </body>
 </html>
-		
