@@ -46,7 +46,6 @@
             box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
             transition: background-color 0.15s ease;
         }
-        /* Layer background posisi tetap (flatten) */
         #bgImageLayer {
             position: fixed;
             top: 0;
@@ -395,7 +394,6 @@
 
     <!-- JAVASCRIPT & CLOUD FIRESTORE INTEGRATION -->
     <script>
-        // KONFIGURASI FIREBASE ANDA
         const firebaseConfig = {
             apiKey: "AIzaSyBrnOBF6b9NRnFvWEqB17ycW8lrqmEsRJg",
             authDomain: "tabungan-hani-venus.firebaseapp.com",
@@ -407,13 +405,10 @@
             measurementId: "G-GH9TK6QQCR"
         };
 
-        // Inisialisasi Firebase & Firestore
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         let transactions = [];
-        
-        // 🗝️ PIN MASUK DIUBAH MENJADI 150522
         const DEFAULT_PIN = "150522";
         let tempBuktiBase64 = "";
 
@@ -426,9 +421,9 @@
             document.getElementById('jamTransaksi').value = today.toTimeString().split(' ')[0].substring(0, 5);
             
             loadSavedOpacity();
+            loadSavedLocalBg();
             updateKeteranganValidation();
 
-            // SINKRONISASI DATA TRANSAKSI & BACKGROUND ONLINE
             listenToFirestore();
             listenToSharedBackground();
             startCountdown();
@@ -443,21 +438,16 @@
                         ...doc.data()
                     });
                 });
-
-                // Urutkan transaksi berdasarkan ID/Waktu
                 transactions.sort((a, b) => a.id - b.id);
                 updateUI();
             });
         }
 
-        // MENDENGARKAN BACKGROUND ONLINE FIRESTORE SUPAYA TERSINKRON DI SEMUA HP
         function listenToSharedBackground() {
             db.collection("settings").doc("appSettings").onSnapshot((doc) => {
                 if (doc.exists && doc.data().bgImage) {
                     applyBackgroundStyle(doc.data().bgImage);
                     document.getElementById('btnResetBg').classList.remove('hidden');
-                } else {
-                    resetBgStyleUI();
                 }
             });
         }
@@ -539,14 +529,13 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // FUNGSI BUKA GALERI FOTO UNTUK BACKGROUND
         function openBgPicker() {
             const fileInput = document.getElementById('bgImageInput');
             fileInput.value = '';
             fileInput.click();
         }
 
-        // UPLOAD BACKGROUND KE CLOUD FIRESTORE SUPAYA TERSINKRON ONLINE KE PASANGAN
+        // FUNGSI UPLOAD DENGAN KOMPRESI ULTRA LALU SIMPAN DUA ARAH (FIRESTORE & LOCAL)
         function uploadBgImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -555,7 +544,7 @@
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
-                        const maxDim = 1000;
+                        const maxDim = 800; // Kompresi agar muat < 500KB di Firestore
                         let width = img.width;
                         let height = img.height;
 
@@ -572,16 +561,20 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.6);
+                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.4);
                         
-                        // Simpan ke Firestore Cloud
+                        // Langsung terapkan di layar & simpan di lokal HP terlebih dahulu
+                        applyBackgroundStyle(compressedUrl);
+                        try {
+                            localStorage.setItem('wedding_bg_local', compressedUrl);
+                        } catch (e) {}
+                        document.getElementById('btnResetBg').classList.remove('hidden');
+
+                        // Coba simpan ke Cloud Firestore untuk sinkronisasi ke pasangan
                         db.collection("settings").doc("appSettings").set({
                             bgImage: compressedUrl
-                        }).then(() => {
-                            applyBackgroundStyle(compressedUrl);
-                            document.getElementById('btnResetBg').classList.remove('hidden');
                         }).catch(err => {
-                            console.error("Gagal simpan background online:", err);
+                            console.warn("Latar belakang disimpan lokal (Firestore terbatas):", err);
                         });
                     };
                     img.src = e.target.result;
@@ -597,6 +590,14 @@
             document.getElementById('bgOverlay').classList.add('opacity-40');
         }
 
+        function loadSavedLocalBg() {
+            const localBg = localStorage.getItem('wedding_bg_local');
+            if (localBg) {
+                applyBackgroundStyle(localBg);
+                document.getElementById('btnResetBg').classList.remove('hidden');
+            }
+        }
+
         function resetBgStyleUI() {
             const bgLayer = document.getElementById('bgImageLayer');
             bgLayer.style.backgroundImage = '';
@@ -604,12 +605,12 @@
             document.getElementById('bgOverlay').classList.remove('opacity-40');
             document.getElementById('btnResetBg').classList.add('hidden');
             document.getElementById('bgImageInput').value = '';
+            localStorage.removeItem('wedding_bg_local');
         }
 
         function resetBgImage() {
-            db.collection("settings").doc("appSettings").delete().then(() => {
-                resetBgStyleUI();
-            });
+            resetBgStyleUI();
+            db.collection("settings").doc("appSettings").delete().catch(e => {});
         }
 
         function changeBoxOpacity(val) {
@@ -721,7 +722,6 @@
             }
         }
 
-        // SIMPAN TRANSAKSI KE FIRESTORE (DENGAN ANIMASI LOADING TEPAT 2 DETIK)
         function handleFormSubmit(e) {
             e.preventDefault();
             const tipe = document.getElementById('tipeTransaksi').value;
@@ -764,7 +764,6 @@
                 bukti: tempBuktiBase64
             };
 
-            // Loading 2 detik
             setTimeout(() => {
                 db.collection("transactions").add(newItem).then(() => {
                     document.getElementById('jumlahRupiah').value = '';
