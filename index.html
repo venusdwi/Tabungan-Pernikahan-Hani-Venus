@@ -46,7 +46,7 @@
             box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
             transition: background-color 0.15s ease;
         }
-        /* Mengunci posisi layer background agar flatten total & tidak bergerak saat scroll HP */
+        /* Layer background posisi tetap (flatten) */
         #bgImageLayer {
             position: fixed;
             top: 0;
@@ -114,8 +114,9 @@
             </div>
 
             <div class="flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 shadow-sm">
+                <!-- Input foto latar belakang -->
                 <input type="file" id="bgImageInput" accept="image/*" class="hidden" onchange="uploadBgImage(event)">
-                <button type="button" onclick="document.getElementById('bgImageInput').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
+                <button type="button" onclick="openBgPicker()" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
                     <i class="fa-solid fa-image"></i>
                     <span>Galeri Foto</span>
                 </button>
@@ -411,7 +412,9 @@
         const db = firebase.firestore();
 
         let transactions = [];
-        const DEFAULT_PIN = "250523";
+        
+        // 🗝️ PIN MASUK DIUBAH MENJADI 150522
+        const DEFAULT_PIN = "150522";
         let tempBuktiBase64 = "";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -425,7 +428,7 @@
             loadSavedOpacity();
             updateKeteranganValidation();
 
-            // SINKRONISASI TRANSMISI DATA TRANSAKSI & BACKGROUND ONLINE REALTIME
+            // SINKRONISASI DATA TRANSAKSI & BACKGROUND ONLINE
             listenToFirestore();
             listenToSharedBackground();
             startCountdown();
@@ -534,6 +537,13 @@
             const modal = document.getElementById('imageModal');
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // FUNGSI BUKA GALERI FOTO UNTUK BACKGROUND
+        function openBgPicker() {
+            const fileInput = document.getElementById('bgImageInput');
+            fileInput.value = '';
+            fileInput.click();
         }
 
         // UPLOAD BACKGROUND KE CLOUD FIRESTORE SUPAYA TERSINKRON ONLINE KE PASANGAN
@@ -754,7 +764,7 @@
                 bukti: tempBuktiBase64
             };
 
-            // Diberikan penundaan 2000 ms (2 detik) sesuai permintaan
+            // Loading 2 detik
             setTimeout(() => {
                 db.collection("transactions").add(newItem).then(() => {
                     document.getElementById('jumlahRupiah').value = '';
