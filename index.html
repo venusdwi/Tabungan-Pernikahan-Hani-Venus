@@ -246,8 +246,9 @@
                                 Nama Penabung <span class="text-blue-500">*</span>
                             </label>
                             <select id="namaPenabung" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="HANI">👩‍🦰 HANI</option>
-                                <option value="VENUS">👨‍🦱 VENUS</option>
+                                <option value="HANI💙">HANI💙</option>
+                                <option value="VENUS💙">VENUS💙</option>
+                                <option value="BERSAMA👩‍❤️‍💋‍👨">BERSAMA👩‍❤️‍💋‍👨</option>
                             </select>
                         </div>
 
@@ -315,20 +316,6 @@
         </div>
     </div>
 
-    <!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
-    <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <i class="fa-solid fa-check text-4xl"></i>
-            </div>
-            <h3 class="font-serif text-3xl font-extrabold text-slate-900 mb-2">SELESAI!</h3>
-            <p class="text-sm text-slate-500 mb-6 font-medium">Transaksi berhasil tersimpan ke dalam catatan tabungan.</p>
-            <button onclick="closeSuccessModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
-                Oke, Mengerti
-            </button>
-        </div>
-    </div>
-
     <!-- MODAL EDIT / HAPUS TRANSAKSI -->
     <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative">
@@ -353,8 +340,9 @@
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Penabung</label>
                     <select id="editPenabung" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold">
-                        <option value="HANI">👩‍🦰 HANI</option>
-                        <option value="VENUS">👨‍🦱 VENUS</option>
+                        <option value="HANI💙">HANI💙</option>
+                        <option value="VENUS💙">VENUS💙</option>
+                        <option value="BERSAMA👩‍❤️‍💋‍👨">BERSAMA👩‍❤️‍💋‍👨</option>
                     </select>
                 </div>
 
@@ -641,7 +629,7 @@
 
             document.getElementById('editId').value = item.id;
             document.getElementById('editTipe').value = item.tipe;
-            document.getElementById('editPenabung').value = item.penabung || 'HANI';
+            document.getElementById('editPenabung').value = item.penabung || 'HANI💙';
             document.getElementById('editTgl').value = item.tgl;
             document.getElementById('editJam').value = item.jam;
             document.getElementById('editJumlah').value = new Intl.NumberFormat('id-ID').format(item.jumlah);
@@ -705,7 +693,7 @@
                     if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
 
                     const isMasuk = item.tipe === 'pemasukan';
-                    const penabungName = item.penabung || 'HANI';
+                    const penabungName = item.penabung || 'HANI💙';
                     
                     const elem = document.createElement('div');
                     elem.className = `flex justify-between items-center p-3 rounded-xl border cursor-pointer hover:shadow-md transition ${isMasuk ? 'bg-emerald-50/50 border-emerald-100 hover:bg-emerald-100/50' : 'bg-rose-50/50 border-rose-100 hover:bg-rose-100/50'}`;
