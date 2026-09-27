@@ -1,590 +1,318 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabungan Pernikahan Hani & Venus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <title>TABUNGAN PERNIKAHAN Hani & Venus 💍</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Playfair Display, Plus Jakarta Sans & Outfit (Khusus Angka/Number) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        themeBlue: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        num: ['"Outfit"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --warna-utama: #0f4c81;          
-            --kartu-gradasi-1: rgba(21, 101, 192, 0.9);   
-            --kartu-gradasi-2: rgba(66, 165, 245, 0.9);
-            --bg-halaman: #f0f4f8;           
-            --bg-header-tabel: #e3f2fd;      
-            --teks-header-tabel: #0d47a1;     
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
         body {
-            background-color: var(--bg-halaman);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #090d16;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: #111;
-            display: flex;
-            justify-content: center;
-            padding: 15px;
-            min-height: 100vh;
+            transition: background-image 0.3s ease;
         }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.92);
-            padding: 24px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(5px);
+        .font-num {
+            font-family: 'Outfit', sans-serif;
+            font-variant-numeric: tabular-nums;
         }
-
-        h1 {
-            text-align: center;
-            color: var(--warna-utama);
-            margin-bottom: 22px;
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
+        .glass-box {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
+            transition: background-color 0.2s ease, opacity 0.2s ease;
         }
-
-        .bg-uploader {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 10px 14px;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(2, 132, 199, 0.3);
             border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            border: 1px solid #cbd5e1;
         }
-
-        .bg-uploader label {
-            cursor: pointer;
-            color: var(--warna-utama);
-            font-weight: 700;
-        }
-
-        .btn-reset-bg {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, var(--kartu-gradasi-1), var(--kartu-gradasi-2));
-            color: white;
-            padding: 20px;
-            border-radius: 14px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .summary-card h3 {
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .summary-card .total-main {
-            font-size: 36px;
-            font-weight: 700;
-            margin: 6px 0 14px 0;
-        }
-
-        .sub-summary {
-            display: flex;
-            justify-content: space-around;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .sub-summary div span {
-            display: block;
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        .divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.3);
-            margin: 12px 0;
-        }
-
-        .countdown-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-
-        .countdown-grid {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .countdown-box {
-            background: rgba(255, 255, 255, 0.25);
-            padding: 6px 10px;
-            border-radius: 8px;
-            min-width: 55px;
-        }
-
-        .countdown-num {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .countdown-label {
-            font-size: 9px;
-            text-transform: uppercase;
-        }
-
-        .monthly-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .monthly-section h2 {
-            font-size: 17px;
-            margin-bottom: 10px;
-            color: #1e293b;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 6px;
-        }
-
-        .monthly-item {
-            background: #ffffff;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 13px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .monthly-header {
-            font-weight: 700;
-            color: var(--warna-utama);
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .monthly-details {
-            display: flex;
-            justify-content: space-between;
-            color: #475569;
-            font-weight: 600;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .edit-form-box {
-            background: #fffbeb;
-            border: 2px dashed #f59e0b;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        label {
-            font-size: 14px;
-            font-weight: 700;
-            color: #334155;
-        }
-
-        input, select {
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            background: #fff;
-            font-weight: 600;
-            width: 100%;
-        }
-
-        button.btn-add {
-            background-color: var(--warna-utama);
-            color: white;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-
-        .btn-edit-action {
-            background-color: #d97706;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-delete-action {
-            background-color: #ef4444;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .history h2 {
-            font-size: 17px;
-            margin-bottom: 12px;
-            color: #1e293b;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 6px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 10px 6px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        th {
-            background-color: var(--bg-header-tabel);
-            color: var(--teks-header-tabel);
-        }
-
-        tr.clickable-row {
-            cursor: pointer;
-        }
-        tr.clickable-row:hover {
-            background-color: rgba(0,0,0,0.04);
-        }
-
-        .badge-type-in {
-            background: #dcfce7;
-            color: #166534;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-        }
-
-        .badge-type-out {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-        }
-
-        .empty-text {
-            text-align: center;
-            color: #64748b;
-            padding: 14px;
-            font-size: 13px;
-        }
-
-        #notificationModal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .notif-box {
-            background: white;
-            padding: 30px 40px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            animation: popIn 0.3s ease;
-        }
-        .notif-box h2 {
-            color: #10b981;
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-        .notif-box p {
-            font-size: 16px;
-            color: #334155;
-            font-weight: 600;
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(2, 132, 199, 0.6);
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
+    <!-- Background Dark Blue Overlay & Wedding Elements Tint -->
+    <div id="bgOverlay" class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/60 via-slate-950 to-slate-950 pointer-events-none -z-10">
+        <!-- Floating Animated Background Decorative SVG Wedding Elements -->
+        <div class="absolute inset-0 opacity-25 overflow-hidden">
+            <!-- Floating Rings Top Left -->
+            <svg class="absolute top-10 left-5 sm:left-20 w-32 h-32 text-sky-300 animate-pulse" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l1.5 2.5h-3L12 3z" />
+            </svg>
 
-    <div id="notificationModal">
-        <div class="notif-box">
-            <h2>✨ SELESAI! ✨</h2>
-            <p>Data berhasil dikonfirmasi & disimpan.</p>
+            <!-- Floating Floral Ornament Top Right -->
+            <svg class="absolute top-12 right-5 sm:right-20 w-40 h-40 text-blue-400" fill="currentColor" viewBox="0 0 100 100">
+                <path d="M50,15 C55,30 70,35 85,35 C70,45 65,60 70,75 C55,65 45,65 30,75 C35,60 30,45 15,35 C30,35 45,30 50,15 Z" opacity="0.3"/>
+                <circle cx="50" cy="45" r="8" fill="#38bdf8"/>
+            </svg>
+
+            <!-- Bottom Left Wedding Arch & Vines -->
+            <svg class="absolute -bottom-10 -left-10 w-72 h-72 text-sky-400/30" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 200 200">
+                <path d="M20,180 Q20,60 100,60 Q180,60 180,180" stroke-dasharray="4,4"/>
+                <circle cx="100" cy="60" r="15" fill="none" stroke="currentColor"/>
+                <path d="M85,60 C70,40 50,50 60,70 C75,70 85,60 85,60 Z"/>
+                <path d="M115,60 C130,40 150,50 140,70 C125,70 115,60 115,60 Z"/>
+            </svg>
+
+            <!-- Bottom Right Floating Hearts & Sparkles -->
+            <svg class="absolute bottom-20 right-10 w-36 h-36 text-indigo-300/40" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+
+            <!-- Glowing Sparkle Dust -->
+            <div class="absolute top-1/4 left-1/3 w-2 h-2 bg-sky-300 rounded-full blur-xs animate-ping"></div>
+            <div class="absolute top-1/2 right-1/4 w-3 h-3 bg-blue-300 rounded-full blur-xs animate-pulse"></div>
+            <div class="absolute bottom-1/3 left-1/4 w-2.5 h-2.5 bg-indigo-200 rounded-full blur-xs animate-ping"></div>
         </div>
     </div>
 
-    <div class="container">
-        <h1>Tabungan Pernikahan<br>Hani & Venus 💍</h1>
-
-        <div class="bg-uploader">
-            <label>🖼️ Ganti Foto Latar <input type="file" id="bgInput" accept="image/*" style="display:none;"></label>
-            <button class="btn-reset-bg" id="resetBgBtn" style="display:none;" onclick="resetBackground()">Reset Foto</button>
-        </div>
-
-        <div class="summary-card">
-            <h3>SISA SALDO TABUNGAN</h3>
-            <div class="total-main" id="totalAmount">Rp 0</div>
-            
-            <div class="sub-summary">
-                <div>Total Pemasukan <span id="totalIn" style="color: #bbf7d0;">Rp 0</span></div>
-                <div>Total Pengeluaran <span id="totalOut" style="color: #fed7aa;">Rp 0</span></div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="countdown-title">
-                ⏳ Menuju Hari Pernikahan<br>
-                Sabtu, 03 April 2027
-            </div>
-            <div class="countdown-grid">
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdDays">0</div>
-                    <div class="countdown-label">Hari</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdHours">0</div>
-                    <div class="countdown-label">Jam</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdMinutes">0</div>
-                    <div class="countdown-label">Menit</div>
-                </div>
-                <div class="countdown-box">
-                    <div class="countdown-num" id="cdSeconds">0</div>
-                    <div class="countdown-label">Detik</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="monthly-section">
-            <h2>📊 Rincian Tabungan Per Bulan</h2>
-            <div id="monthlyList"></div>
-        </div>
-
-        <form id="savingForm">
-            <h3 style="font-size: 16px; color: var(--warna-utama); margin-bottom: 4px;">➕ Tambah Transaksi Baru</h3>
-            <div class="form-group">
-                <label for="type">Jenis Transaksi</label>
-                <select id="type" required onchange="handleTypeChange()">
-                    <option value="in">Pemasukan (Tabungan)</option>
-                    <option value="out">Pengeluaran (Biaya Pernikahan)</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="groupPerson">
-                <label for="person">Nama Penabung</label>
-                <select id="person">
-                    <option value="Hani">Hani</option>
-                    <option value="Venus">Venus</option>
-                    <option value="Bersama">Bersama / Lainnya</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="groupDesc" style="display: none;">
-                <label for="description">Keterangan Pengeluaran</label>
-                <input type="text" id="description" placeholder="Contoh: DP Gedung, Katering, dll">
-            </div>
-
-            <div class="form-group">
-                <label for="date">Hari & Tanggal Transaksi</label>
-                <input type="date" id="date" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="amountInputFormatted">Jumlah Tabungan (Rp)</label>
-                <input type="text" id="amountInputFormatted" placeholder="Contoh: 5.200.000" inputmode="numeric" required>
-                <input type="hidden" id="amount" value="">
-            </div>
-            <button type="submit" class="btn-add" id="submitBtn">Konfirmasi</button>
-        </form>
-
-        <div class="edit-form-box" id="editFormBox">
-            <h3 style="font-size: 16px; color: #b45309; margin-bottom: 10px;">✏️ Edit / Hapus Riwayat Transaksi</h3>
-            <input type="hidden" id="editIndex">
-            <div class="form-group" style="margin-bottom: 10px;">
-                <label>Jenis Transaksi</label>
-                <select id="editType" onchange="handleEditTypeChange()">
-                    <option value="in">Pemasukan (Tabungan)</option>
-                    <option value="out">Pengeluaran</option>
-                </select>
-            </div>
-            <div class="form-group" id="editGroupPerson" style="margin-bottom: 10px;">
-                <label>Nama Penabung</label>
-                <select id="editPerson">
-                    <option value="Hani">Hani</option>
-                    <option value="Venus">Venus</option>
-                    <option value="Bersama">Bersama / Lainnya</option>
-                </select>
-            </div>
-            <div class="form-group" id="editGroupDesc" style="margin-bottom: 10px; display:none;">
-                <label>Keterangan Pengeluaran</label>
-                <input type="text" id="editDescription" placeholder="Contoh: DP Gedung">
-            </div>
-            <div class="form-group" style="margin-bottom: 10px;">
-                <label>Tanggal Transaksi</label>
-                <input type="date" id="editDate">
-            </div>
-            <div class="form-group" style="margin-bottom: 14px;">
-                <label>Jumlah (Rp)</label>
-                <input type="text" id="editAmountFormatted" inputmode="numeric">
-                <input type="hidden" id="editAmount">
-            </div>
-            <div style="display: flex; gap: 8px;">
-                <button type="button" class="btn-edit-action" style="flex: 1;" onclick="updateDataItem()">Simpan</button>
-                <button type="button" class="btn-delete-action" style="flex: 1;" onclick="deleteDataItem()">Hapus</button>
-                <button type="button" style="background:#64748b; color:white; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer;" onclick="closeEditForm()">Batal</button>
-            </div>
-        </div>
-
-        <div class="history">
-            <h2>Riwayat Transaksi <span style="font-size: 11px; font-weight: normal; color: #64748b;">(Klik baris untuk edit)</span></h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Hari & Tanggal</th>
-                        <th>Keterangan</th>
-                        <th>Tipe</th>
-                        <th>Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody id="historyList"></tbody>
-            </table>
-            <div id="emptyMessage" class="empty-text">Belum ada riwayat transaksi.</div>
-        </div>
-    </div>
-
-    <script>
-        const form = document.getElementById('savingForm');
-        const typeInput = document.getElementById('type');
-        const personInput = document.getElementById('person');
-        const descInput = document.getElementById('description');
-        const groupPerson = document.getElementById('groupPerson');
-        const groupDesc = document.getElementById('groupDesc');
-
-        const dateInput = document.getElementById('date');
-        const amountFormatted = document.getElementById('amountInputFormatted');
-        const amountRaw = document.getElementById('amount');
-        const submitBtn = document.getElementById('submitBtn');
-        const notificationModal = document.getElementById('notificationModal');
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
         
-        const editFormBox = document.getElementById('editFormBox');
-        const editIndexInput = document.getElementById('editIndex');
-        const editType = document.getElementById('editType');
-        const editPerson = document.getElementById('editPerson');
-        const editDesc = document.getElementById('editDescription');
-        const editGroupPerson = document.getElementById('editGroupPerson');
-        const editGroupDesc = document.getElementById('editGroupDesc');
-        const editDate = document.getElementById('editDate');
-        const editAmountFormatted = document.getElementById('editAmountFormatted');
-        const editAmountRaw = document.getElementById('editAmount');
+        <!-- TOP NAVIGATION / ACTIONS BAR -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-200 text-xs font-semibold text-sky-700 shadow-sm">
+                <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
+                <span>Our Journey to Halal</span>
+            </div>
+            
+            <div class="flex gap-2">
+                <!-- Custom Background Button -->
+                <button onclick="toggleBgControlModal()" class="bg-white/80 hover:bg-white text-slate-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 hover:text-sky-600 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-image"></i>
+                    <span class="hidden sm:inline">Ubah Background</span>
+                </button>
+                <!-- GitHub Pages Guide Button -->
+                <button onclick="openGithubGuide()" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-md transition flex items-center gap-1.5">
+                    <i class="fa-brands fa-github text-sm"></i>
+                    <span>Cara Link Share</span>
+                </button>
+            </div>
+        </div>
 
-        const totalAmountEl = document.getElementById('totalAmount');
-        const totalInEl = document.getElementById('totalIn');
-        const totalOutEl = document.getElementById('totalOut');
-        const monthlyListEl = document.getElementById('monthlyList');
-        const historyListEl = document.getElementById('historyList');
-        const emptyMessageEl = document.getElementById('emptyMessage');
-        const bgInput = document.getElementById('bgInput');
-        const resetBgBtn = document.getElementById('resetBgBtn');
+        <!-- HEADER BANNER & TITLE -->
+        <div class="text-center mb-8">
+            <h1 class="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-md">
+                TABUNGAN PERNIKAHAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-indigo-300">Hani & Venus</span> 💍
+            </h1>
+            <p class="text-sky-200/90 text-sm sm:text-base font-medium">
+                Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia.
+            </p>
 
-        const cdDays = document.getElementById('cdDays');
-        const cdHours = document.getElementById('cdHours');
-        const cdMinutes = document.getElementById('cdMinutes');
-        const cdSeconds = document.getElementById('cdSeconds');
+            <!-- COUNTDOWN TIMER CONTAINER -->
+            <div class="mt-6 inline-block w-full max-w-xl">
+                <div class="glass-box rounded-2xl p-4 sm:p-5 text-center bg-white/75" id="countdownCard">
+                    <div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-600 mb-3 flex flex-col items-center justify-center gap-1">
+                        <div class="flex items-center justify-center gap-2 whitespace-nowrap">
+                            <i class="fa-solid fa-hourglass-half text-blue-500"></i>
+                            <span>Countdown Menuju Hari Pernikahan</span>
+                        </div>
+                        <div class="text-blue-700 font-extrabold text-xs sm:text-sm tracking-widest whitespace-nowrap">
+                            (03 APRIL 2027)
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 sm:gap-4 text-center">
+                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+                            <span id="cd-days" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
+                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Hari</span>
+                        </div>
+                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+                            <span id="cd-hours" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
+                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Jam</span>
+                        </div>
+                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+                            <span id="cd-minutes" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
+                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Menit</span>
+                        </div>
+                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+                            <span id="cd-seconds" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
+                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Detik</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        const weddingDate = new Date('2027-04-03T08:00:00').getTime();
+        <!-- SALDO SUMMARY CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <!-- Total Saldo Utama -->
+            <div class="glass-box rounded-2xl p-6 bg-white/75 relative overflow-hidden group shadow-sm hover:shadow-md transition" id="cardTotal">
+                <div class="absolute -right-4 -bottom-4 text-sky-100/80 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-vault text-7xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
+                        <span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
+                    </div>
+                    <h2 id="totalSaldo" class="font-num text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-1">
+                        Rp 0
+                    </h2>
+                    <p class="text-xs text-slate-500">
+                        Total dana gabungan pernikahan saat ini
+                    </p>
+                </div>
+            </div>
 
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = weddingDate - now;
-            if (distance < 0) return;
-            cdDays.textContent = Math.floor(distance / (1000 * 60 * 60 * 24));
-            cdHours.textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            cdMinutes.textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            cdSeconds.textContent = Math.floor((distance % (1000 * 60)) / 1000);
-        }
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+            <!-- Total Pemasukan Summary Card -->
+            <div class="glass-box rounded-2xl p-6 bg-white/75 relative overflow-hidden group shadow-sm hover:shadow-md transition">
+                <div class="absolute -right-4 -bottom-4 text-emerald-100/80 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-arrow-trend-up text-7xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
+                        <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
+                    </div>
+                    <h2 id="topTotalIn" class="font-num text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-1">
+                        Rp 0
+                    </h2>
+                    <p class="text-xs text-slate-500">
+                        Akumulasi semua pemasukan
+                    </p>
+                </div>
+            </div>
 
-        dateInput.value = new Date().toISOString().split('T')[0];
+            <!-- Total Pengeluaran Summary Card -->
+            <div class="glass-box rounded-2xl p-6 bg-white/75 relative overflow-hidden group shadow-sm hover:shadow-md transition">
+                <div class="absolute -right-4 -bottom-4 text-rose-100/80 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-arrow-trend-down text-7xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
+                        <span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">- Keluar</span>
+                    </div>
+                    <h2 id="topTotalOut" class="font-num text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight mb-1">
+                        Rp 0
+                    </h2>
+                    <p class="text-xs text-slate-500">
+                        Akumulasi semua pengeluaran
+                    </p>
+                </div>
+            </div>
+        </div>
 
-        function handleTypeChange() {
-            if (typeInput.value === 'in') {
-                groupPerson.style.display = 'flex';
-                groupDesc.style.display = 'none';
-            } else {
-                groupPerson.style.display = 'none';
-                groupDesc.style.display = 'flex';
-            }
-        }
+        <!-- FORM INPUT TABUNGAN & STATS QUICK VIEW -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+            
+            <!-- FORM INPUT -->
+            <div class="lg:col-span-7">
+                <div class="glass-box rounded-2xl p-6 sm:p-7 bg-white/75" id="formCard">
+                    <div class="flex items-center gap-2 mb-5 border-b border-sky-100 pb-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-lg font-bold text-slate-900">Input Catatan Tabungan</h3>
+                            <p class="text-xs text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
+                        </div>
+                    </div>
 
-        function handleEditTypeChange() {
-            if (editType.value === 'in') {
-                editGroupPerson.style.display = 'flex';
-                editGroupDesc.style.display = 'none';
-            } else {
-                editGroupPerson.style.display = 'none';
-                editGroupDesc.style.display = 'flex';
-            }
-        }
+                    <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        
+                        <!-- Tipe Transaksi, Tanggal & Jam Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <!-- Tipe Transaksi -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                    Tipe Transaksi <span class="text-blue-500">*</span>
+                                </label>
+                                <select id="tipeTransaksi" onchange="handleTipeChange()" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="pemasukan">➕ Pemasukan (+)</option>
+                                    <option value="pengeluaran">➖ Pengeluaran (-)</option>
+                                </select>
+                            </div>
 
-        // Format angka otomatis dengan titik ribuan
-        amountFormatted.addEventListener('input', function() {
-            let
+                            <!-- Tanggal & Jam Bersebelahan -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                    Tanggal & Jam <span class="text-blue-500">*</span>
+                                </label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="date" id="tglTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="time" id="jamTransaksi" required oninput="this.dataset.userModified = 'true'" class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Jumlah Tabungan Rp -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                Jumlah (Rp) <span class="text-blue-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">Rp</span>
+                                <input type="text" id="jumlahRupiah" inputmode="numeric" placeholder="0" required oninput="formatRupiahInput(this)" class="w-full bg-white/80 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-slate-900 font-num font-extrabold text-lg sm:text-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">*Format titik ribuan otomatis dimasukkan (misal: 300.000)</p>
+                        </div>
+
+                        <!-- Keterangan / Catatan -->
+                        <div>
+                            <label id="keteranganLabel" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                Keterangan / Catatan <span id="keteranganBadge" class="text-slate-400 font-normal">(Opsional)</span>
+                            </label>
+                            <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Souvenir / Tabungan Bulanan" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <!-- Upload Bukti Transfer -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                                Lampirkan Bukti Transfer / Nota <span class="text-slate-400 font-normal">(Opsional)</span>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                            </div>
+                            <!-- Image Preview Box -->
+                            <div id="buktiPreviewContainer" class="hidden mt-2 relative w-24 h-24 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden group">
+                                <img id="buktiPreviewImg" src="" alt="Preview Bukti" class="w-full h-full object-cover
