@@ -76,7 +76,7 @@
         form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.6); padding: 18px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.5); }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 14px; font-weight: 700; color: #111; }
-        input, select { padding: 11px 12px; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 8px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.9); font-weight: 600; color: #222; }
+        input, select { padding: 11px 12px; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 8px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.9); font-weight: 600; color: #222; width: 100%; }
         
         .btn-action-container { display: flex; gap: 10px; margin-top: 5px; }
         button.btn-add { flex: 1; background-color: var(--warna-utama); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
@@ -166,7 +166,7 @@
             </div>
             <div class="form-group">
                 <label for="date">Hari & Tanggal Transaksi</label>
-                <input type="date" id="date" required>
+                <input type="text" id="date" placeholder="Contoh: 27 September 2026" required>
             </div>
             <div class="form-group">
                 <label for="amount" id="amountLabel">Jumlah Tabungan (Rp)</label>
@@ -199,17 +199,16 @@
     </div>
 
     <script>
-        // Safe Date Initialization for Mobile Browsers
+        // Set Default Date as text safely (e.g., 27 September 2026)
         const dateInput = document.getElementById('date');
-        try {
+        const monthsNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        
+        function getTodayString() {
             const d = new Date();
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            dateInput.value = `${year}-${month}-${day}`;
-        } catch (err) {
-            dateInput.value = '2026-09-27';
+            return `${d.getDate()} ${monthsNames[d.getMonth()]} ${d.getFullYear()}`;
         }
+
+        dateInput.value = getTodayString();
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedBg = localStorage.getItem('hani_venus_bg');
@@ -305,15 +304,9 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
         }
 
-        function formatFullDate(str) {
-            if(!str) return '';
-            return new Date(str + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
-        }
-
         function formatMonthYear(mKey) {
             const [y, m] = mKey.split('-');
-            const names = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            return `${names[parseInt(m) - 1]} ${y}`;
+            return `${monthsNames[parseInt(m) - 1]} ${y}`;
         }
 
         function getTransactions() {
@@ -337,15 +330,21 @@
                 monthlyListEl.innerHTML = '<div style="font-size:13px; text-align:center; color:#333;">Belum ada data bulanan.</div>';
             } else {
                 emptyMessageEl.style.display = 'none';
-                dataObj.sort((a, b) => new Date(b.date) - new Date(a.date));
                 dataObj.forEach((item, index) => {
                     const val = Number(item.amount);
                     const isIncome = item.type === 'in';
                     if (isIncome) totalIn += val; else totalOut += val;
                     
-                    const mKey = item.date ? item.date.substring(0, 7) : '2026-09';
+                    const mKey = item.monthKey || '2026-09';
                     if (!monthlyData[mKey]) monthlyData[mKey] = { Hani: 0, Venus: 0, Pengeluaran: 0, total: 0 };
                     
                     if (isIncome) {
                         monthlyData[mKey][item.person || 'Hani'] = (monthlyData[mKey][item.person || 'Hani'] || 0) + val;
-   
+                        monthlyData[mKey].total += val;
+                    } else {
+                        monthlyData[mKey].Pengeluaran += val;
+                        monthlyData[mKey].total -= val;
+                    }
+
+                    const row = document.createElement('tr');
+                    const labelKet = isIncome ? (item.person || 'Hani') : (item.category || 'Pengeluaran');
