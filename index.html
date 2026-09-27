@@ -76,6 +76,39 @@
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
+
+    <!-- OVERLAY LAYAR KUNCI PIN 6 DIGIT -->
+    <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white/90 backdrop-blur-md border border-white/40 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            
+            <h2 id="pinTitle" class="font-serif text-2xl font-bold text-slate-900 mb-1">Akses Terkunci</h2>
+            <p id="pinSub" class="text-xs text-slate-500 mb-6">Masukkan 6 digit PIN keamanan Anda</p>
+
+            <!-- Input PIN 6 Digit -->
+            <div class="flex justify-center gap-2 mb-6">
+                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 1)" onkeydown="movePrevPin(this, 1)">
+                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 2)" onkeydown="movePrevPin(this, 2)">
+                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 3)" onkeydown="movePrevPin(this, 3)">
+                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 4)" onkeydown="movePrevPin(this, 4)">
+                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 5)" onkeydown="movePrevPin(this, 5)">
+                <input type="password" maxlength="1" class="pin-digit w-10 h-12 text-center text-xl font-bold font-num bg-slate-100 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="moveNextPin(this, 6)" onkeydown="movePrevPin(this, 6)">
+            </div>
+
+            <p id="pinErrMsg" class="text-xs text-rose-500 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
+
+            <button onclick="verifyOrSetPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                Masuk Web
+            </button>
+
+            <button id="btnResetPin" onclick="resetPinPrompt()" class="mt-4 text-xs text-slate-400 hover:text-slate-600 underline block mx-auto">
+                Lupa PIN / Reset PIN
+            </button>
+        </div>
+    </div>
+
     <!-- Background Overlay Gradient & Decorative SVG -->
     <div id="bgOverlay" class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/60 via-slate-950 to-slate-950 pointer-events-none -z-10 transition-opacity duration-300">
         <div class="absolute inset-0 opacity-25 overflow-hidden">
@@ -303,8 +336,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- RIWAYAT TRANSAKSI -->
+  <!-- RIWAYAT TRANSAKSI -->
         <div class="glass-box rounded-2xl p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
@@ -313,6 +345,19 @@
             <div id="transactionList" class="space-y-3">
                 <p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi tersimpan.</p>
             </div>
+        </div>
+		</div>
+	<!-- MODAL NOTIFIKASI SELESAI (POPUP BESAR) -->
+    <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-check text-4xl"></i>
+            </div>
+            <h3 class="font-serif text-3xl font-extrabold text-slate-900 mb-2">SELESAI!</h3>
+            <p class="text-sm text-slate-500 mb-6 font-medium">Transaksi berhasil tersimpan ke dalam catatan tabungan.</p>
+            <button onclick="closeSuccessModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
+                Oke, Mengerti
+            </button>
         </div>
     </div>
 
@@ -377,13 +422,14 @@
                 </div>
             </form>
         </div>
-    </div>
-
-    <!-- LOGIKA JAVASCRIPT -->
+		</div>
+	<!-- LOGIKA JAVASCRIPT -->
     <script>
         let transactions = JSON.parse(localStorage.getItem('wedding_savings')) || [];
 
         document.addEventListener('DOMContentLoaded', () => {
+            checkPinSetup();
+
             const today = new Date();
             document.getElementById('tglTransaksi').value = today.toISOString().split('T')[0];
             document.getElementById('jamTransaksi').value = today.toTimeString().split(' ')[0].substring(0, 5);
@@ -395,6 +441,71 @@
             updateUI();
             startCountdown();
         });
+
+        // 0. LOGIKA KEAMANAN PIN 6 DIGIT
+        function checkPinSetup() {
+            const savedPin = localStorage.getItem('wedding_app_pin');
+            if (!savedPin) {
+                document.getElementById('pinTitle').innerText = "Buat PIN Baru";
+                document.getElementById('pinSub').innerText = "Buat 6 digit PIN rahasia untuk akses web ini";
+            }
+        }
+
+        function moveNextPin(elem, index) {
+            if (elem.value.length === 1 && index < 6) {
+                const inputs = document.querySelectorAll('.pin-digit');
+                inputs[index].focus();
+            }
+        }
+
+        function movePrevPin(elem, index) {
+            if (event.key === "Backspace" && elem.value.length === 0 && index > 1) {
+                const inputs = document.querySelectorAll('.pin-digit');
+                inputs[index - 2].focus();
+            }
+        }
+
+        function verifyOrSetPin() {
+            const inputs = document.querySelectorAll('.pin-digit');
+            let enteredPin = '';
+            inputs.forEach(i => enteredPin += i.value);
+
+            if (enteredPin.length < 6) {
+                alert("Lengkapi 6 digit PIN terlebih dahulu!");
+                return;
+            }
+
+            const savedPin = localStorage.getItem('wedding_app_pin');
+
+            if (!savedPin) {
+                // Set PIN Baru
+                localStorage.setItem('wedding_app_pin', enteredPin);
+                alert("PIN 6 Digit Berhasil Dibuat!");
+                unlockApp();
+            } else {
+                // Verifikasi PIN
+                if (enteredPin === savedPin) {
+                    unlockApp();
+                } else {
+                    document.getElementById('pinErrMsg').classList.remove('hidden');
+                    inputs.forEach(i => i.value = '');
+                    inputs[0].focus();
+                }
+            }
+        }
+
+        function unlockApp() {
+            const screen = document.getElementById('pinLockScreen');
+            screen.classList.add('opacity-0');
+            setTimeout(() => screen.classList.add('hidden'), 300);
+        }
+
+        function resetPinPrompt() {
+            if (confirm("Reset PIN akan menghapus PIN keamanan lama Anda. Lanjutkan reset PIN?")) {
+                localStorage.removeItem('wedding_app_pin');
+                location.reload();
+            }
+        }
 
         // 1. Pengatur Background & Transparansi
         function uploadBgImage(event) {
@@ -726,3 +837,4 @@
     </script>
 </body>
 </html>
+		
