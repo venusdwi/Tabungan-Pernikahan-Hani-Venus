@@ -1073,6 +1073,13 @@
                 alert("Notifikasi sudah diizinkan sebelumnya!");
             } else {
                 alert("Browser ini tidak mendukung notifikasi.");
+         // Agar kotak PIN langsung aktif dan bisa diketik saat dibuka di iPhone
+window.addEventListener('DOMContentLoaded', () => {
+    const pinInput = document.getElementById('hiddenPinInput');
+    if (pinInput) {
+        pinInput.focus();
+    }
+}); 
             }
         }
     </script>
