@@ -446,16 +446,24 @@
         const DEFAULT_PIN = "150522";
         let tempBuktiBase64 = "";
 
-        // FUNGSI UNTUK MERESET / UPDATE TANGGAL & JAM SEKARANG SECARA REALTIME
-        function setNowDateTime() {
+        // FUNGSI PASANG TANGGAL & JAM SEKARANG + PASANG FILTER BULAN & TAHUN SEKARANG
+        function setNowDateTimeAndFilter() {
             const now = new Date();
+            const yearStr = String(now.getFullYear());
+            const monthStr = String(now.getMonth() + 1).padStart(2, '0');
+
+            // Set input form tanggal & jam
             document.getElementById('tglTransaksi').value = now.toISOString().split('T')[0];
             document.getElementById('jamTransaksi').value = now.toTimeString().split(' ')[0].substring(0, 5);
+
+            // Set default filter ke bulan & tahun sekarang
+            document.getElementById('filterBulan').value = monthStr;
+            document.getElementById('filterTahun').value = yearStr;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             initPinInputHandling();
-            setNowDateTime();
+            setNowDateTimeAndFilter();
 
             loadSavedOpacity();
             loadSavedLocalBg();
@@ -801,8 +809,8 @@
                     document.getElementById('buktiPreviewContainer').classList.add('hidden');
                     tempBuktiBase64 = "";
 
-                    // UPDATE TANGGAL & JAM SEKARANG SECARA REAL-TIME DENGAN OTOMATIS
-                    setNowDateTime();
+                    // PERBARUI TANGGAL & JAM SEKARANG DAN ATUR FILTER KE BULAN & TAHUN BERJALAN
+                    setNowDateTimeAndFilter();
 
                     btnSubmit.disabled = false;
                     btnSubmitText.classList.remove('hidden');
@@ -908,13 +916,13 @@
             const listContainer = document.getElementById('transactionList');
             listContainer.innerHTML = '';
 
-            // Hitung akumulasi total saldo dari SEMUA transaksi (Permanen/Keseluruhan)
+            // Akumulasi total saldo dari SEMUA transaksi tanpa terpengaruh filter
             transactions.forEach(item => {
                 if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
                 if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
             });
 
-            // Filter khusus untuk menyaring daftar tampilan transaksi di bawah
+            // Menyaring daftar riwayat transaksi sesuai bulan & tahun yang dipilih
             const filteredTransactions = transactions.filter(item => {
                 if (!item.tgl) return true;
                 const parts = item.tgl.split('-'); // Format YYYY-MM-DD
@@ -957,7 +965,7 @@
                 });
             }
 
-            // Tampilkan total saldo keseluruhan tanpa terpengaruh filter bulan/tahun
+            // Tampilkan total akumulasi keseluruhan
             const netBalance = totalMasuk - totalKeluar;
             document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
             document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
