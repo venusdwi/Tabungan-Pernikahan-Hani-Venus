@@ -1062,34 +1062,18 @@
             document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
             document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
             document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
-                    function requestIosNotificationPermission() {
-            if (!("Notification" in window)) {
-                alert("Maaf, perangkat atau browser ini tidak mendukung fitur Notifikasi.");
-                return;
-            }
-
-            // Cek status izin saat ini
-            if (Notification.permission === "granted") {
-                alert("Notifikasi sudah aktif sebelumnya!");
-            } else if (Notification.permission === "denied") {
-                alert("Izin notifikasi diblokir. Harap buka Pengaturan (Settings) iPhone -> Safari -> Notifikasi, lalu izinkan akses untuk situs ini.");
-            } else {
-                // Meminta izin baru
-                Notification.requestPermission().then((permission) => {
-                    if (permission === "granted") {
-                        alert("Berhasil! Notifikasi di iPhone sudah diaktifkan.");
-                        if ("vibrate" in navigator) {
-                            navigator.vibrate(200);
-                        }
-                    } else {
-                        alert("Izin notifikasi ditolak oleh sistem.");
-                    }
+                                function requestIosNotificationPermission() {
+            if (window.Notification && Notification.permission !== "granted") {
+                Notification.requestPermission().then(permission => {
+                    alert("Status Izin: " + permission);
                 }).catch(err => {
-                    alert("Error: " + err);
+                    alert("Gagal memuat izin: " + err);
                 });
+            } else if (Notification.permission === "granted") {
+                alert("Notifikasi sudah diizinkan sebelumnya!");
+            } else {
+                alert("Browser ini tidak mendukung notifikasi.");
             }
-        }
-
         }
     </script>
 </body>
