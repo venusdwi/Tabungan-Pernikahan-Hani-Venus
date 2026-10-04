@@ -62,7 +62,7 @@
         }
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #090d16; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #090d16; transition: background-color 0.3s ease, color 0.3s ease; }
         .font-num { font-family: 'Outfit', sans-serif; font-variant-numeric: tabular-nums; }
         .glass-box {
             background-color: rgba(255, 255, 255, var(--box-opacity, 0.75));
@@ -146,7 +146,6 @@
             font-size: 16px !important; 
         }
 
-        /* KEYFRAMES ANIMASI TRANSISI BERVARIASI */
         @keyframes animFade {
             0% { opacity: 0; transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1); }
@@ -170,7 +169,7 @@
         .effect-rotate { animation: animRotate 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950 overflow-hidden">
+<body id="appBody" class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950 overflow-hidden">
 
     <div id="bgImageLayer" class="zoom-in-bg opacity-100"></div>
 
@@ -247,7 +246,7 @@
         <!-- TOP BAR -->
         <div class="flex flex-row items-center justify-between gap-2 mb-6">
             <!-- TOMBOL OUR JOURNEY TO HALAL YANG BISA DIKLIK -->
-            <button type="button" onclick="openJourneyModal()" class="inline-flex items-center gap-1.5 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-300 text-[11px] sm:text-xs font-bold text-sky-700 shadow-sm transition transform active:scale-95 whitespace-nowrap cursor-pointer">
+            <button type="button" onclick="openJourneyModal()" class="inline-flex items-center gap-1.5 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-300 text-[11px] sm:text-xs font-bold text-sky-700 shadow-sm transition transform active:scale-95 whitespace-nowrap cursor-pointer z-30 relative">
                 <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
                 <span>Our Journey to Halal</span>
                 <i class="fa-solid fa-chevron-right text-[9px] ml-0.5 opacity-70"></i>
@@ -477,9 +476,9 @@
     </div>
 
     <!-- MODAL POP-UP FULLSCREEN: OUR JOURNEY TO HALAL & GALERI KITA -->
-    <div id="journeyModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[70] hidden opacity-0 transition-opacity duration-300 flex flex-col">
+    <div id="journeyModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[70] hidden opacity-0 transition-opacity duration-300 flex flex-col pointer-events-none">
         <!-- Header Pop-up -->
-        <div class="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-slate-900/55">
+        <div id="journeyHeader" class="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-slate-900/55 transition-colors duration-300">
             <div class="flex items-center gap-2 text-sky-300 font-serif text-lg sm:text-xl font-bold">
                 <i class="fa-solid fa-heart text-rose-500 animate-pulse"></i>
                 <span>Our Journey to Halal Gallery</span>
@@ -490,19 +489,18 @@
         </div>
 
         <!-- Body Content Pop-up Galeri -->
-        <div class="flex-1 overflow-y-auto p-4 sm:p-8 max-w-4xl w-full mx-auto">
+        <div id="journeyBody" class="flex-1 overflow-y-auto p-4 sm:p-8 max-w-4xl w-full mx-auto transition-colors duration-300">
             <div class="text-center mb-6 relative">
-                <p class="text-slate-300 text-sm max-w-md mx-auto mb-4">Abadikan setiap momen indah kebersamaan Hani & Venus menuju hari pernikahan.</p>
+                <p id="journeyDesc" class="text-slate-300 text-sm max-w-md mx-auto mb-4 transition-colors duration-300">Abadikan setiap momen indah kebersamaan Hani & Venus menuju hari pernikahan.</p>
                 
-                <!-- TOMBOL MULAI SLIDE SHOW DENGAN LAGU KITA HADAPI BERDUA -->
-                <div class="mb-5">
-                    <button onclick="startSlideShow()" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold px-6 py-3.5 rounded-2xl text-sm sm:text-base flex items-center justify-center gap-2 mx-auto shadow-lg transition transform active:scale-95">
-                        <i class="fa-solid fa-play"></i>
-                        <span>Mulai Slide Show & Lagu "Kita Hadapi Berdua" 🎵</span>
+                <!-- TOMBOL SLIDE SHOW HANYA LOGO PLAY -->
+                <div class="flex items-center justify-center gap-3 mb-5">
+                    <button onclick="startSlideShow()" class="w-14 h-14 bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-500 hover:scale-105 text-white rounded-full flex items-center justify-center text-xl shadow-[0_0_20px_rgba(244,63,94,0.6)] transition transform active:scale-95 cursor-pointer" title="Mulai Slide Show & Musik">
+                        <i class="fa-solid fa-play ml-1"></i>
                     </button>
                 </div>
 
-                <!-- Input Tambah Foto Galeri -->
+                <!-- Input Tambah Foto Galeri (Original File Tanpa Kompresi) -->
                 <div class="inline-block">
                     <input type="file" id="journeyPhotoInput" accept="image/*" class="hidden" onchange="uploadJourneyPhoto(event)">
                     <button type="button" onclick="document.getElementById('journeyPhotoInput').click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2">
@@ -512,7 +510,7 @@
                 </div>
             </div>
 
-            <!-- Grid Foto Galeri -->
+            <!-- Grid Foto Galeri (Foto Terbaru Otomatis di Atas Sebelah Kiri) -->
             <div id="journeyGalleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pb-12">
                 <div class="text-slate-400 text-center col-span-full py-8 text-sm">Memuat galeri foto...</div>
             </div>
@@ -520,16 +518,18 @@
     </div>
 
     <!-- MODAL SLIDE SHOW FULLSCREEN -->
-    <div id="slideshowModal" class="fixed inset-0 bg-slate-950 z-[80] hidden opacity-0 transition-opacity duration-500 flex flex-col items-center justify-between p-4 sm:p-6">
+    <div id="slideshowModal" class="fixed inset-0 bg-slate-950 z-[80] hidden opacity-0 transition-opacity duration-500 flex flex-col items-center justify-between p-4 sm:p-6 pointer-events-none">
         
-        <!-- Header Atas Slide Show (Tombol Silang Kembali ke Galeri) -->
+        <!-- Audio Player Resmi Overnight: Kita Lewati Berdua -->
+        <audio id="overnightAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
+
+        <!-- Header Atas Slide Show -->
         <div class="w-full flex items-center justify-between z-20">
             <div class="text-sky-200/90 font-serif text-xs sm:text-sm flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md shadow-md border border-white/10 truncate max-w-[75%]">
                 <i class="fa-solid fa-music text-pink-400 animate-spin"></i>
-                <span id="playingSongTitle" class="truncate">Memutar: Kita Hadapi Berdua 🎵</span>
+                <span id="playingSongTitle" class="truncate">Memutar: Overnight - Kita Lewati Berdua 🎵</span>
             </div>
 
-            <!-- TOMBOL SILANG KEMBALI KE HALAMAN GALERI FOTO -->
             <button onclick="stopSlideShowAndReturnToJourney()" class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-lg transition shadow-lg cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -545,15 +545,57 @@
             <span id="slideshowCounter" class="bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md border border-white/10 shadow-lg">Slide 1 / 1</span>
             <span class="text-rose-400 text-xs drop-shadow-md"><i class="fa-solid fa-heart"></i> Hani & Venus Journey</span>
         </div>
+    </div>
 
-        <!-- YOUTUBE IFRAME AUTOPLAY DI LATAR BELAKANG (DIJAMIN BERBUNYI DI HP) -->
-        <div id="ytBackgroundAudioContainer" class="absolute -top-[9999px] -left-[9999px] opacity-0 pointer-events-none">
-            <iframe id="ytAudioIframe" width="560" height="315" src="" title="YouTube audio player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    <!-- MODAL LIGHTBOX FOTO GALERI BESAR -->
+    <div id="lightboxModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[90] hidden opacity-0 transition-opacity duration-300 flex flex-col items-center justify-between p-4 pointer-events-none">
+        
+        <!-- Header Lightbox -->
+        <div class="w-full flex items-center justify-between max-w-4xl z-20 pt-2 relative">
+            
+            <span id="lightboxCounter" class="text-white text-sm font-bold bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/10 transition-colors duration-300">1 / 1</span>
+
+            <!-- POSISI TENGAH ATAS: TOMBOL HAPUS, DOWNLOAD, & DARK/WHITE MODE -->
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+                <!-- Tombol Hapus -->
+                <button onclick="deleteCurrentLightboxPhoto()" class="w-11 h-11 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-base backdrop-blur-md transition shadow-lg cursor-pointer" title="Hapus Foto Ini">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+                <!-- Tombol Download Foto Original -->
+                <button onclick="downloadCurrentLightboxPhoto()" class="w-11 h-11 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-base backdrop-blur-md transition shadow-lg cursor-pointer" title="Download Foto Original">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+                <!-- Tombol Dark Mode / White Mode -->
+                <button id="themeToggleBtn" onclick="toggleThemeMode()" class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-lg backdrop-blur-md transition shadow-lg cursor-pointer" title="Ganti Mode Terang / Gelap">
+                    <i id="themeToggleIcon" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+
+            <button id="lightboxCloseBtn" onclick="closeLightbox()" class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-xl transition shadow-lg cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
+
+        <!-- Gambar Utama Lightbox dengan Tombol Navigasi Kiri / Kanan -->
+        <div class="relative w-full flex-1 flex items-center justify-center max-w-4xl px-2 my-2">
+            <!-- Tombol Geser Kiri (Prev) -->
+            <button id="lightboxPrevBtn" onclick="prevLightboxImage()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer">
+                <i class="fa-solid fa-chevron-left text-lg"></i>
+            </button>
+
+            <img id="lightboxImageSrc" src="" alt="Zoom Foto" class="max-h-[80vh] max-w-full object-contain rounded-2xl shadow-2xl border border-white/10">
+
+            <!-- Tombol Geser Kanan (Next) -->
+            <button id="lightboxNextBtn" onclick="nextLightboxImage()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer">
+                <i class="fa-solid fa-chevron-right text-lg"></i>
+            </button>
+        </div>
+
+        <div class="text-slate-400 text-xs pb-2"><i class="fa-solid fa-heart text-rose-500"></i> Hani & Venus Kenangan</div>
     </div>
 
     <!-- MODAL CUSTOM SELECT POP-UP (TIPE TRANSAKSI & NAMA PENABUNG) -->
-    <div id="customSelectModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center">
+    <div id="customSelectModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center pointer-events-none">
         <div id="customSelectContent" class="bg-white w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 transform translate-y-full sm:translate-y-0 sm:scale-95 transition-transform duration-300 shadow-2xl pb-10 sm:pb-8">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5 sm:hidden"></div>
             
@@ -567,7 +609,7 @@
     </div>
 
     <!-- MODAL NOTIFIKASI SELESAI -->
-    <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+    <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none">
         <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5 animate-bounce text-4xl">
                 <i class="fa-solid fa-check"></i>
@@ -581,8 +623,8 @@
     </div>
 
     <!-- MODAL EDIT / HAPUS TRANSAKSI -->
-    <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-[2rem] p-6 sm:p-8 max-w-md w-full shadow-2xl relative max-h-[95vh] overflow-y-auto">
+    <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none">
+        <div class="bg-white rounded-[2rem] p-6 sm:p-8 max-w-md w-full shadow-2xl relative max-h-[95vh] overflow-y-auto pointer-events-auto">
             <button onclick="closeEditModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-xl z-10 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -655,8 +697,8 @@
     </div>
 
     <!-- MODAL FULLSCREEN BUKTI FOTO -->
-    <div id="imageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300" onclick="closeImageModal()">
-        <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+    <div id="imageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300 pointer-events-none" onclick="closeImageModal()">
+        <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center pointer-events-auto" onclick="event.stopPropagation()">
             <button onclick="closeImageModal()" class="absolute -top-12 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl backdrop-blur-md transition z-10 shadow-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -686,14 +728,12 @@
         let currentPin = ""; 
         let tempBuktiBase64 = "";
         let isInitialLoad = true;
+        let isDarkMode = true; // Status Dark / White mode
 
-        // ID YOUTUBE RESMI LAGU "KITA HADAPI BERDUA" (Tulus)
-        const SONG_KITA_HADAPI_BERDUA_ID = "Q4q690Y8e9k"; 
-
-        // VARIABEL SLIDE SHOW & TIMEOUT
         let slideshowInterval = null;
         let songTimeout = null;
         let currentSlideIndex = 0;
+        let currentLightboxIndex = 0;
 
         let activePopupTarget = 'main'; 
         let activePopupType = 'tipe'; 
@@ -733,57 +773,123 @@
         });
 
         // ------------------------------------------------------------------
-        // LOGIKA MODAL JOURNEY & GALERI FOTO
+        // LOGIKA DARK MODE & WHITE MODE MENYELURUH (NOMOR FOTO & IKON HITAM DI WHITE MODE)
+        // ------------------------------------------------------------------
+        function toggleThemeMode() {
+            isDarkMode = !isDarkMode;
+            const body = document.getElementById('appBody');
+            const icon = document.getElementById('themeToggleIcon');
+            const journeyHeader = document.getElementById('journeyHeader');
+            const journeyBody = document.getElementById('journeyBody');
+            const journeyDesc = document.getElementById('journeyDesc');
+            const lightboxModal = document.getElementById('lightboxModal');
+            const lightboxCounter = document.getElementById('lightboxCounter');
+            const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+            const lightboxPrevBtn = document.getElementById('lightboxPrevBtn');
+            const lightboxNextBtn = document.getElementById('lightboxNextBtn');
+
+            if (isDarkMode) {
+                // Mode Gelap (Dark Mode)
+                body.style.backgroundColor = "#090d16";
+                body.classList.remove('bg-slate-100');
+                body.classList.add('bg-slate-950');
+                icon.className = "fa-solid fa-sun";
+
+                if (journeyHeader) {
+                    journeyHeader.style.backgroundColor = "rgba(15, 23, 42, 0.85)";
+                    journeyHeader.style.color = "#ffffff";
+                }
+                if (journeyBody) {
+                    journeyBody.style.backgroundColor = "rgba(9, 13, 22, 0.95)";
+                    journeyBody.style.color = "#f8fafc";
+                }
+                if (journeyDesc) {
+                    journeyDesc.className = "text-slate-300 text-sm max-w-md mx-auto mb-4 transition-colors duration-300";
+                }
+                if (lightboxModal) {
+                    lightboxModal.style.backgroundColor = "rgba(9, 13, 22, 0.95)";
+                }
+                if (lightboxCounter) {
+                    lightboxCounter.className = "text-white text-sm font-bold bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/10 transition-colors duration-300";
+                }
+                if (lightboxCloseBtn) {
+                    lightboxCloseBtn.className = "w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-xl transition shadow-lg cursor-pointer";
+                }
+                if (lightboxPrevBtn) {
+                    lightboxPrevBtn.className = "absolute left-2 sm:left-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer";
+                }
+                if (lightboxNextBtn) {
+                    lightboxNextBtn.className = "absolute right-2 sm:right-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer";
+                }
+            } else {
+                // Mode Terang (White Mode) - Tanda Silang, Nomor Foto & Tombol Jadi Hitam
+                body.style.backgroundColor = "#f1f5f9";
+                body.classList.remove('bg-slate-950');
+                body.classList.add('bg-slate-100');
+                icon.className = "fa-solid fa-moon";
+
+                if (journeyHeader) {
+                    journeyHeader.style.backgroundColor = "rgba(241, 245, 249, 0.95)";
+                    journeyHeader.style.color = "#0f172a";
+                }
+                if (journeyBody) {
+                    journeyBody.style.backgroundColor = "rgba(255, 255, 255, 0.98)";
+                    journeyBody.style.color = "#0f172a";
+                }
+                if (journeyDesc) {
+                    journeyDesc.className = "text-slate-600 text-sm max-w-md mx-auto mb-4 transition-colors duration-300";
+                }
+                if (lightboxModal) {
+                    lightboxModal.style.backgroundColor = "rgba(241, 245, 249, 0.95)";
+                }
+                if (lightboxCounter) {
+                    lightboxCounter.className = "text-slate-900 text-sm font-bold bg-slate-200 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-slate-300 transition-colors duration-300";
+                }
+                if (lightboxCloseBtn) {
+                    lightboxCloseBtn.className = "w-11 h-11 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-full flex items-center justify-center text-xl transition shadow-lg border border-slate-300 cursor-pointer";
+                }
+                if (lightboxPrevBtn) {
+                    lightboxPrevBtn.className = "absolute left-2 sm:left-6 z-20 w-12 h-12 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-full flex items-center justify-center backdrop-blur-md border border-slate-300 shadow-lg transition cursor-pointer";
+                }
+                if (lightboxNextBtn) {
+                    lightboxNextBtn.className = "absolute right-2 sm:right-6 z-20 w-12 h-12 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-full flex items-center justify-center backdrop-blur-md border border-slate-300 shadow-lg transition cursor-pointer";
+                }
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // MODAL OUR JOURNEY TO HALAL
         // ------------------------------------------------------------------
         function openJourneyModal() {
             const modal = document.getElementById('journeyModal');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden', 'pointer-events-none');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
         function closeJourneyModal() {
             const modal = document.getElementById('journeyModal');
             modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
         }
 
+        // UPLOAD FOTO 100% ORIGINAL TANPA KOMPRESI
         function uploadJourneyPhoto(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const maxDim = 800;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height && width > maxDim) {
-                            height = Math.round((height * maxDim) / width);
-                            width = maxDim;
-                        } else if (height > maxDim) {
-                            width = Math.round((width * maxDim) / height);
-                            height = maxDim;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
-                        
-                        const newPhotoObj = {
-                            id: Date.now(),
-                            url: compressedBase64
-                        };
-
-                        db.collection("journeyGallery").add(newPhotoObj).catch(err => {
-                            alert("Gagal mengunggah foto ke cloud.");
-                        });
+                    const originalBase64 = e.target.result; // Data asli murni tanpa kompresi
+                    
+                    const newPhotoObj = {
+                        id: Date.now(),
+                        url: originalBase64
                     };
-                    img.src = e.target.result;
+
+                    db.collection("journeyGallery").add(newPhotoObj).catch(err => {
+                        alert("Gagal mengunggah foto ke cloud.");
+                    });
                 };
                 reader.readAsDataURL(file);
             }
@@ -798,6 +904,10 @@
                         ...doc.data()
                     });
                 });
+                
+                // Mengurutkan dari yang terbaru (ID terbesar) agar muncul di atas sebelah kiri
+                photos.sort((a, b) => b.id - a.id);
+
                 journeyPhotos = photos;
                 updateJourneyGalleryUI();
             });
@@ -812,12 +922,12 @@
                 return;
             }
 
-            journeyPhotos.forEach((photo) => {
+            journeyPhotos.forEach((photo, index) => {
                 const div = document.createElement('div');
-                div.className = "relative aspect-square rounded-2xl overflow-hidden border border-white/20 group shadow-md bg-slate-900";
+                div.className = "relative aspect-square rounded-2xl overflow-hidden border border-white/20 group shadow-md bg-slate-950";
                 div.innerHTML = `
-                    <img src="${photo.url}" alt="Kenangan" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition duration-300" onclick="openImageModal('${photo.url}')">
-                    <button onclick="deleteJourneyPhoto('${photo.docId}')" class="absolute top-2 right-2 w-8 h-8 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-md">
+                    <img src="${photo.url}" alt="Kenangan" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition duration-300" onclick="openLightbox(${index})">
+                    <button onclick="deleteJourneyPhoto('${photo.docId}')" class="absolute top-2 right-2 w-8 h-8 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-md cursor-pointer">
                         <i class="fa-solid fa-trash text-xs"></i>
                     </button>
                 `;
@@ -834,7 +944,86 @@
         }
 
         // ------------------------------------------------------------------
-        // LOGIKA SLIDE SHOW & YOUTUBE AUDIO AUTOPLAY
+        // LOGIKA LIGHTBOX FOTO & DOWNLOAD FILE ORIGINAL
+        // ------------------------------------------------------------------
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            const modal = document.getElementById('lightboxModal');
+            updateLightboxContent();
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightboxModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
+        }
+
+        function updateLightboxContent() {
+            if (journeyPhotos.length === 0) {
+                closeLightbox();
+                return;
+            }
+            if (currentLightboxIndex >= journeyPhotos.length) {
+                currentLightboxIndex = journeyPhotos.length - 1;
+            }
+            const photo = journeyPhotos[currentLightboxIndex];
+            document.getElementById('lightboxImageSrc').src = photo.url;
+            document.getElementById('lightboxCounter').innerText = `${currentLightboxIndex + 1} / ${journeyPhotos.length}`;
+        }
+
+        function nextLightboxImage() {
+            currentLightboxIndex++;
+            if (currentLightboxIndex >= journeyPhotos.length) {
+                currentLightboxIndex = 0;
+            }
+            updateLightboxContent();
+        }
+
+        function prevLightboxImage() {
+            currentLightboxIndex--;
+            if (currentLightboxIndex < 0) {
+                currentLightboxIndex = journeyPhotos.length - 1;
+            }
+            updateLightboxContent();
+        }
+
+        function deleteCurrentLightboxPhoto() {
+            if (journeyPhotos.length === 0) return;
+            const photo = journeyPhotos[currentLightboxIndex];
+            if (confirm("Hapus foto kenangan ini dari galeri?")) {
+                db.collection("journeyGallery").doc(photo.docId).delete().then(() => {
+                    if (journeyPhotos.length <= 1) {
+                        closeLightbox();
+                    } else {
+                        if (currentLightboxIndex >= journeyPhotos.length - 1) {
+                            currentLightboxIndex = journeyPhotos.length - 2;
+                        }
+                        updateLightboxContent();
+                    }
+                }).catch(err => {
+                    alert("Gagal menghapus foto.");
+                });
+            }
+        }
+
+        // Fungsi Download Foto Original
+        function downloadCurrentLightboxPhoto() {
+            if (journeyPhotos.length === 0) return;
+            const photo = journeyPhotos[currentLightboxIndex];
+            const link = document.createElement('a');
+            link.href = photo.url;
+            link.download = `Hani_Venus_Kenangan_${currentLightboxIndex + 1}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ------------------------------------------------------------------
+        // LOGIKA SLIDE SHOW & LAGU OVERNIGHT ASLI
         // ------------------------------------------------------------------
         const effectClasses = ['effect-fade', 'effect-zoom', 'effect-slide', 'effect-rotate'];
 
@@ -846,17 +1035,17 @@
 
             closeJourneyModal();
             
-            // Masukkan link YouTube Autoplay ke iframe tersembunyi
-            document.getElementById('ytAudioIframe').src = `https://www.youtube.com/embed/${SONG_KITA_HADAPI_BERDUA_ID}?autoplay=1&enablejsapi=1`;
+            const audio = document.getElementById('overnightAudio');
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio autoplay prevented:", e));
 
             const modal = document.getElementById('slideshowModal');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden', 'pointer-events-none');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
 
             currentSlideIndex = 0;
             showSlide(currentSlideIndex);
 
-            // Ganti slide setiap 3 detik
             slideshowInterval = setInterval(() => {
                 currentSlideIndex++;
                 if (currentSlideIndex >= journeyPhotos.length) {
@@ -865,7 +1054,6 @@
                 showSlide(currentSlideIndex);
             }, 3000);
 
-            // Durasi total lagu / slide show (2.5 menit / 150000ms), otomatis kembali ke galeri
             songTimeout = setTimeout(() => {
                 stopSlideShowAndReturnToJourney();
             }, 150000);
@@ -888,19 +1076,21 @@
             clearInterval(slideshowInterval);
             clearTimeout(songTimeout);
             
-            // Hentikan musik YouTube dengan mengosongkan iframe
-            document.getElementById('ytAudioIframe').src = "";
+            const audio = document.getElementById('overnightAudio');
+            audio.pause();
+            audio.currentTime = 0;
 
             const modal = document.getElementById('slideshowModal');
             modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
         }
 
         function stopSlideShowAndReturnToJourney() {
             stopSlideShow();
             openJourneyModal();
         }
-        // ------------------------------------------------------------------
 
         // LOGIKA DOWNLOAD CETAK PDF
         function downloadPDF() {
@@ -1000,7 +1190,7 @@
         const optionDataPenabung = [
             { val: 'HANI', label: 'HANI', icon: 'fa-user-astronaut', color: 'indigo' },
             { val: 'VENUS', label: 'VENUS', icon: 'fa-user-ninja', color: 'violet' },
-            { val: 'BERSAMA👩‍❤️‍💋‍👨', label: 'BERSAMA 👩‍❤️‍‍💋‍👨', icon: 'fa-users', color: 'pink' }
+            { val: 'BERSAMA👩‍❤️‍💋‍👨', label: 'BERSAMA 👩‍❤️‍💋‍‍👨', icon: 'fa-users', color: 'pink' }
         ];
 
         function openPopup(type, target) {
@@ -1032,7 +1222,7 @@
                 });
             }
 
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden', 'pointer-events-none');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 document.getElementById('customSelectContent').classList.remove('translate-y-full', 'sm:scale-95');
@@ -1045,7 +1235,7 @@
             const checkIcon = isSelected ? `<i class="fa-solid fa-circle-check text-${opt.color}-500 text-xl ml-auto"></i>` : '';
 
             return `
-                <button type="button" onclick="selectOption('${opt.val}', '${opt.label}')" class="w-full flex items-center p-4 rounded-xl border ${borderClass} transition text-left shadow-sm">
+                <button type="button" onclick="selectOption('${opt.val}', '${opt.label}')" class="w-full flex items-center p-4 rounded-xl border ${borderClass} transition text-left shadow-sm cursor-pointer">
                     <div class="w-10 h-10 rounded-full flex items-center justify-center mr-4 transition ${iconBgClass}">
                         <i class="fa-solid ${opt.icon}"></i>
                     </div>
@@ -1088,7 +1278,7 @@
             document.getElementById('customSelectContent').classList.add('translate-y-full', 'sm:scale-95');
             modal.classList.add('opacity-0');
             setTimeout(() => {
-                modal.classList.add('hidden');
+                modal.classList.add('hidden', 'pointer-events-none');
             }, 300);
         }
 
@@ -1309,14 +1499,16 @@
             const modal = document.getElementById('imageModal');
             const img = document.getElementById('imageModalSrc');
             img.src = src;
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden', 'pointer-events-none');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
         function closeImageModal() {
             const modal = document.getElementById('imageModal');
             modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
         }
 
         function openBgPicker() {
@@ -1611,14 +1803,16 @@
             }
 
             const modal = document.getElementById('editModal');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden', 'pointer-events-none');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
         function closeEditModal() {
             const modal = document.getElementById('editModal');
             modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
         }
 
         function handleEditSubmit(e) {
