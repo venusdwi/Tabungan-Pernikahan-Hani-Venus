@@ -13,6 +13,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- jsPDF Library untuk Export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
     <!-- DUKUNGAN APLIKASI PWA UNTUK ANDROID & IOS -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
@@ -94,42 +98,145 @@
         ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
         ::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(2, 132, 199, 0.6); }
+
+        .pin-btn {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 75px; 
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.1s ease, background-color 0.1s ease;
+            cursor: pointer;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        @media (hover: hover) {
+            .pin-btn:hover { background-color: rgba(255, 255, 255, 0.15); }
+        }
+        
+        .pin-btn:active {
+            transform: scale(0.9);
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pin-btn-reset {
+            background-color: rgba(244, 63, 94, 0.08);
+            border-color: rgba(244, 63, 94, 0.15);
+            color: rgb(251, 113, 133);
+        }
+        .pin-btn-reset:active { background-color: rgba(244, 63, 94, 0.25); }
+
+        .pin-btn-del {
+            background-color: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.15);
+            color: rgb(251, 191, 36);
+        }
+        .pin-btn-del:active { background-color: rgba(245, 158, 11, 0.25); }
+
+        input[type="text"], input[type="date"], input[type="time"], input[type="number"] {
+            font-size: 16px !important; 
+        }
+
+        /* KEYFRAMES ANIMASI TRANSISI BERVARIASI */
+        @keyframes animFade {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes animZoom {
+            0% { opacity: 0; transform: scale(1.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes animSlide {
+            0% { opacity: 0; transform: translateX(80px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes animRotate {
+            0% { opacity: 0; transform: rotate(5deg) scale(1.1); }
+            100% { opacity: 1; transform: rotate(0deg) scale(1); }
+        }
+
+        .effect-fade { animation: animFade 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .effect-zoom { animation: animZoom 0.8s cubic-bezier(0.25, 1, 0.3, 1) forwards; }
+        .effect-slide { animation: animSlide 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .effect-rotate { animation: animRotate 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
+<body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950 overflow-hidden">
 
-    <!-- LAYER LATAR BELAKANG DENGAN EFEK ZOOM-IN SMOOTH -->
     <div id="bgImageLayer" class="zoom-in-bg opacity-100"></div>
 
     <!-- OVERLAY LAYAR KUNCI PIN -->
-    <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-500">
-        <div class="bg-white/90 backdrop-blur-lg border border-white/50 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl transform transition-all duration-300">
-            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
-                <i class="fa-solid fa-lock"></i>
-            </div>
+    <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-700">
+        <div class="bg-slate-900/70 backdrop-blur-xl border border-sky-500/30 p-6 sm:p-8 rounded-[2rem] max-w-sm w-full text-center shadow-[0_8px_32px_rgba(2,132,199,0.3)] transform transition-all duration-300 overflow-hidden relative">
             
-            <h2 class="font-serif text-2xl font-bold text-slate-900 mb-1">Akses Terkunci</h2>
-            <p class="text-xs text-slate-500 mb-6">Masukkan PIN keamanan 6 digit</p>
-
-            <div class="relative mb-6">
-                <input type="password" id="hiddenPinInput" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" oninput="handlePinInput(this)" class="absolute inset-0 w-full h-full opacity-0 z-20 cursor-pointer">
+            <div id="pinInputContent" class="transition-opacity duration-300">
+                <div class="w-14 h-14 bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-xl shadow-inner">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
                 
-                <div class="flex justify-center gap-2 z-10 relative pointer-events-none">
-                    <div id="dot-0" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-100 border border-slate-300 rounded-xl text-xl text-slate-800"></div>
-                    <div id="dot-1" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-100 border border-slate-300 rounded-xl text-xl text-slate-800"></div>
-                    <div id="dot-2" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-100 border border-slate-300 rounded-xl text-xl text-slate-800"></div>
-                    <div id="dot-3" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-100 border border-slate-300 rounded-xl text-xl text-slate-800"></div>
-                    <div id="dot-4" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-100 border border-slate-300 rounded-xl text-xl text-slate-800"></div>
-                    <div id="dot-5" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-100 border border-slate-300 rounded-xl text-xl text-slate-800"></div>
+                <h2 class="font-serif text-2xl font-bold text-white mb-1">Akses Terkunci</h2>
+                <p class="text-xs text-sky-200/80 mb-6">Masukkan PIN keamanan 6 digit</p>
+
+                <div class="relative mb-6">
+                    <div class="flex justify-center gap-2 sm:gap-3 z-10 relative">
+                        <div id="dot-0" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
+                        <div id="dot-1" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
+                        <div id="dot-2" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
+                        <div id="dot-3" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
+                        <div id="dot-4" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
+                        <div id="dot-5" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
+                    </div>
+                </div>
+
+                <p id="pinErrMsg" class="text-xs text-rose-400 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
+
+                <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-2 px-2 sm:px-4 place-items-center">
+                    <button type="button" onclick="appendPin('1')" class="pin-btn">1</button>
+                    <button type="button" onclick="appendPin('2')" class="pin-btn">2</button>
+                    <button type="button" onclick="appendPin('3')" class="pin-btn">3</button>
+                    <button type="button" onclick="appendPin('4')" class="pin-btn">4</button>
+                    <button type="button" onclick="appendPin('5')" class="pin-btn">5</button>
+                    <button type="button" onclick="appendPin('6')" class="pin-btn">6</button>
+                    <button type="button" onclick="appendPin('7')" class="pin-btn">7</button>
+                    <button type="button" onclick="appendPin('8')" class="pin-btn">8</button>
+                    <button type="button" onclick="appendPin('9')" class="pin-btn">9</button>
+                    
+                    <button type="button" onclick="clearAllPin()" class="pin-btn pin-btn-reset"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" onclick="appendPin('0')" class="pin-btn">0</button>
+                    <button type="button" onclick="deletePin()" class="pin-btn pin-btn-del text-[1.25rem]"><i class="fa-solid fa-delete-left"></i></button>
+                </div>
+
+                <div id="btnPinSubmit" class="hidden mt-4 w-full bg-blue-600/20 border border-blue-500/30 text-blue-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2">
+                    <span id="btnPinSpinner"><i class="fa-solid fa-spinner animate-spin"></i> Memeriksa...</span>
                 </div>
             </div>
 
-            <p id="pinErrMsg" class="text-xs text-rose-500 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
-
-            <button id="btnPinSubmit" onclick="verifyPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                <span id="btnPinText">Masuk Web</span>
-                <span id="btnPinSpinner" class="hidden"><i class="fa-solid fa-spinner animate-spin"></i> Memeriksa...</span>
-            </button>
+            <div id="ringAnimationContainer" class="hidden flex-col items-center justify-center py-10 opacity-0 transition-opacity duration-300">
+                <h3 class="font-serif text-2xl font-bold text-white mb-10 tracking-wide drop-shadow-md">Akses Diberikan</h3>
+                
+                <div class="relative flex justify-center items-center w-full h-16 mb-8">
+                    <!-- Cincin Cowok (Lebih Besar) -->
+                    <div id="ringMale" class="absolute w-14 h-14 rounded-full border-[4px] border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] transform -translate-x-16 transition-all duration-700 ease-out z-10"></div>
+                    
+                    <!-- Cincin Cewek (Lebih Mungil / Kecil dengan Permata) -->
+                    <div id="ringFemale" class="absolute w-11 h-11 rounded-full border-[3.5px] border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] transform translate-x-16 transition-all duration-700 ease-out z-20 flex justify-center items-center">
+                        <div class="absolute -top-[13px] text-sky-100 text-[13px] drop-shadow-[0_0_8px_rgba(186,230,253,0.9)]">
+                            <i class="fa-solid fa-gem"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <p id="welcomeText" class="text-sm text-sky-200/90 font-medium opacity-0 transition-opacity duration-500">Menyatukan Impian...</p>
+            </div>
         </div>
     </div>
 
@@ -139,13 +246,14 @@
     <div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
         <!-- TOP BAR -->
         <div class="flex flex-row items-center justify-between gap-2 mb-6">
-            <div class="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-sky-200 text-[11px] sm:text-xs font-semibold text-sky-700 shadow-sm whitespace-nowrap">
+            <!-- TOMBOL OUR JOURNEY TO HALAL YANG BISA DIKLIK -->
+            <button type="button" onclick="openJourneyModal()" class="inline-flex items-center gap-1.5 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-300 text-[11px] sm:text-xs font-bold text-sky-700 shadow-sm transition transform active:scale-95 whitespace-nowrap cursor-pointer">
                 <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
                 <span>Our Journey to Halal</span>
-            </div>
+                <i class="fa-solid fa-chevron-right text-[9px] ml-0.5 opacity-70"></i>
+            </button>
 
             <div class="flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 shadow-sm">
-                <!-- Input foto latar belakang -->
                 <input type="file" id="bgImageInput" accept="image/*" class="hidden" onchange="uploadBgImage(event)">
                 <button type="button" onclick="openBgPicker()" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
                     <i class="fa-solid fa-image"></i>
@@ -197,7 +305,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="mt-3 text-center">
                     <button onclick="location.reload()" class="bg-white/80 hover:bg-white text-slate-700 hover:text-blue-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 transition inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate-right"></i>
@@ -212,101 +320,102 @@
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
+                        <span class="text-sm font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
                         <span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
                     </div>
                     <h2 id="totalSaldo" class="font-num text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight mb-1">Rp 0</h2>
-                    <p class="text-xs text-slate-500">Total dana gabungan pernikahan saat ini</p>
                 </div>
             </div>
 
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
+                        <span class="text-sm font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
                         <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
                     </div>
                     <h2 id="topTotalIn" class="font-num text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight mb-1">Rp 0</h2>
-                    <p class="text-xs text-slate-500">Akumulasi semua pemasukan</p>
                 </div>
             </div>
 
             <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
+                        <span class="text-sm font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
                         <span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">- Keluar</span>
                     </div>
                     <h2 id="topTotalOut" class="font-num text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight mb-1">Rp 0</h2>
-                    <p class="text-xs text-slate-500">Akumulasi semua pengeluaran</p>
                 </div>
             </div>
         </div>
 
-        <!-- FORM INPUT TABUNGAN -->
+        <!-- FORM INPUT TABUNGAN (DIPERBESAR) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
             <div class="lg:col-span-12">
-                <div class="glass-box rounded-2xl p-6 sm:p-7">
-                    <div class="flex items-center gap-2 mb-5 border-b border-sky-100 pb-3">
-                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                <div class="glass-box rounded-2xl p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-6 border-b border-sky-100 pb-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
                             <i class="fa-solid fa-plus"></i>
                         </div>
                         <div>
-                            <h3 class="font-serif text-lg font-bold text-slate-900">Input Catatan Tabungan</h3>
-                            <p class="text-xs text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
+                            <h3 class="font-serif text-xl font-bold text-slate-900">Input Catatan Tabungan</h3>
+                            <p class="text-sm text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
                         </div>
                     </div>
 
-                    <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                    <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                        
+                        <!-- TOMBOL POPUP TIPE TRANSAKSI -->
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Tipe Transaksi *</label>
-                            <select id="tipeTransaksi" onchange="updateKeteranganValidation()" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="pemasukan">➕ Pemasukan (+)</option>
-                                <option value="pengeluaran">➖ Pengeluaran (-)</option>
-                            </select>
+                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Tipe Transaksi *</label>
+                            <input type="hidden" id="tipeTransaksi" required>
+                            <button type="button" onclick="openPopup('tipe', 'main')" class="w-full bg-white/90 border border-slate-200 hover:border-blue-400 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-400 flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                                <span id="textTipeTransaksi">-- Pilih Tipe Transaksi --</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+
+                        <!-- TOMBOL POPUP NAMA PENABUNG -->
+                        <div>
+                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Nama Penabung *</label>
+                            <input type="hidden" id="namaPenabung" required>
+                            <button type="button" onclick="openPopup('penabung', 'main')" class="w-full bg-white/90 border border-slate-200 hover:border-blue-400 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-400 flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                                <span id="textNamaPenabung">-- Pilih Nama Penabung --</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nama Penabung *</label>
-                            <select id="namaPenabung" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="HANI">HANI</option>
-                                <option value="VENUS">VENUS</option>
-                                <option value="BERSAMA👩‍❤️‍💋‍👨">BERSAMA👩‍❤️‍💋‍👨</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Tanggal & Jam *</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="date" id="tglTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <input type="time" id="jamTransaksi" required class="w-full bg-white/80 border border-slate-200 rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Tanggal & Jam *</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="date" id="tglTransaksi" required class="w-full bg-white/90 border border-slate-200 rounded-xl px-3 sm:px-4 py-3.5 text-base font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                                <input type="time" id="jamTransaksi" required class="w-full bg-white/90 border border-slate-200 rounded-xl px-3 sm:px-4 py-3.5 text-base font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Jumlah (Rp) *</label>
+                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Jumlah (Rp) *</label>
                             <div class="relative">
-                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">Rp</span>
-                                <input type="text" id="jumlahRupiah" inputmode="numeric" placeholder="0" required oninput="formatRupiahInput(this)" class="w-full bg-white/80 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-slate-900 font-num font-extrabold text-lg sm:text-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-lg">Rp</span>
+                                <input type="text" id="jumlahRupiah" inputmode="numeric" placeholder="0" required oninput="formatRupiahInput(this)" class="w-full bg-white/90 border border-slate-200 rounded-xl pl-12 pr-4 py-4 text-slate-900 font-num font-extrabold text-xl sm:text-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
                                 Keterangan / Catatan <span id="ketRequiredMark" class="text-rose-500 hidden">*</span> <span id="ketOptionalMark" class="text-slate-400 font-normal">(Opsional)</span>
                             </label>
-                            <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Souvenir / Tabungan Bulanan" class="w-full bg-white/80 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Tabungan Bulanan" class="w-full bg-white/90 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Lampirkan Bukti Transfer / Nota (Opsional)</label>
-                            <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                            <div id="buktiPreviewContainer" class="hidden mt-2 relative w-24 h-24 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden cursor-pointer" onclick="openImageModal(document.getElementById('buktiPreviewImg').src)">
+                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Lampirkan Bukti Transfer (Opsional)</label>
+                            <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                            <div id="buktiPreviewContainer" class="hidden mt-3 relative w-28 h-28 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden cursor-pointer" onclick="openImageModal(document.getElementById('buktiPreviewImg').src)">
                                 <img id="buktiPreviewImg" src="" alt="Preview Bukti" class="w-full h-full object-cover">
                             </div>
                         </div>
 
-                        <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
+                        <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2 mt-2 text-lg">
                             <span id="btnSubmitText">Simpan Transaksi</span>
                             <span id="btnSubmitSpinner" class="hidden"><i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...</span>
                         </button>
@@ -315,66 +424,157 @@
             </div>
         </div>
 
-        <!-- RIWAYAT TRANSAKSI DENGAN FILTER BULAN & TAHUN -->
-        <div class="glass-box rounded-2xl p-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-200/60 pb-3">
+        <!-- RIWAYAT TRANSAKSI -->
+        <div class="glass-box rounded-2xl p-6 sm:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b border-slate-200/60 pb-4">
                 <div>
-                    <h3 class="font-serif text-lg font-bold text-slate-900">Riwayat Transaksi</h3>
-                    <span class="text-[11px] text-slate-500 italic">*Klik transaksi untuk edit/hapus</span>
+                    <h3 class="font-serif text-xl font-bold text-slate-900">Riwayat Transaksi</h3>
+                    <span class="text-xs text-slate-500 italic">*Klik pada item untuk edit/hapus</span>
                 </div>
 
-                <!-- FILTER BULAN DAN TAHUN -->
-                <div class="flex items-center gap-2">
-                    <div class="relative">
-                        <select id="filterBulan" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
-                            <option value="all">Semua Bulan</option>
-                            <option value="01">Januari</option>
-                            <option value="02">Februari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                    </div>
+                <!-- Bagian Filter & Cetak PDF -->
+                <div class="flex flex-wrap items-center gap-2 mt-3 sm:mt-0">
+                    <select id="filterBulan" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-sm font-bold text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+                        <option value="all">Semua Bulan</option>
+                        <option value="01">Januari</option>
+                        <option value="02">Februari</option>
+                        <option value="03">Maret</option>
+                        <option value="04">April</option>
+                        <option value="05">Mei</option>
+                        <option value="06">Juni</option>
+                        <option value="07">Juli</option>
+                        <option value="08">Agustus</option>
+                        <option value="09">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
 
-                    <div class="relative">
-                        <select id="filterTahun" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
-                            <option value="all">Semua Tahun</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                        </select>
-                    </div>
+                    <select id="filterTahun" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-sm font-bold text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+                        <option value="all">Semua Tahun</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                    </select>
 
-                    <button onclick="resetFilter()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2.5 py-1.5 rounded-xl transition border border-slate-200" title="Reset Filter">
+                    <button onclick="resetFilter()" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-3 py-2.5 rounded-xl transition border border-slate-200 shadow-sm" title="Reset Filter">
                         <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+
+                    <!-- TOMBOL DOWNLOAD PDF -->
+                    <button onclick="downloadPDF()" class="text-sm bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-3 py-2.5 rounded-xl transition border border-rose-200 flex items-center gap-2 shadow-sm" title="Download Laporan PDF">
+                        <i class="fa-solid fa-file-pdf"></i> <span class="hidden sm:inline">Rekap PDF</span>
                     </button>
                 </div>
             </div>
 
-            <div id="transactionList" class="space-y-3">
-                <p class="text-xs text-slate-500 text-center py-4">Mengambil data cloud...</p>
+            <div id="transactionList" class="space-y-4">
+                <p class="text-sm text-slate-500 text-center py-4">Mengambil data cloud...</p>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP FULLSCREEN: OUR JOURNEY TO HALAL & GALERI KITA -->
+    <div id="journeyModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[70] hidden opacity-0 transition-opacity duration-300 flex flex-col">
+        <!-- Header Pop-up -->
+        <div class="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-slate-900/55">
+            <div class="flex items-center gap-2 text-sky-300 font-serif text-lg sm:text-xl font-bold">
+                <i class="fa-solid fa-heart text-rose-500 animate-pulse"></i>
+                <span>Our Journey to Halal Gallery</span>
+            </div>
+            <button onclick="closeJourneyModal()" class="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Body Content Pop-up Galeri -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-8 max-w-4xl w-full mx-auto">
+            <div class="text-center mb-6 relative">
+                <p class="text-slate-300 text-sm max-w-md mx-auto mb-4">Abadikan setiap momen indah kebersamaan Hani & Venus menuju hari pernikahan.</p>
+                
+                <!-- TOMBOL MULAI SLIDE SHOW DENGAN LAGU KITA HADAPI BERDUA -->
+                <div class="mb-5">
+                    <button onclick="startSlideShow()" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold px-6 py-3.5 rounded-2xl text-sm sm:text-base flex items-center justify-center gap-2 mx-auto shadow-lg transition transform active:scale-95">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Mulai Slide Show & Lagu "Kita Hadapi Berdua" 🎵</span>
+                    </button>
+                </div>
+
+                <!-- Input Tambah Foto Galeri -->
+                <div class="inline-block">
+                    <input type="file" id="journeyPhotoInput" accept="image/*" class="hidden" onchange="uploadJourneyPhoto(event)">
+                    <button type="button" onclick="document.getElementById('journeyPhotoInput').click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-camera-retro"></i>
+                        <span>Tambah Foto Kenangan</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid Foto Galeri -->
+            <div id="journeyGalleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pb-12">
+                <div class="text-slate-400 text-center col-span-full py-8 text-sm">Memuat galeri foto...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SLIDE SHOW FULLSCREEN -->
+    <div id="slideshowModal" class="fixed inset-0 bg-slate-950 z-[80] hidden opacity-0 transition-opacity duration-500 flex flex-col items-center justify-between p-4 sm:p-6">
+        
+        <!-- Header Atas Slide Show (Tombol Silang Kembali ke Galeri) -->
+        <div class="w-full flex items-center justify-between z-20">
+            <div class="text-sky-200/90 font-serif text-xs sm:text-sm flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md shadow-md border border-white/10 truncate max-w-[75%]">
+                <i class="fa-solid fa-music text-pink-400 animate-spin"></i>
+                <span id="playingSongTitle" class="truncate">Memutar: Kita Hadapi Berdua 🎵</span>
+            </div>
+
+            <!-- TOMBOL SILANG KEMBALI KE HALAMAN GALERI FOTO -->
+            <button onclick="stopSlideShowAndReturnToJourney()" class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-lg transition shadow-lg cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Container Gambar Slide Show Fullscreen di Tengah -->
+        <div class="relative w-full flex-1 flex items-center justify-center overflow-hidden my-2">
+            <img id="slideshowImage" src="" alt="Kenangan Romantis" class="max-h-[75vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl border border-white/10">
+        </div>
+
+        <!-- Footer Bawah Indikator Slide -->
+        <div class="w-full flex flex-col items-center justify-center gap-1.5 z-20 pb-2">
+            <span id="slideshowCounter" class="bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md border border-white/10 shadow-lg">Slide 1 / 1</span>
+            <span class="text-rose-400 text-xs drop-shadow-md"><i class="fa-solid fa-heart"></i> Hani & Venus Journey</span>
+        </div>
+
+        <!-- YOUTUBE IFRAME AUTOPLAY DI LATAR BELAKANG (DIJAMIN BERBUNYI DI HP) -->
+        <div id="ytBackgroundAudioContainer" class="absolute -top-[9999px] -left-[9999px] opacity-0 pointer-events-none">
+            <iframe id="ytAudioIframe" width="560" height="315" src="" title="YouTube audio player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+        </div>
+    </div>
+
+    <!-- MODAL CUSTOM SELECT POP-UP (TIPE TRANSAKSI & NAMA PENABUNG) -->
+    <div id="customSelectModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center">
+        <div id="customSelectContent" class="bg-white w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 transform translate-y-full sm:translate-y-0 sm:scale-95 transition-transform duration-300 shadow-2xl pb-10 sm:pb-8">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5 sm:hidden"></div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="popupTitle" class="font-serif text-xl sm:text-2xl font-bold text-slate-900">Pilih Opsi</h3>
+                <button onclick="closePopup()" class="text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div id="popupOptionsContainer" class="space-y-3"></div>
         </div>
     </div>
 
     <!-- MODAL NOTIFIKASI SELESAI -->
     <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <i class="fa-solid fa-check text-4xl"></i>
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5 animate-bounce text-4xl">
+                <i class="fa-solid fa-check"></i>
             </div>
             <h3 class="font-serif text-3xl font-extrabold text-slate-900 mb-2">SELESAI!</h3>
-            <p class="text-sm text-slate-500 mb-6 font-medium">Transaksi berhasil tersimpan & tersinkronisasi online!</p>
-            <button onclick="closeSuccessModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
+            <p class="text-base text-slate-500 mb-8 font-medium">Transaksi berhasil tersimpan & tersinkronisasi online!</p>
+            <button onclick="closeSuccessModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 text-lg">
                 Oke, Mengerti
             </button>
         </div>
@@ -382,70 +582,71 @@
 
     <!-- MODAL EDIT / HAPUS TRANSAKSI -->
     <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg z-10">
+        <div class="bg-white rounded-[2rem] p-6 sm:p-8 max-w-md w-full shadow-2xl relative max-h-[95vh] overflow-y-auto">
+            <button onclick="closeEditModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-xl z-10 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
-            <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Edit / Hapus Transaksi</h3>
-            <p class="text-xs text-slate-500 mb-4">Ubah detail data transaksi atau hapus jika salah input.</p>
+            <h3 class="font-serif text-2xl font-bold text-slate-900 mb-1">Edit Transaksi</h3>
+            <p class="text-sm text-slate-500 mb-5">Ubah detail data atau hapus jika salah.</p>
 
-            <form id="editForm" onsubmit="handleEditSubmit(event)" class="space-y-3">
+            <form id="editForm" onsubmit="handleEditSubmit(event)" class="space-y-4">
                 <input type="hidden" id="editId">
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tipe Transaksi</label>
-                    <select id="editTipe" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold">
-                        <option value="pemasukan">➕ Pemasukan (+)</option>
-                        <option value="pengeluaran">➖ Pengeluaran (-)</option>
-                    </select>
+                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Tipe Transaksi</label>
+                    <input type="hidden" id="editTipe" required>
+                    <button type="button" onclick="openPopup('tipe', 'edit')" class="w-full text-left bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-800 flex justify-between items-center transition shadow-sm">
+                        <span id="textEditTipeTransaksi">Memuat...</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400"></i>
+                    </button>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Penabung</label>
-                    <select id="editPenabung" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold">
-                        <option value="HANI">HANI</option>
-                        <option value="VENUS">VENUS</option>
-                        <option value="BERSAMA👩‍❤️‍💋‍👨">BERSAMA👩‍❤️‍💋‍👨</option>
-                    </select>
+                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Nama Penabung</label>
+                    <input type="hidden" id="editPenabung" required>
+                    <button type="button" onclick="openPopup('penabung', 'edit')" class="w-full text-left bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-800 flex justify-between items-center transition shadow-sm">
+                        <span id="textEditNamaPenabung">Memuat...</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400"></i>
+                    </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tanggal</label>
-                        <input type="date" id="editTgl" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium">
+                        <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Tanggal</label>
+                        <input type="date" id="editTgl" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3.5 text-base font-medium text-slate-800">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jam</label>
-                        <input type="time" id="editJam" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium">
+                        <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Jam</label>
+                        <input type="time" id="editJam" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3.5 text-base font-medium text-slate-800">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jumlah (Rp)</label>
-                    <input type="text" id="editJumlah" required oninput="formatRupiahInput(this)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-num font-bold text-base">
+                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Jumlah (Rp)</label>
+                    <input type="text" id="editJumlah" required oninput="formatRupiahInput(this)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-num font-bold text-lg text-slate-900">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keterangan / Catatan</label>
-                    <input type="text" id="editKet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm">
+                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Keterangan / Catatan</label>
+                    <input type="text" id="editKet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-800">
                 </div>
 
                 <div id="editBuktiContainer" class="hidden pt-2">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="block text-xs font-bold uppercase text-slate-600">Bukti Transfer Terlampir</label>
-                        <span class="text-[10px] text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto untuk memperbesar</span>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-bold uppercase text-slate-600">Bukti Transfer</label>
+                        <span class="text-xs text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto</span>
                     </div>
-                    <div class="relative w-full h-52 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" onclick="openImageModal(document.getElementById('editBuktiImg').src)">
+                    <div class="relative w-full h-56 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" onclick="openImageModal(document.getElementById('editBuktiImg').src)">
                         <img id="editBuktiImg" src="" alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
                     </div>
                 </div>
 
-                <div class="pt-3 flex gap-2">
-                    <button type="button" onclick="confirmDeleteTransaction()" class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl border border-rose-200 text-xs transition">
-                        <i class="fa-solid fa-trash mr-1"></i> Hapus
+                <div class="pt-4 flex gap-3">
+                    <button type="button" onclick="confirmDeleteTransaction()" class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-xl border border-rose-200 text-sm sm:text-base transition">
+                        <i class="fa-solid fa-trash sm:mr-1"></i> Hapus
                     </button>
-                    <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition">
+                    <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-sm sm:text-base shadow-md transition">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -456,7 +657,7 @@
     <!-- MODAL FULLSCREEN BUKTI FOTO -->
     <div id="imageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300" onclick="closeImageModal()">
         <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center" onclick="event.stopPropagation()">
-            <button onclick="closeImageModal()" class="absolute -top-10 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl backdrop-blur-md transition z-10 shadow-lg">
+            <button onclick="closeImageModal()" class="absolute -top-12 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl backdrop-blur-md transition z-10 shadow-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <img id="imageModalSrc" src="" alt="Bukti Transfer Full" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20">
@@ -480,9 +681,22 @@
         const db = firebase.firestore();
 
         let transactions = [];
+        let journeyPhotos = [];
         const DEFAULT_PIN = "150522";
+        let currentPin = ""; 
         let tempBuktiBase64 = "";
-        let isInitialLoad = true; // Mencegah notifikasi meledak saat pertama kali web dibuka
+        let isInitialLoad = true;
+
+        // ID YOUTUBE RESMI LAGU "KITA HADAPI BERDUA" (Tulus)
+        const SONG_KITA_HADAPI_BERDUA_ID = "Q4q690Y8e9k"; 
+
+        // VARIABEL SLIDE SHOW & TIMEOUT
+        let slideshowInterval = null;
+        let songTimeout = null;
+        let currentSlideIndex = 0;
+
+        let activePopupTarget = 'main'; 
+        let activePopupType = 'tipe'; 
 
         function setNowDateTimeAndFilter() {
             const now = new Date();
@@ -498,12 +712,11 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             setNowDateTimeAndFilter();
-
             loadSavedOpacity();
             loadSavedLocalBg();
+            
             updateKeteranganValidation();
 
-            // Minta izin notifikasi browser agar bisa muncul di HP walau aplikasi ditutup/di latar belakang
             if ("Notification" in window && Notification.permission !== "granted") {
                 Notification.requestPermission();
             }
@@ -511,72 +724,502 @@
             const isUnlocked = sessionStorage.getItem('wedding_app_unlocked');
             if (isUnlocked === 'true') {
                 unlockAppInstant();
-            } else {
-                setTimeout(() => {
-                    const pinInput = document.getElementById('hiddenPinInput');
-                    if(pinInput) pinInput.focus();
-                }, 300);
             }
 
             listenToFirestore();
+            listenToJourneyPhotos();
             listenToSharedBackground();
             startCountdown();
         });
 
-        function handlePinInput(input) {
-            let val = input.value.replace(/[^0-9]/g, '').slice(0, 6);
-            input.value = val;
+        // ------------------------------------------------------------------
+        // LOGIKA MODAL JOURNEY & GALERI FOTO
+        // ------------------------------------------------------------------
+        function openJourneyModal() {
+            const modal = document.getElementById('journeyModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
 
-            for (let i = 0; i < 6; i++) {
-                const dot = document.getElementById(`dot-${i}`);
-                if (i < val.length) {
-                    dot.innerText = '•';
-                    dot.classList.add('bg-blue-50', 'border-blue-500', 'text-blue-600');
-                } else {
-                    dot.innerText = '';
-                    dot.classList.remove('bg-blue-50', 'border-blue-500', 'text-blue-600');
-                }
-            }
+        function closeJourneyModal() {
+            const modal = document.getElementById('journeyModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
 
-            if (val.length === 6) {
-                verifyPin(val);
+        function uploadJourneyPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height && width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
+                        
+                        const newPhotoObj = {
+                            id: Date.now(),
+                            url: compressedBase64
+                        };
+
+                        db.collection("journeyGallery").add(newPhotoObj).catch(err => {
+                            alert("Gagal mengunggah foto ke cloud.");
+                        });
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         }
 
+        function listenToJourneyPhotos() {
+            db.collection("journeyGallery").onSnapshot((snapshot) => {
+                let photos = [];
+                snapshot.forEach((doc) => {
+                    photos.push({
+                        docId: doc.id,
+                        ...doc.data()
+                    });
+                });
+                journeyPhotos = photos;
+                updateJourneyGalleryUI();
+            });
+        }
+
+        function updateJourneyGalleryUI() {
+            const container = document.getElementById('journeyGalleryGrid');
+            container.innerHTML = '';
+
+            if (journeyPhotos.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-center col-span-full py-8 text-sm">Belum ada foto galeri kenangan. Yuk tambah foto pertama kalian!</p>`;
+                return;
+            }
+
+            journeyPhotos.forEach((photo) => {
+                const div = document.createElement('div');
+                div.className = "relative aspect-square rounded-2xl overflow-hidden border border-white/20 group shadow-md bg-slate-900";
+                div.innerHTML = `
+                    <img src="${photo.url}" alt="Kenangan" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition duration-300" onclick="openImageModal('${photo.url}')">
+                    <button onclick="deleteJourneyPhoto('${photo.docId}')" class="absolute top-2 right-2 w-8 h-8 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-md">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteJourneyPhoto(docId) {
+            if (confirm("Hapus foto kenangan ini dari galeri?")) {
+                db.collection("journeyGallery").doc(docId).delete().catch(err => {
+                    alert("Gagal menghapus foto.");
+                });
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // LOGIKA SLIDE SHOW & YOUTUBE AUDIO AUTOPLAY
+        // ------------------------------------------------------------------
+        const effectClasses = ['effect-fade', 'effect-zoom', 'effect-slide', 'effect-rotate'];
+
+        function startSlideShow() {
+            if (journeyPhotos.length === 0) {
+                alert("Tambahkan minimal 1 foto ke galeri terlebih dahulu untuk memulai Slide Show!");
+                return;
+            }
+
+            closeJourneyModal();
+            
+            // Masukkan link YouTube Autoplay ke iframe tersembunyi
+            document.getElementById('ytAudioIframe').src = `https://www.youtube.com/embed/${SONG_KITA_HADAPI_BERDUA_ID}?autoplay=1&enablejsapi=1`;
+
+            const modal = document.getElementById('slideshowModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+
+            currentSlideIndex = 0;
+            showSlide(currentSlideIndex);
+
+            // Ganti slide setiap 3 detik
+            slideshowInterval = setInterval(() => {
+                currentSlideIndex++;
+                if (currentSlideIndex >= journeyPhotos.length) {
+                    currentSlideIndex = 0;
+                }
+                showSlide(currentSlideIndex);
+            }, 3000);
+
+            // Durasi total lagu / slide show (2.5 menit / 150000ms), otomatis kembali ke galeri
+            songTimeout = setTimeout(() => {
+                stopSlideShowAndReturnToJourney();
+            }, 150000);
+        }
+
+        function showSlide(index) {
+            const img = document.getElementById('slideshowImage');
+            const counter = document.getElementById('slideshowCounter');
+            
+            effectClasses.forEach(cls => img.classList.remove(cls));
+            img.src = journeyPhotos[index].url;
+            counter.innerText = `Slide ${index + 1} / ${journeyPhotos.length}`;
+
+            const chosenEffect = effectClasses[index % effectClasses.length];
+            void img.offsetWidth;
+            img.classList.add(chosenEffect);
+        }
+
+        function stopSlideShow() {
+            clearInterval(slideshowInterval);
+            clearTimeout(songTimeout);
+            
+            // Hentikan musik YouTube dengan mengosongkan iframe
+            document.getElementById('ytAudioIframe').src = "";
+
+            const modal = document.getElementById('slideshowModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function stopSlideShowAndReturnToJourney() {
+            stopSlideShow();
+            openJourneyModal();
+        }
+        // ------------------------------------------------------------------
+
+        // LOGIKA DOWNLOAD CETAK PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const selBulan = document.getElementById('filterBulan').value;
+            const selTahun = document.getElementById('filterTahun').value;
+
+            const dropdownBulan = document.getElementById('filterBulan');
+            const namaBulan = selBulan === 'all' ? 'Semua Bulan' : dropdownBulan.options[dropdownBulan.selectedIndex].text;
+            const namaTahun = selTahun === 'all' ? 'Semua Tahun' : selTahun;
+
+            let totalMasukPDF = 0;
+            let totalKeluarPDF = 0;
+
+            const filteredTransactions = transactions.filter(item => {
+                if (!item.tgl) return true;
+                const parts = item.tgl.split('-');
+                const itemYear = parts[0];
+                const itemMonth = parts[1];
+
+                const matchMonth = (selBulan === 'all' || itemMonth === selBulan);
+                const matchYear = (selTahun === 'all' || itemYear === selTahun);
+
+                return matchMonth && matchYear;
+            });
+
+            if (filteredTransactions.length === 0) {
+                alert("Tidak ada transaksi pada periode ini untuk dicetak.");
+                return;
+            }
+
+            doc.setFontSize(16);
+            doc.text("Rekap Tabungan Pernikahan Hani & Venus", 14, 20);
+            
+            doc.setFontSize(11);
+            doc.text(`Periode  : ${namaBulan} ${namaTahun}`, 14, 28);
+            
+            const now = new Date();
+            const dateCetak = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            doc.setFontSize(9);
+            doc.text(`Dicetak  : ${dateCetak}`, 14, 33);
+
+            const tableColumn = ["Tanggal & Waktu", "Penabung", "Tipe", "Keterangan", "Jumlah (Rp)"];
+            const tableRows = [];
+
+            filteredTransactions.forEach(item => {
+                if (item.tipe === 'pemasukan') totalMasukPDF += item.jumlah;
+                if (item.tipe === 'pengeluaran') totalKeluarPDF += item.jumlah;
+                if (item.tipe === 'pengembalian') totalKeluarPDF -= item.jumlah;
+
+                const isMasuk = item.tipe === 'pemasukan' || item.tipe === 'pengembalian';
+                const sign = isMasuk ? "+" : "-";
+                
+                const cleanPenabung = (item.penabung || '').replace(/[^\x20-\x7E]/g, '').trim();
+                const cleanKet = (item.ket || '').replace(/[^\x20-\x7E]/g, '').trim();
+
+                const rowData = [
+                    `${item.tgl} ${item.jam}`,
+                    cleanPenabung,
+                    item.tipe.toUpperCase(),
+                    cleanKet,
+                    `${sign} Rp ${new Intl.NumberFormat('id-ID').format(item.jumlah)}`
+                ];
+                tableRows.push(rowData);
+            });
+
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 40,
+                theme: 'grid',
+                styles: { fontSize: 9 },
+                headStyles: { fillColor: [2, 132, 199] } 
+            });
+
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(11);
+            doc.text(`Total Pemasukan     : Rp ${new Intl.NumberFormat('id-ID').format(totalMasukPDF)}`, 14, finalY);
+            doc.text(`Total Pengeluaran   : Rp ${new Intl.NumberFormat('id-ID').format(totalKeluarPDF)}`, 14, finalY + 6);
+            
+            doc.setFont(undefined, 'bold');
+            const netBalancePDF = totalMasukPDF - totalKeluarPDF;
+            doc.text(`Total Saldo Periode Ini : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 14);
+
+            doc.save(`Rekap_Tabungan_${namaBulan}_${namaTahun}.pdf`);
+        }
+
+        // LOGIKA POP-UP DROPDOWN
+        const optionDataTipe = [
+            { val: 'pemasukan', label: 'Pemasukan (+)', icon: 'fa-plus', color: 'emerald' },
+            { val: 'pengeluaran', label: 'Pengeluaran (-)', icon: 'fa-minus', color: 'rose' },
+            { val: 'pengembalian', label: 'Pengembalian Dana (+)', icon: 'fa-rotate-left', color: 'blue' }
+        ];
+
+        const optionDataPenabung = [
+            { val: 'HANI', label: 'HANI', icon: 'fa-user-astronaut', color: 'indigo' },
+            { val: 'VENUS', label: 'VENUS', icon: 'fa-user-ninja', color: 'violet' },
+            { val: 'BERSAMA👩‍❤️‍💋‍👨', label: 'BERSAMA 👩‍❤️‍‍💋‍👨', icon: 'fa-users', color: 'pink' }
+        ];
+
+        function openPopup(type, target) {
+            activePopupType = type;
+            activePopupTarget = target;
+            
+            const modal = document.getElementById('customSelectModal');
+            const titleEl = document.getElementById('popupTitle');
+            const container = document.getElementById('popupOptionsContainer');
+            
+            container.innerHTML = ''; 
+            let activeValue = '';
+
+            if (type === 'tipe') {
+                titleEl.innerText = 'Pilih Tipe Transaksi';
+                activeValue = (target === 'main') ? document.getElementById('tipeTransaksi').value : document.getElementById('editTipe').value;
+                
+                optionDataTipe.forEach(opt => {
+                    const isSelected = activeValue === opt.val;
+                    container.innerHTML += createOptionHTML(opt, isSelected);
+                });
+            } else {
+                titleEl.innerText = 'Pilih Nama Penabung';
+                activeValue = (target === 'main') ? document.getElementById('namaPenabung').value : document.getElementById('editPenabung').value;
+                
+                optionDataPenabung.forEach(opt => {
+                    const isSelected = activeValue === opt.val;
+                    container.innerHTML += createOptionHTML(opt, isSelected);
+                });
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('customSelectContent').classList.remove('translate-y-full', 'sm:scale-95');
+            }, 10);
+        }
+
+        function createOptionHTML(opt, isSelected) {
+            const borderClass = isSelected ? `border-${opt.color}-500 bg-${opt.color}-50` : 'border-slate-200 hover:border-blue-400 hover:bg-slate-50';
+            const iconBgClass = isSelected ? `bg-${opt.color}-500 text-white shadow-md` : `bg-${opt.color}-100 text-${opt.color}-600`;
+            const checkIcon = isSelected ? `<i class="fa-solid fa-circle-check text-${opt.color}-500 text-xl ml-auto"></i>` : '';
+
+            return `
+                <button type="button" onclick="selectOption('${opt.val}', '${opt.label}')" class="w-full flex items-center p-4 rounded-xl border ${borderClass} transition text-left shadow-sm">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center mr-4 transition ${iconBgClass}">
+                        <i class="fa-solid ${opt.icon}"></i>
+                    </div>
+                    <span class="font-bold text-slate-800 text-base sm:text-lg">${opt.label}</span>
+                    ${checkIcon}
+                </button>
+            `;
+        }
+
+        function selectOption(val, textLabel) {
+            if (activePopupType === 'tipe') {
+                if (activePopupTarget === 'main') {
+                    document.getElementById('tipeTransaksi').value = val;
+                    const btnSpan = document.getElementById('textTipeTransaksi');
+                    btnSpan.innerText = textLabel;
+                    btnSpan.classList.remove('text-slate-400');
+                    btnSpan.classList.add('text-slate-800');
+                    updateKeteranganValidation();
+                } else {
+                    document.getElementById('editTipe').value = val;
+                    document.getElementById('textEditTipeTransaksi').innerText = textLabel;
+                }
+            } else {
+                if (activePopupTarget === 'main') {
+                    document.getElementById('namaPenabung').value = val;
+                    const btnSpan = document.getElementById('textNamaPenabung');
+                    btnSpan.innerText = textLabel;
+                    btnSpan.classList.remove('text-slate-400');
+                    btnSpan.classList.add('text-slate-800');
+                } else {
+                    document.getElementById('editPenabung').value = val;
+                    document.getElementById('textEditNamaPenabung').innerText = textLabel;
+                }
+            }
+            closePopup();
+        }
+
+        function closePopup() {
+            const modal = document.getElementById('customSelectModal');
+            document.getElementById('customSelectContent').classList.add('translate-y-full', 'sm:scale-95');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function appendPin(num) {
+            if (currentPin.length < 6) {
+                currentPin += num;
+                updatePinDisplay();
+                if (currentPin.length === 6) {
+                    setTimeout(() => verifyPin(currentPin), 100);
+                }
+            }
+        }
+
+        function deletePin() {
+            if (currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updatePinDisplay();
+            }
+        }
+        
+        function clearAllPin() {
+            currentPin = "";
+            updatePinDisplay();
+        }
+
+        function updatePinDisplay() {
+            document.getElementById('pinErrMsg').classList.add('hidden');
+
+            for (let i = 0; i < 6; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < currentPin.length) {
+                    dot.innerText = '•';
+                    dot.classList.add('bg-sky-500', 'border-sky-400', 'shadow-[0_0_10px_rgba(14,165,233,0.5)]');
+                    dot.classList.remove('bg-slate-800/60', 'border-slate-600/50');
+                } else {
+                    dot.innerText = '';
+                    dot.classList.remove('bg-sky-500', 'border-sky-400', 'shadow-[0_0_10px_rgba(14,165,233,0.5)]');
+                    dot.classList.add('bg-slate-800/60', 'border-slate-600/50');
+                }
+            }
+        }
+
+        function playRingClink() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const freqs = [3520, 4186]; 
+                freqs.forEach((freq) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                    
+                    gain.gain.setValueAtTime(0, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.8);
+                });
+            } catch(e) {}
+        }
+
         function verifyPin(enteredPin) {
-            const btnSubmit = document.getElementById('btnPinSubmit');
-            const btnText = document.getElementById('btnPinText');
-            const btnSpinner = document.getElementById('btnPinSpinner');
+            document.getElementById('pinErrMsg').classList.add('hidden');
 
             if (enteredPin === DEFAULT_PIN) {
-                btnSubmit.disabled = true;
-                btnText.classList.add('hidden');
-                btnSpinner.classList.remove('hidden');
-
                 sessionStorage.setItem('wedding_app_unlocked', 'true');
-
+                
+                document.getElementById('pinInputContent').classList.add('opacity-0');
+                
                 setTimeout(() => {
-                    btnSubmit.disabled = false;
-                    btnText.classList.remove('hidden');
-                    btnSpinner.classList.add('hidden');
-                    unlockApp();
+                    document.getElementById('pinInputContent').classList.add('hidden');
+                    
+                    const ringContainer = document.getElementById('ringAnimationContainer');
+                    ringContainer.classList.remove('hidden');
+                    ringContainer.classList.add('flex');
+                    
+                    setTimeout(() => {
+                        ringContainer.classList.remove('opacity-0');
+                        
+                        const rMale = document.getElementById('ringMale');
+                        const rFemale = document.getElementById('ringFemale');
+                        
+                        rMale.classList.remove('-translate-x-16');
+                        rMale.classList.add('-translate-x-2');
+                        
+                        rFemale.classList.remove('translate-x-16');
+                        rFemale.classList.add('translate-x-2');
+                        
+                        document.getElementById('welcomeText').classList.remove('opacity-0');
+                    }, 50);
+
+                    setTimeout(() => {
+                        playRingClink();
+                        
+                        document.getElementById('ringMale').classList.add('shadow-[0_0_25px_rgba(251,191,36,0.9)]', 'border-amber-300');
+                        document.getElementById('ringFemale').classList.add('shadow-[0_0_25px_rgba(251,191,36,0.9)]', 'border-amber-300');
+                    }, 700);
+
+                    setTimeout(() => {
+                        unlockApp();
+                    }, 1500);
+                    
                 }, 300);
+
             } else {
-                document.getElementById('pinErrMsg').classList.remove('hidden');
-                const pinInput = document.getElementById('hiddenPinInput');
-                pinInput.value = '';
-                handlePinInput(pinInput);
+                document.getElementById('btnPinSubmit').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('btnPinSubmit').classList.add('hidden');
+                    document.getElementById('pinErrMsg').classList.remove('hidden');
+                    currentPin = ""; 
+                    updatePinDisplay();
+                }, 400);
             }
         }
 
         function unlockApp() {
             const screen = document.getElementById('pinLockScreen');
             if (screen) {
-                screen.classList.add('opacity-0', 'pointer-events-none');
+                screen.classList.add('opacity-0', 'pointer-events-none', 'scale-105');
                 setTimeout(() => {
                     screen.style.display = 'none';
                     screen.classList.add('hidden');
-                }, 500);
+                    document.body.classList.remove('overflow-hidden');
+                }, 700);
             }
         }
 
@@ -585,18 +1228,17 @@
             if (screen) {
                 screen.style.display = 'none';
                 screen.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+                document.body.classList.remove('overflow-hidden');
             }
         }
 
-        // BUNYI NOTIFIKASI YANG SIMPLE, BAGUS, DAN ELEGAN (CHIME/HARP STYLE)
         function playNotificationSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
 
-                // Nada ganda yang selaras (Chord lembut seperti notifikasi aplikasi modern)
-                const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+                const notes = [523.25, 659.25, 783.99]; 
                 notes.forEach((freq, index) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -628,16 +1270,13 @@
                 });
                 newTransactions.sort((a, b) => a.id - b.id);
 
-                // Cek jika ada penambahan data baru dari database (misal dari HP pasangan)
                 if (!isInitialLoad && newTransactions.length > transactions.length) {
                     const latestItem = newTransactions[newTransactions.length - 1];
                     const formatNum = new Intl.NumberFormat('id-ID').format(latestItem.jumlah);
                     const msg = `${latestItem.penabung} baru saja menambah ${latestItem.tipe} sebesar Rp ${formatNum} (${latestItem.ket})`;
 
-                    // 1. Putar Suara Notifikasi Bagus
                     playNotificationSound();
 
-                    // 2. Munculkan Notifikasi Sistem HP (Bahkan saat aplikasi di latar belakang)
                     if ("Notification" in window && Notification.permission === "granted") {
                         navigator.serviceWorker.ready.then(registration => {
                             registration.showNotification("Tabungan Pernikahan HV 💍", {
@@ -853,7 +1492,13 @@
         function handleFormSubmit(e) {
             e.preventDefault();
             const tipe = document.getElementById('tipeTransaksi').value;
+            const penabung = document.getElementById('namaPenabung').value;
             const ketInput = document.getElementById('keteranganTransaksi').value.trim();
+
+            if (!tipe || !penabung) {
+                alert('Silakan pilih Tipe Transaksi dan Nama Penabung terlebih dahulu!');
+                return;
+            }
 
             if (tipe === 'pengeluaran' && !ketInput) {
                 alert('Keterangan / Catatan wajib diisi untuk transaksi Pengeluaran!');
@@ -876,10 +1521,9 @@
             btnSubmitText.classList.add('hidden');
             btnSubmitSpinner.classList.remove('hidden');
 
-            const penabung = document.getElementById('namaPenabung').value;
             const tgl = document.getElementById('tglTransaksi').value;
             const jam = document.getElementById('jamTransaksi').value;
-            const ket = ketInput || (tipe === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran');
+            const ket = ketInput || (tipe === 'pemasukan' ? 'Pemasukan' : (tipe === 'pengembalian' ? 'Pengembalian Dana' : 'Pengeluaran'));
 
             const newItem = {
                 id: Date.now(),
@@ -894,6 +1538,18 @@
 
             setTimeout(() => {
                 db.collection("transactions").add(newItem).then(() => {
+                    document.getElementById('tipeTransaksi').value = '';
+                    const btnTipe = document.getElementById('textTipeTransaksi');
+                    btnTipe.innerText = '-- Pilih Tipe Transaksi --';
+                    btnTipe.classList.add('text-slate-400');
+                    btnTipe.classList.remove('text-slate-800');
+
+                    document.getElementById('namaPenabung').value = '';
+                    const btnPenabung = document.getElementById('textNamaPenabung');
+                    btnPenabung.innerText = '-- Pilih Nama Penabung --';
+                    btnPenabung.classList.add('text-slate-400');
+                    btnPenabung.classList.remove('text-slate-800');
+
                     document.getElementById('jumlahRupiah').value = '';
                     document.getElementById('keteranganTransaksi').value = '';
                     document.getElementById('buktiTransfer').value = '';
@@ -901,6 +1557,7 @@
                     tempBuktiBase64 = "";
 
                     setNowDateTimeAndFilter();
+                    updateKeteranganValidation();
 
                     btnSubmit.disabled = false;
                     btnSubmitText.classList.remove('hidden');
@@ -916,16 +1573,13 @@
             }, 2000);
         }
 
-        function showSuccessModal() {
-            const modal = document.getElementById('successModal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        function getTipeLabel(val) {
+            const found = optionDataTipe.find(x => x.val === val);
+            return found ? found.label : '-- Pilih Tipe Transaksi --';
         }
-
-        function closeSuccessModal() {
-            const modal = document.getElementById('successModal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+        function getPenabungLabel(val) {
+            const found = optionDataPenabung.find(x => x.val === val);
+            return found ? found.label : '-- Pilih Nama Penabung --';
         }
 
         function openEditModal(id) {
@@ -933,8 +1587,14 @@
             if (!item) return;
 
             document.getElementById('editId').value = item.docId;
+            
             document.getElementById('editTipe').value = item.tipe;
-            document.getElementById('editPenabung').value = item.penabung || 'HANI';
+            document.getElementById('textEditTipeTransaksi').innerText = getTipeLabel(item.tipe);
+            
+            const penabungVal = item.penabung || 'HANI';
+            document.getElementById('editPenabung').value = penabungVal;
+            document.getElementById('textEditNamaPenabung').innerText = getPenabungLabel(penabungVal);
+
             document.getElementById('editTgl').value = item.tgl;
             document.getElementById('editJam').value = item.jam;
             document.getElementById('editJumlah').value = new Intl.NumberFormat('id-ID').format(item.jumlah);
@@ -965,10 +1625,17 @@
             e.preventDefault();
             const docId = document.getElementById('editId').value;
             const rawJumlah = document.getElementById('editJumlah').value.replace(/\./g, '');
+            const tipe = document.getElementById('editTipe').value;
+            const penabung = document.getElementById('editPenabung').value;
+
+            if (!tipe || !penabung) {
+                alert("Tipe transaksi dan nama penabung tidak boleh kosong!");
+                return;
+            }
 
             const updatedData = {
-                tipe: document.getElementById('editTipe').value,
-                penabung: document.getElementById('editPenabung').value,
+                tipe: tipe,
+                penabung: penabung,
                 tgl: document.getElementById('editTgl').value,
                 jam: document.getElementById('editJam').value,
                 jumlah: parseFloat(rawJumlah) || 0,
@@ -1008,6 +1675,7 @@
             transactions.forEach(item => {
                 if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
                 if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+                if (item.tipe === 'pengembalian') totalKeluar -= item.jumlah;
             });
 
             const filteredTransactions = transactions.filter(item => {
@@ -1023,29 +1691,31 @@
             });
 
             if (filteredTransactions.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Tidak ada transaksi pada periode ini.</p>`;
+                listContainer.innerHTML = `<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi pada periode ini.</p>`;
             } else {
                 filteredTransactions.slice().reverse().forEach(item => {
-                    const isMasuk = item.tipe === 'pemasukan';
+                    const isMasuk = item.tipe === 'pemasukan' || item.tipe === 'pengembalian';
                     const penabungName = item.penabung || 'HANI';
                     
                     const elem = document.createElement('div');
-                    elem.className = `flex justify-between items-center p-3 rounded-xl border cursor-pointer hover:shadow-md transition ${isMasuk ? 'bg-emerald-50/50 border-emerald-100 hover:bg-emerald-100/50' : 'bg-rose-50/50 border-rose-100 hover:bg-rose-100/50'}`;
+                    elem.className = `flex justify-between items-center p-4 rounded-xl border cursor-pointer hover:shadow-md transition ${isMasuk ? 'bg-emerald-50/50 border-emerald-100 hover:bg-emerald-100/50' : 'bg-rose-50/50 border-rose-100 hover:bg-rose-100/50'}`;
                     elem.onclick = () => openEditModal(item.id);
                     elem.innerHTML = `
                         <div>
-                            <div class="flex items-center gap-1.5 mb-0.5">
-                                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">${penabungName}</span>
-                                <span class="text-xs font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
-                                ${item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px]" title="Ada Bukti Transfer"></i>' : ''}
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="text-xs font-bold px-2 py-1 rounded bg-blue-100 text-blue-700 shadow-sm">${penabungName}</span>
+                                <span class="text-sm font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
+                                ${item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-xs ml-1" title="Ada Bukti Transfer"></i>' : ''}
                             </div>
-                            <div class="text-[10px] text-slate-400">${item.tgl} | ${item.jam}</div>
+                            <div class="text-xs text-slate-500 font-medium">${item.tgl} | ${item.jam}</div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <div class="font-num font-extrabold text-sm ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">
+                        <div class="flex items-center gap-2.5">
+                            <div class="font-num font-extrabold text-base sm:text-lg ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">
                                 ${isMasuk ? '+' : '-'} Rp ${new Intl.NumberFormat('id-ID').format(item.jumlah)}
                             </div>
-                            <i class="fa-solid fa-pen-to-square text-slate-400 text-xs"></i>
+                            <div class="w-7 h-7 rounded-full bg-white flex items-center justify-center border border-slate-200">
+                                <i class="fa-solid fa-pen-to-square text-slate-400 text-[10px]"></i>
+                            </div>
                         </div>
                     `;
                     listContainer.appendChild(elem);
