@@ -1311,6 +1311,42 @@ body.dark .card-pengembalian{
 #customSelectModal{
   z-index: 70!important;
 }
+
+/* ===== PENGEMBALIAN DANA WARNA BIRU ===== */
+.riwayat-item-presisi.pengembalian{
+  background: rgba(219, 234, 254, 0.75)!important; /* blue-100 */
+  border-color: rgba(147, 197, 253, 0.6)!important; /* blue-300 */
+}
+.riwayat-item-presisi.pengembalian .title{
+  color: #1d4ed8!important; /* blue-700 */
+}
+.riwayat-item-presisi.pengembalian .amount{
+  color: #2563eb!important; /* blue-600 */
+}
+.riwayat-item-presisi.pengembalian .date{
+  color: #3b82f6!important;
+}
+.badge-pengembalian{
+  background: #dbeafe!important; /* blue-100 */
+  color: #1e40af!important; /* blue-800 */
+  border: 1px solid #93c5fd!important; /* blue-300 */
+}
+
+/* Card pengembalian di laporan */
+.card-pengembalian{
+  background: rgba(219, 234, 254, 0.9)!important; /* blue-100 */
+  border: 1px solid rgba(147, 197, 253, 0.5)!important;
+}
+body.dark .card-pengembalian{
+  background: rgba(30, 58, 138, 0.35)!important; /* blue-900 */
+  border-color: rgba(59, 130, 246, 0.4)!important;
+}
+.card-pengembalian p{
+  color: #1e40af!important;
+}
+body.dark .card-pengembalian p{
+  color: #93c5fd!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3975,12 +4011,12 @@ function getTipeStyle(tipe){
     return {
       bg: 'pengembalian',
       badgeClass: 'badge-pengembalian',
-      titleClass: 'text-amber-700',
-      amountClass: 'text-amber-600',
+      titleClass: 'text-blue-700',
+      amountClass: 'text-blue-600',
       sign: '+ Rp ',
       label: 'PENGEMBALIAN',
       icon: 'fa-rotate-left',
-      color: '#f59e0b'
+      color: '#2563eb'
     };
   } else if(tipe==='pengeluaran'){
     return {
@@ -4098,7 +4134,7 @@ window.updateLaporanUI = function(){
     var kembaliPct = totalMK>0 ? Math.round(km/totalMK*100) : 0;
     laporanDonutInstance.data.labels=['Masuk','Keluar','Kembali'];
     laporanDonutInstance.data.datasets[0].data=[m||1,k||0.1,km||0.1];
-    laporanDonutInstance.data.datasets[0].backgroundColor=['#3b82f6','#fb7185','#fbbf24'];
+    laporanDonutInstance.data.datasets[0].backgroundColor=['#3b82f6','#fb7185','#60a5fa'];
     laporanDonutInstance.update();
     el('laporanChartMasukPct',masukPct+'%');
     el('laporanChartKeluarPct',keluarPct+'%');
