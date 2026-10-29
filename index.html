@@ -1238,6 +1238,43 @@ body.dark .glass-box{
   backdrop-filter: blur(3px) saturate(1.05)!important;
   -webkit-backdrop-filter: blur(3px) saturate(1.05)!important;
 }
+
+/* ===== PENGEMBALIAN DANA - WARNA BEDA ===== */
+.riwayat-item-presisi.pengembalian{
+  background: rgba(254, 243, 199, 0.7)!important; /* amber-50 */
+  border-color: rgba(252, 211, 77, 0.5)!important;
+}
+.riwayat-item-presisi.pengembalian .title{
+  color: #b45309!important; /* amber-700 */
+}
+.riwayat-item-presisi.pengembalian .amount{
+  color: #d97706!important; /* amber-600 */
+}
+.badge-pengembalian{
+  background: #fde68a!important;
+  color: #92400e!important;
+  border: 1px solid #fcd34d!important;
+}
+.badge-pemasukan{
+  background: #d1fae5!important;
+  color: #065f46!important;
+  border: 1px solid #a7f3d0!important;
+}
+.badge-pengeluaran{
+  background: #ffe4e6!important;
+  color: #9f1239!important;
+  border: 1px solid #fecdd3!important;
+}
+
+/* Laporan cards */
+.card-pengembalian{
+  background: rgba(254, 243, 199, 0.85)!important;
+  border: 1px solid rgba(252, 211, 77, 0.4)!important;
+}
+body.dark .card-pengembalian{
+  background: rgba(120, 53, 15, 0.3)!important;
+  border-color: rgba(180, 83, 9, 0.4)!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -1409,8 +1446,8 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 </div>
 <div class="tab-content" id="tab-laporan">
-<div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Laporan Keuangan</h2><p class="text-sky-200/70 text-[11px] mt-1">Auto dari Firebase</p></div>
-<div class="glass-box rounded-2xl p-4 mb-3">
+<div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Laporan Keuangan</h2><p class="text-sky-200/70 text-[11px] mt-1">Analisis &amp; Insight • Auto Firebase</p></div>
+<div class="glass-box rounded-2xl p-3 mb-3">
 <div class="filter-presisi">
 <select class="filter-sel" id="filterBulanLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select>
 <select class="filter-sel" id="filterTahunLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
@@ -1418,11 +1455,54 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <button class="filter-btn pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i></button>
 </div>
 </div>
-<div class="grid grid-cols-1 gap-2 mb-3">
-<div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p></div>
-<div class="grid grid-cols-2 gap-2"><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-emerald-600 uppercase">Masuk</p><p class="font-num text-sm font-bold text-blue-600" id="laporanMasuk">Rp 0</p></div><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-rose-600 uppercase">Keluar</p><p class="font-num text-sm font-bold text-rose-600" id="laporanKeluar">Rp 0</p></div></div>
+<!-- Saldo Periode -->
+<div class="grid grid-cols-1 gap-2.5 mb-3">
+<div class="glass-box rounded-2xl p-4 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Saldo Periode</p><h3 class="font-num text-2xl font-extrabold text-emerald-600 mt-1" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500 mt-1" id="laporanPeriodeLabel">Okt 2026</p></div>
+<div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa-solid fa-wallet"></i></div>
 </div>
-<div class="glass-box rounded-xl p-3"><h4 class="font-bold text-xs mb-2">Detail Periode (auto Firebase)</h4><div class="space-y-2 max-h-[50vh] overflow-y-auto" id="laporanList"></div></div>
+<div class="mt-3 w-full bg-slate-200 h-1.5 rounded-full"><div class="bg-emerald-500 h-1.5 rounded-full transition-all" id="laporanProgressBar" style="width:0%"></div></div>
+</div>
+
+<div class="grid grid-cols-3 gap-2.5">
+<div class="glass-box rounded-2xl p-3"><div class="flex justify-between items-center mb-1"><p class="text-[9px] font-bold text-emerald-600 uppercase">Masuk</p><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i></div><p class="font-num text-[13px] font-bold text-blue-600" id="laporanMasuk">Rp 0</p><p class="text-[9px] text-slate-500 mt-1" id="laporanMasukCount">0</p></div>
+<div class="glass-box rounded-2xl p-3 card-pengembalian"><div class="flex justify-between items-center mb-1"><p class="text-[9px] font-bold text-amber-700 uppercase">Kembali</p><i class="fa-solid fa-rotate-left text-amber-600 text-[10px]"></i></div><p class="font-num text-[13px] font-bold text-amber-600" id="laporanKembali">Rp 0</p><p class="text-[9px] text-slate-500 mt-1" id="laporanKembaliCount">0</p></div>
+<div class="glass-box rounded-2xl p-3"><div class="flex justify-between items-center mb-1"><p class="text-[9px] font-bold text-rose-600 uppercase">Keluar</p><i class="fa-solid fa-arrow-trend-down text-rose-500 text-[10px]"></i></div><p class="font-num text-[13px] font-bold text-rose-600" id="laporanKeluar">Rp 0</p><p class="text-[9px] text-slate-500 mt-1" id="laporanKeluarCount">0</p></div>
+</div>
+
+</div>
+<!-- Charts - BEDA DARI RIWAYAT -->
+<div class="grid grid-cols-1 gap-2.5 mb-3">
+<div class="glass-box rounded-2xl p-4">
+<h4 class="font-bold text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-chart-pie text-blue-600"></i> Alokasi Masuk vs Keluar</h4>
+<div class="relative h-[180px] flex items-center justify-center"><canvas id="laporanDonutChart"></canvas><div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"><p class="font-num text-lg font-extrabold text-slate-800" id="laporanDonutCenter">0%</p><p class="text-[10px] text-slate-500">Pemakaian</p></div></div>
+<div class="grid grid-cols-3 gap-2 mt-3"><div class="flex items-center gap-2 text-[11px]"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span><span class="text-slate-600">Masuk: <b class="text-blue-600" id="laporanChartMasukPct">0%</b></span></div><div class="flex items-center gap-2 text-[11px]"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span><span class="text-slate-600">Keluar: <b class="text-rose-600" id="laporanChartKeluarPct">0%</b></span></div><div class="flex items-center gap-2 text-[11px]"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span><span class="text-slate-600">Kembali: <b class="text-amber-600" id="laporanChartKembaliPct">0%</b></span></div></div>
+</div>
+<div class="glass-box rounded-2xl p-4">
+<h4 class="font-bold text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-users text-indigo-600"></i> Kontribusi HANI vs VENUS</h4>
+<div class="space-y-3">
+<div><div class="flex justify-between items-center mb-1"><span class="text-[11px] font-bold flex items-center gap-1.5"><span class="w-5 h-5 rounded bg-indigo-500 text-white flex items-center justify-center text-[9px]"><i class="fa-solid fa-user-astronaut"></i></span> HANI</span><span class="text-[11px] font-bold text-indigo-600" id="laporanHaniPct">0%</span></div><div class="w-full bg-slate-200 h-2 rounded-full"><div class="bg-indigo-500 h-2 rounded-full" id="laporanHaniBar" style="width:0%"></div></div><p class="text-[10px] text-slate-500 mt-1" id="laporanHaniNominal">Rp 0</p></div>
+<div><div class="flex justify-between items-center mb-1"><span class="text-[11px] font-bold flex items-center gap-1.5"><span class="w-5 h-5 rounded bg-violet-500 text-white flex items-center justify-center text-[9px]"><i class="fa-solid fa-user-ninja"></i></span> VENUS</span><span class="text-[11px] font-bold text-violet-600" id="laporanVenusPct">0%</span></div><div class="w-full bg-slate-200 h-2 rounded-full"><div class="bg-violet-500 h-2 rounded-full" id="laporanVenusBar" style="width:0%"></div></div><p class="text-[10px] text-slate-500 mt-1" id="laporanVenusNominal">Rp 0</p></div>
+</div>
+</div>
+</div>
+<!-- Tren & Top Pengeluaran -->
+<div class="grid grid-cols-1 gap-2.5 mb-3">
+<div class="glass-box rounded-2xl p-4">
+<h4 class="font-bold text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-chart-line text-emerald-600"></i> Tren 6 Bulan Terakhir</h4>
+<div class="h-[160px]"><canvas id="laporanBarChart"></canvas></div>
+</div>
+<div class="glass-box rounded-2xl p-4">
+<h4 class="font-bold text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-fire text-rose-600"></i> Top Pengeluaran Periode Ini</h4>
+<div class="space-y-2" id="laporanTopList"></div>
+</div>
+</div>
+<!-- Detail masih ada tapi di bawah, bukan fokus utama -->
+<div class="glass-box rounded-2xl p-4">
+<div class="flex justify-between items-center mb-3"><h4 class="font-bold text-xs">Detail Transaksi Periode</h4><span class="text-[10px] bg-slate-100 px-2 py-1 rounded-full" id="laporanTotalTransaksi">0 item</span></div>
+<div class="space-y-2 max-h-[40vh] overflow-y-auto" id="laporanList"></div>
+</div>
 </div>
 <div class="tab-content" id="tab-tambah">
 <div class="flex flex-col items-center justify-center py-16 text-center">
@@ -3682,6 +3762,382 @@ function changeBoxOpacity(val){
   if(s2) s2.value=opacity;
   if(vd) vd.innerText=Math.round(opacity*100)+'%';
 }
+
+
+// ===== LAPORAN ENHANCED - BEDA DARI RIWAYAT =====
+var laporanDonutInstance=null;
+var laporanBarInstance=null;
+
+function initLaporanCharts(){
+  var donutCtx=document.getElementById('laporanDonutChart');
+  if(donutCtx && !laporanDonutInstance){
+    laporanDonutInstance=new Chart(donutCtx,{
+      type:'doughnut',
+      data:{labels:['Masuk','Keluar'], datasets:[{data:[60,40], backgroundColor:['#3b82f6','#fb7185'], borderWidth:0, hoverOffset:6}]},
+      options:{cutout:'72%', plugins:{legend:{display:false}, tooltip:{callbacks:{label:function(c){return c.label+': Rp '+new Intl.NumberFormat('id-ID').format(c.parsed);}}}}, animation:{duration:600}}
+    });
+  }
+  var barCtx=document.getElementById('laporanBarChart');
+  if(barCtx && !laporanBarInstance){
+    laporanBarInstance=new Chart(barCtx,{
+      type:'bar',
+      data:{labels:['Mei','Jun','Jul','Agu','Sep','Okt'], datasets:[
+        {label:'Masuk', data:[0,0,0,0,0,0], backgroundColor:'rgba(59,130,246,0.8)', borderRadius:8, barPercentage:0.5},
+        {label:'Keluar', data:[0,0,0,0,0,0], backgroundColor:'rgba(251,113,133,0.7)', borderRadius:8, barPercentage:0.5}
+      ]},
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}, ticks:{font:{size:10}}}, y:{grid:{color:'rgba(0,0,0,0.05)'}, ticks:{font:{size:9}, callback:function(v){return 'Rp'+(v/1000)+'k';}}}}}
+    });
+  }
+}
+
+function updateLaporanUI(){
+  if(typeof transactions==='undefined' || !transactions) return;
+  var sbEl=document.getElementById('filterBulanLaporan'); var stEl=document.getElementById('filterTahunLaporan');
+  if(!sbEl || !stEl) return;
+  var sb=sbEl.value, st=stEl.value;
+  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (sb==='all'||p[1]===sb)&&(st==='all'||p[0]===st); });
+  
+  var m=0,k=0, mc=0,kc=0;
+  var h=0,v=0,b=0;
+  var topKeluar=[];
+  filt.forEach(function(it){
+    if(it.tipe==='pemasukan'){ m+=it.jumlah; mc++; 
+      var pn=(it.penabung||'').toUpperCase();
+      if(pn.indexOf('HANI')>-1 && pn.indexOf('BERSAMA')===-1) h+=it.jumlah;
+      else if(pn.indexOf('VENUS')>-1 && pn.indexOf('BERSAMA')===-1) v+=it.jumlah;
+      else b+=it.jumlah;
+    }
+    if(it.tipe==='pengeluaran'){ k+=it.jumlah; kc++; topKeluar.push(it); }
+    if(it.tipe==='pengembalian'){ k-=it.jumlah; m+=it.jumlah; }
+  });
+  var s=m-k;
+  function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
+  function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
+  
+  el('laporanSaldo',fmt(s));
+  el('laporanMasuk',fmt(m));
+  el('laporanKeluar',fmt(k));
+  el('laporanMasukCount',mc+' transaksi');
+  el('laporanKeluarCount',kc+' transaksi');
+  el('laporanTotalTransaksi',filt.length+' item');
+  
+  var lbl=document.getElementById('laporanPeriodeLabel');
+  if(lbl){ 
+    if(sb==='all'&&st==='all') lbl.innerText='Semua Periode (auto Firebase)'; 
+    else { var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; var l=''; if(sb!=='all') l+=bn[parseInt(sb)]+' '; if(st!=='all') l+=st; lbl.innerText=l; } 
+  }
+  
+  // Donut chart
+  if(laporanDonutInstance){
+    var totalMK = m+k;
+    var masukPct = totalMK>0 ? Math.round(m/totalMK*100) : 0;
+    var keluarPct = totalMK>0 ? Math.round(k/totalMK*100) : 0;
+    laporanDonutInstance.data.datasets[0].data=[m||1,k||0.1];
+    laporanDonutInstance.update();
+    el('laporanChartMasukPct',masukPct+'%');
+    el('laporanChartKeluarPct',keluarPct+'%');
+    el('laporanDonutCenter',keluarPct+'%');
+    var progBar=document.getElementById('laporanProgressBar');
+    if(progBar){ progBar.style.width=masukPct+'%'; }
+  }
+  
+  // Hani vs Venus
+  var totalHV = h+v+b||1;
+  el('laporanHaniPct',Math.round(h/totalHV*100)+'%');
+  el('laporanVenusPct',Math.round(v/totalHV*100)+'%');
+  el('laporanHaniNominal',fmt(h));
+  el('laporanVenusNominal',fmt(v));
+  var hb=document.getElementById('laporanHaniBar'); if(hb) hb.style.width=(h/totalHV*100)+'%';
+  var vb=document.getElementById('laporanVenusBar'); if(vb) vb.style.width=(v/totalHV*100)+'%';
+  
+  // Bar chart - 6 bulan terakhir (simplified)
+  if(laporanBarInstance){
+    // Group by month
+    var months={};
+    transactions.forEach(function(it){
+      if(!it.tgl) return;
+      var key=it.tgl.slice(0,7); // YYYY-MM
+      if(!months[key]) months[key]={m:0,k:0};
+      if(it.tipe==='pemasukan') months[key].m+=it.jumlah;
+      if(it.tipe==='pengeluaran') months[key].k+=it.jumlah;
+    });
+    var sortedKeys=Object.keys(months).sort().slice(-6);
+    var labels=sortedKeys.map(function(k){ var p=k.split('-'); var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return bn[parseInt(p[1])]; });
+    var masukData=sortedKeys.map(function(k){ return months[k].m; });
+    var keluarData=sortedKeys.map(function(k){ return months[k].k; });
+    if(labels.length>0){
+      laporanBarInstance.data.labels=labels;
+      laporanBarInstance.data.datasets[0].data=masukData;
+      laporanBarInstance.data.datasets[1].data=keluarData;
+      laporanBarInstance.update();
+    }
+  }
+  
+  // Top pengeluaran
+  var topList=document.getElementById('laporanTopList');
+  if(topList){
+    topList.innerHTML='';
+    topKeluar.sort(function(a,b){ return b.jumlah - a.jumlah; });
+    var top3=topKeluar.slice(0,3);
+    if(top3.length===0){
+      topList.innerHTML='<p class="text-[11px] text-slate-500 text-center py-3">Belum ada pengeluaran di periode ini</p>';
+    } else {
+      top3.forEach(function(it,idx){
+        var d=document.createElement('div');
+        d.className='flex items-center gap-2.5 p-2.5 rounded-xl bg-rose-50/70 border border-rose-100';
+        d.innerHTML='<span class="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">'+(idx+1)+'</span><div class="flex-1 min-w-0"><p class="font-bold text-[11px] text-rose-700 truncate uppercase">'+it.ket+'</p><p class="text-[10px] text-slate-500">'+it.tgl+'</p></div><span class="font-num font-bold text-xs text-rose-600">- Rp '+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</span>';
+        topList.appendChild(d);
+      });
+    }
+  }
+  
+  // Detail list tetap ada
+  var lc=document.getElementById('laporanList');
+  if(lc){ 
+    lc.innerHTML=''; 
+    if(filt.length===0) lc.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi di periode ini</p>'; 
+    else filt.slice().reverse().forEach(function(it){ 
+      var isM=it.tipe==='pemasukan'||it.tipe==='pengembalian'; 
+      var d=document.createElement('div'); 
+      d.className='riwayat-item-presisi '+(isM?'bg-emerald-50/70 border-emerald-100':'bg-rose-50/70 border-rose-100'); 
+      d.onclick=function(){ openEditModal(it.id); }; 
+      d.innerHTML='<span class="badge">'+(it.penabung||'HANI')+'</span><div class="main"><div class="title '+(isM?'text-emerald-700':'text-rose-700')+'">'+it.ket+'</div><div class="date">'+it.tgl+' | '+it.jam+'</div></div><div class="side"><div class="amount '+(isM?'text-emerald-600':'text-rose-600')+'">'+(isM?'+ Rp ':'- Rp ')+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>'; 
+      lc.appendChild(d); 
+    }); 
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){ initLaporanCharts(); updateLaporanUI(); }, 800);
+});
+
+
+// ===== PENGEMBALIAN DANA - WARNA BEDA & LOGIKA BEDA =====
+// Override render functions to handle pengembalian separately
+
+// Helper to get type class and colors
+function getTipeStyle(tipe){
+  if(tipe==='pengembalian'){
+    return {
+      bg: 'pengembalian',
+      badgeClass: 'badge-pengembalian',
+      titleClass: 'text-amber-700',
+      amountClass: 'text-amber-600',
+      sign: '+ Rp ',
+      label: 'PENGEMBALIAN',
+      icon: 'fa-rotate-left',
+      color: '#f59e0b'
+    };
+  } else if(tipe==='pengeluaran'){
+    return {
+      bg: 'bg-rose-50/70 border-rose-100',
+      badgeClass: 'badge-pengeluaran',
+      titleClass: 'text-rose-700',
+      amountClass: 'text-rose-600',
+      sign: '- Rp ',
+      label: 'PENGELUARAN',
+      icon: 'fa-arrow-down',
+      color: '#f43f5e'
+    };
+  } else {
+    return {
+      bg: 'bg-emerald-50/70 border-emerald-100',
+      badgeClass: 'badge-pemasukan',
+      titleClass: 'text-emerald-700',
+      amountClass: 'text-emerald-600',
+      sign: '+ Rp ',
+      label: 'PEMASUKAN',
+      icon: 'fa-arrow-up',
+      color: '#10b981'
+    };
+  }
+}
+
+// Override updateUI (Riwayat) to use pengembalian color
+var originalUpdateUI = window.updateUI;
+window.updateUI = function(){
+  if(typeof transactions==='undefined') return;
+  var sb=document.getElementById('filterBulan'), st=document.getElementById('filterTahun');
+  var b=sb?sb.value:'all', t=st?st.value:'all';
+  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (b==='all'||p[1]===b)&&(t==='all'||p[0]===t); });
+  var listEl=document.getElementById('transactionList')||document.getElementById('riwayatList');
+  if(!listEl) return;
+  listEl.innerHTML='';
+  if(filt.length===0){ listEl.innerHTML='<p class="text-sm text-slate-500 text-center py-8">Belum ada transaksi</p>'; return; }
+  
+  // Saldo calculation with pengembalian logic
+  var totalMasuk=0, totalKeluar=0, totalKembali=0;
+  filt.forEach(function(it){
+    if(it.tipe==='pemasukan') totalMasuk+=it.jumlah;
+    if(it.tipe==='pengeluaran') totalKeluar+=it.jumlah;
+    if(it.tipe==='pengembalian') totalKembali+=it.jumlah;
+  });
+  
+  // Render each with correct color
+  filt.slice().reverse().forEach(function(it){
+    var style=getTipeStyle(it.tipe);
+    var isPengembalian=it.tipe==='pengembalian';
+    var div=document.createElement('div');
+    div.className='riwayat-item-presisi '+(isPengembalian?'pengembalian':style.bg);
+    div.onclick=function(){ openEditModal(it.id); };
+    var sign = isPengembalian ? '+ Rp ' : (it.tipe==='pemasukan'?'+ Rp ':'- Rp ');
+    var badgeLabel = isPengembalian ? 'KEMBALI' : (it.penabung||'HANI');
+    div.innerHTML='<span class="badge '+style.badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+style.titleClass+'">'+it.ket+' '+(it.tipe==='pengembalian'?'<i class="fa-solid fa-rotate-left text-[10px] ml-1"></i>':'')+'</div><div class="date">'+it.tgl+' | '+it.jam+' • '+(isPengembalian?'Pinjam dibalikin':'')+'</div></div><div class="side"><div class="amount '+style.amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
+    listEl.appendChild(div);
+  });
+  
+  // Update dashboard saldo if exists
+  if(typeof updateDashboardStats==='function') updateDashboardStats(filt);
+};
+
+// Enhanced Laporan with pengembalian separate
+window.updateLaporanUI = function(){
+  if(typeof transactions==='undefined' || !transactions) return;
+  var sbEl=document.getElementById('filterBulanLaporan'); var stEl=document.getElementById('filterTahunLaporan');
+  if(!sbEl || !stEl) return;
+  var sb=sbEl.value, st=stEl.value;
+  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (sb==='all'||p[1]===sb)&&(st==='all'||p[0]===st); });
+  
+  var m=0,k=0,km=0, mc=0,kc=0,kmc=0;
+  var h=0,v=0,b=0;
+  var topKeluar=[];
+  filt.forEach(function(it){
+    if(it.tipe==='pemasukan'){ m+=it.jumlah; mc++; 
+      var pn=(it.penabung||'').toUpperCase();
+      if(pn.indexOf('HANI')>-1 && pn.indexOf('BERSAMA')===-1) h+=it.jumlah;
+      else if(pn.indexOf('VENUS')>-1 && pn.indexOf('BERSAMA')===-1) v+=it.jumlah;
+      else b+=it.jumlah;
+    }
+    if(it.tipe==='pengeluaran'){ k+=it.jumlah; kc++; topKeluar.push(it); }
+    if(it.tipe==='pengembalian'){ km+=it.jumlah; kmc++; }
+  });
+  var s=m - k + km; // Saldo = Masuk - Keluar + Kembali
+  
+  function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
+  function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
+  
+  el('laporanSaldo',fmt(s));
+  el('laporanMasuk',fmt(m));
+  el('laporanKeluar',fmt(k));
+  el('laporanMasukCount',mc+' pemasukan');
+  el('laporanKeluarCount',kc+' pengeluaran');
+  var totalEl=document.getElementById('laporanTotalTransaksi'); if(totalEl) totalEl.innerText=filt.length+' item ('+kmc+' kembali)';
+  
+  // Add pengembalian card if exists
+  var kembaliCard=document.getElementById('laporanKembali');
+  if(kembaliCard){
+    kembaliCard.innerText=fmt(km);
+    document.getElementById('laporanKembaliCount').innerText=kmc+' pengembalian';
+  }
+  
+  var lbl=document.getElementById('laporanPeriodeLabel');
+  if(lbl){ 
+    if(sb==='all'&&st==='all') lbl.innerText='Semua Periode • Masuk '+mc+' • Keluar '+kc+' • Kembali '+kmc; 
+    else { var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; var l=''; if(sb!=='all') l+=bn[parseInt(sb)]+' '; if(st!=='all') l+=st; lbl.innerText=l+' • Kembali: '+fmt(km); } 
+  }
+  
+  // Donut 3 warna: Masuk, Keluar, Kembali
+  if(laporanDonutInstance){
+    var totalMK = m+k+km;
+    var masukPct = totalMK>0 ? Math.round(m/totalMK*100) : 0;
+    var keluarPct = totalMK>0 ? Math.round(k/totalMK*100) : 0;
+    var kembaliPct = totalMK>0 ? Math.round(km/totalMK*100) : 0;
+    laporanDonutInstance.data.labels=['Masuk','Keluar','Kembali'];
+    laporanDonutInstance.data.datasets[0].data=[m||1,k||0.1,km||0.1];
+    laporanDonutInstance.data.datasets[0].backgroundColor=['#3b82f6','#fb7185','#fbbf24'];
+    laporanDonutInstance.update();
+    el('laporanChartMasukPct',masukPct+'%');
+    el('laporanChartKeluarPct',keluarPct+'%');
+    var kembaliPctEl=document.getElementById('laporanChartKembaliPct');
+    if(kembaliPctEl) kembaliPctEl.innerText=kembaliPct+'%';
+    el('laporanDonutCenter',kembaliPct+'%');
+    var progBar=document.getElementById('laporanProgressBar');
+    if(progBar){ progBar.style.width=masukPct+'%'; }
+  }
+  
+  // Hani vs Venus tetap
+  var totalHV = h+v+b||1;
+  el('laporanHaniPct',Math.round(h/totalHV*100)+'%');
+  el('laporanVenusPct',Math.round(v/totalHV*100)+'%');
+  el('laporanHaniNominal',fmt(h));
+  el('laporanVenusNominal',fmt(v));
+  var hb=document.getElementById('laporanHaniBar'); if(hb) hb.style.width=(h/totalHV*100)+'%';
+  var vb=document.getElementById('laporanVenusBar'); if(vb) vb.style.width=(v/totalHV*100)+'%';
+  
+  // Bar chart
+  if(laporanBarInstance){
+    var months={};
+    transactions.forEach(function(it){
+      if(!it.tgl) return;
+      var key=it.tgl.slice(0,7);
+      if(!months[key]) months[key]={m:0,k:0,km:0};
+      if(it.tipe==='pemasukan') months[key].m+=it.jumlah;
+      if(it.tipe==='pengeluaran') months[key].k+=it.jumlah;
+      if(it.tipe==='pengembalian') months[key].km+=it.jumlah;
+    });
+    var sortedKeys=Object.keys(months).sort().slice(-6);
+    var labels=sortedKeys.map(function(k){ var p=k.split('-'); var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return bn[parseInt(p[1])]; });
+    var masukData=sortedKeys.map(function(k){ return months[k].m; });
+    var keluarData=sortedKeys.map(function(k){ return months[k].k; });
+    if(labels.length>0){
+      laporanBarInstance.data.labels=labels;
+      laporanBarInstance.data.datasets[0].data=masukData;
+      laporanBarInstance.data.datasets[1].data=keluarData;
+      laporanBarInstance.update();
+    }
+  }
+  
+  // Top pengeluaran
+  var topList=document.getElementById('laporanTopList');
+  if(topList){
+    topList.innerHTML='';
+    topKeluar.sort(function(a,b){ return b.jumlah - a.jumlah; });
+    var top3=topKeluar.slice(0,3);
+    if(top3.length===0){
+      topList.innerHTML='<p class="text-[11px] text-slate-500 text-center py-3">Belum ada pengeluaran</p>';
+    } else {
+      top3.forEach(function(it,idx){
+        var d=document.createElement('div');
+        d.className='flex items-center gap-2.5 p-2.5 rounded-xl bg-rose-50/70 border border-rose-100';
+        d.innerHTML='<span class="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">'+(idx+1)+'</span><div class="flex-1 min-w-0"><p class="font-bold text-[11px] text-rose-700 truncate uppercase">'+it.ket+'</p><p class="text-[10px] text-slate-500">'+it.tgl+'</p></div><span class="font-num font-bold text-xs text-rose-600">- Rp '+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</span>';
+        topList.appendChild(d);
+      });
+    }
+  }
+  
+  // Detail list dengan warna beda untuk pengembalian
+  var lc=document.getElementById('laporanList');
+  if(lc){ 
+    lc.innerHTML=''; 
+    if(filt.length===0) lc.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi</p>'; 
+    else filt.slice().reverse().forEach(function(it){ 
+      var style=getTipeStyle(it.tipe);
+      var isKembali=it.tipe==='pengembalian';
+      var d=document.createElement('div'); 
+      d.className='riwayat-item-presisi '+(isKembali?'pengembalian':(it.tipe==='pemasukan'?'bg-emerald-50/70 border-emerald-100':'bg-rose-50/70 border-rose-100')); 
+      d.onclick=function(){ openEditModal(it.id); }; 
+      var sign = isKembali ? '+ Rp ' : (it.tipe==='pemasukan'?'+ Rp ':'- Rp ');
+      d.innerHTML='<span class="badge '+style.badgeClass+'">'+(isKembali?'KEMBALI':it.penabung)+'</span><div class="main"><div class="title '+style.titleClass+'">'+it.ket+' '+(isKembali?'<i class="fa-solid fa-rotate-left ml-1"></i>':'')+'</div><div class="date">'+it.tgl+' | '+it.jam+'</div></div><div class="side"><div class="amount '+style.amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>'; 
+      lc.appendChild(d); 
+    }); 
+  }
+};
+
+// Update dashboard stats to include pengembalian
+window.updateDashboardStats = function(filt){
+  if(!filt) filt=transactions||[];
+  var m=0,k=0,km=0;
+  filt.forEach(function(it){
+    if(it.tipe==='pemasukan') m+=it.jumlah;
+    if(it.tipe==='pengeluaran') k+=it.jumlah;
+    if(it.tipe==='pengembalian') km+=it.jumlah;
+  });
+  var saldo=m - k + km;
+  // Update dashboard elements if exist
+  var els=document.querySelectorAll('[id*="total"]');
+  // Let original function handle
+  if(typeof originalDashboardStats==='function') originalDashboardStats(filt);
+};
 </script>
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
