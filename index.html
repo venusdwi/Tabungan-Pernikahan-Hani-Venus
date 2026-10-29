@@ -1156,6 +1156,88 @@ body.dark #tab-setelan .glass-box{
 body.dark #tambahModalBox{
   background: rgba(15,23,42,0.98)!important;
 }
+
+/* ===== V20 BLUR TIPIS 4PX OPTIMIZED - TETAP MULUS ===== */
+:root{
+  --box-opacity:0.85;
+  --glass-blur:4px; /* tipis 4px - 50% dari 8px, gak berat */
+  --glass-saturate:1.1;
+}
+
+/* Blur tipis cuma di container besar, bukan semua kecil */
+.glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  background-color: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border: 1px solid rgba(255,255,255,0.45)!important;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.04)!important;
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+  contain: paint;
+}
+body.dark .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+  background-color: rgba(15,23,42,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border-color: rgba(51,65,85,0.3)!important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.16)!important;
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+}
+
+/* Top & Bottom blur tipis */
+#topControlsBar > button,
+#topControlsBar > div{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(4px) saturate(1.1)!important;
+  -webkit-backdrop-filter: blur(4px) saturate(1.1)!important;
+}
+body.dark #topControlsBar > button,
+body.dark #topControlsBar > div{
+  background: rgba(30,41,59,var(--box-opacity))!important;
+}
+.bottom-tab-bar{
+  background: rgba(255,255,255,0.97)!important;
+  backdrop-filter: blur(6px) saturate(1.1)!important;
+  -webkit-backdrop-filter: blur(6px) saturate(1.1)!important;
+}
+body.dark .bottom-tab-bar{
+  background: rgba(15,23,42,0.97)!important;
+}
+
+/* ===== V21 BLUR 2PX SUPER TIPIS ===== */
+:root{
+  --box-opacity:0.85;
+  --glass-blur:2px;
+  --glass-saturate:1.05;
+}
+.glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  background-color: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(2px) saturate(1.05)!important;
+  -webkit-backdrop-filter: blur(2px) saturate(1.05)!important;
+  border: 1px solid rgba(255,255,255,0.4)!important;
+  box-shadow: 0 1px 6px rgba(15,23,42,0.03)!important;
+}
+body.dark .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+  background-color: rgba(15,23,42,var(--box-opacity))!important;
+  backdrop-filter: blur(2px) saturate(1.05)!important;
+  -webkit-backdrop-filter: blur(2px) saturate(1.05)!important;
+  border-color: rgba(51,65,85,0.28)!important;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12)!important;
+}
+#topControlsBar > button,
+#topControlsBar > div{
+  backdrop-filter: blur(2px) saturate(1.05)!important;
+  -webkit-backdrop-filter: blur(2px) saturate(1.05)!important;
+}
+.bottom-tab-bar{
+  backdrop-filter: blur(3px) saturate(1.05)!important;
+  -webkit-backdrop-filter: blur(3px) saturate(1.05)!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3569,6 +3651,37 @@ document.addEventListener('DOMContentLoaded', function(){
     active.style.visibility='visible';
   }
 });
+
+
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = 4; // fixed tipis 4px, gak naik turun biar gak delay
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', '1.1');
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+}
+
+
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', '2px');
+  document.documentElement.style.setProperty('--glass-saturate', '1.05');
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+}
 </script>
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
