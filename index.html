@@ -489,6 +489,55 @@ body.dark #tambahModalBox button[onclick="closeTambahModal()"] i{
 
 /* Setelan extra cards */
 .setelan-card-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;color:white}
+
+/* ===== V13 GLASS TRANSPARENCY 0-100% ===== */
+:root{
+  --box-opacity:0.85;
+  --glass-blur:12px;
+  --glass-saturate:1.2;
+}
+.glass-box{
+  background-color: rgba(255, 255, 255, var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border: 1px solid rgba(255, 255, 255, calc(var(--box-opacity)*0.6 + 0.2))!important;
+  box-shadow: 0 8px 32px rgba(2,132,199, calc((1 - var(--box-opacity))*0.15 + 0.05)), 0 2px 8px rgba(0,0,0,0.04)!important;
+  transition: background-color 0.25s ease, backdrop-filter 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease!important;
+}
+body.dark .glass-box{
+  background-color: rgba(15, 23, 42, var(--box-opacity))!important;
+  border-color: rgba(51,65,85, calc(var(--box-opacity)*0.5 + 0.15))!important;
+  box-shadow: 0 8px 32px rgba(0,0,0, calc((1 - var(--box-opacity))*0.3 + 0.1)), 0 2px 12px rgba(0,0,0,0.2)!important;
+}
+/* Ensure inner elements not opaque breaking glass */
+body:not(.dark) .glass-box .bg-slate-50{
+  background: rgba(248,250,252, calc(var(--box-opacity)*0.7 + 0.15))!important;
+}
+body.dark .glass-box .bg-slate-50{
+  background: rgba(30,41,59, calc(var(--box-opacity)*0.6 + 0.15))!important;
+}
+
+/* Custom modals */
+.custom-themed-modal{
+  position:fixed; inset:0; z-index:80; background:rgba(15,23,42,0.6); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; pointer-events:none; transition:all 0.25s ease;
+}
+.custom-themed-modal.active{opacity:1; pointer-events:auto}
+.custom-themed-modal-box{
+  width:100%; max-width:360px; background:white; border-radius:24px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,0.3); transform:translateY(20px) scale(0.95); transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.custom-themed-modal.active .custom-themed-modal-box{transform:translateY(0) scale(1)}
+body.dark .custom-themed-modal-box{background:#1e293b; border:1px solid rgba(71,85,105,0.3)}
+.pin-input{width:44px;height:56px;text-align:center;font-size:22px;font-weight:800;border:2px solid #e2e8f0;border-radius:14px;outline:none;transition:all 0.2s}
+.pin-input:focus{border-color:#0284c7; box-shadow:0 0 0 3px rgba(2,132,199,0.15)}
+body.dark .pin-input{background:#0f172a; border-color:#334155; color:white}
+body.dark .pin-input:focus{border-color:#38bdf8}
+.lock-option{width:100%; display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e2e8f0; border-radius:16px; background:white; text-align:left; transition:all 0.2s; cursor:pointer}
+.lock-option.active{border-color:#0284c7; background:#f0f9ff}
+.lock-option:hover{border-color:#7dd3fc}
+body.dark .lock-option{background:#0f172a; border-color:#334155; color:#e2e8f0}
+body.dark .lock-option.active{background:rgba(2,132,199,0.15); border-color:#0284c7}
+.lock-option-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -566,7 +615,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <button class="bg-blue-600 text-white px-2.5 py-1.5 rounded-full text-[11px] font-bold" onclick="openBgPicker()"><i class="fa-solid fa-image mr-1"></i>Galeri Foto</button>
 <button class="hidden text-slate-400 px-1" id="btnResetBg" onclick="resetBgImage()"><i class="fa-solid fa-trash-can"></i></button>
 <div class="h-4 w-[1px] bg-slate-300"></div>
-<input class="w-10 accent-blue-600 h-1" id="opacitySlider" max="1.0" min="0.2" oninput="changeBoxOpacity(this.value); syncOpacitySliders(this.value)" step="0.05" type="range" value="0.75"/>
+<input class="w-10 accent-blue-600 h-1" id="opacitySlider" max="1" min="0" oninput="changeBoxOpacity(this.value); syncOpacitySliders(this.value)" step="0.01" type="range" value="0.85"/>
 <div class="h-4 w-[1px] bg-slate-300"></div>
 <button class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-[11px]" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="darkModeIcon"></i></button>
 </div>
@@ -695,7 +744,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <div class="space-y-3" id="transactionList"></div>
 </div>
 </div>
-
 <div class="tab-content" id="tab-setelan">
 <div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Setelan</h2><p class="text-sky-200/70 text-[11px] mt-1">Kelola tampilan &amp; data</p></div>
 <div class="space-y-3">
@@ -703,7 +751,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-palette text-blue-600"></i> Tampilan &amp; Tema</h3>
 <div class="space-y-3">
 <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border"><div><p class="text-[13px] font-semibold">Mode Gelap</p><p class="text-[11px] text-slate-500">Tema gelap terang otomatis</p></div><button class="w-11 h-6 rounded-full bg-slate-300 relative p-1 flex items-center transition" id="darkModeToggleSetelan" onclick="toggleDarkMode()"><div class="w-4 h-4 rounded-full bg-white shadow-sm flex items-center justify-center text-[9px] transition" id="darkToggleKnobSetelan"><i class="fa-solid fa-sun"></i></div></button></div>
-<div class="p-3 bg-slate-50 rounded-xl border"><p class="text-xs font-semibold mb-2">Transparansi Kotak</p><div class="flex items-center gap-2"><i class="fa-solid fa-circle-half-stroke text-slate-400 text-xs"></i><input class="flex-1 accent-blue-600" id="opacitySliderSetelan" max="1.0" min="0.2" oninput="changeBoxOpacity(this.value); syncOpacitySliders(this.value)" step="0.05" type="range" value="0.75"/><span class="text-xs font-bold w-8" id="opacityValue">75%</span></div></div>
+<div class="p-3 bg-slate-50 rounded-xl border"><p class="text-xs font-semibold mb-2">Transparansi Kotak</p><div class="flex items-center gap-2"><i class="fa-solid fa-circle-half-stroke text-slate-400 text-xs"></i><input class="flex-1 accent-blue-600" id="opacitySliderSetelan" max="1" min="0" oninput="changeBoxOpacity(this.value); syncOpacitySliders(this.value)" step="0.01" type="range" value="0.85"/><span class="text-xs font-bold w-8" id="opacityValue">75%</span></div></div>
 <div class="grid grid-cols-2 gap-2"><button class="bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs" onclick="openBgPicker()"><i class="fa-solid fa-image mr-1"></i> Ganti BG</button><button class="bg-slate-100 border py-2.5 rounded-xl text-xs font-bold" id="btnResetBgSetelan" onclick="resetBgImage()">Reset BG</button></div>
 </div>
 </div>
@@ -737,7 +785,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <div class="glass-box rounded-2xl p-4"><h3 class="font-bold text-sm mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-info text-slate-500"></i> Tentang</h3><div class="text-xs text-slate-600 space-y-1"><p><b>Target:</b> 03 April 2027</p><p><b>Countdown:</b> <span id="setelanCountdown">-</span></p><p><b>Versi:</b> V12 Dark Perfect + Setelan Lengkap</p><p class="text-[11px] text-emerald-600 mt-2">Firebase: tabungan-hani-venus • Auto Sync</p></div></div>
 </div>
 </div>
-
 </div>
 </div>
 <!-- MODAL POP-UP FULLSCREEN: OUR JOURNEY TO HALAL & GALERI KITA -->
@@ -2469,6 +2516,253 @@ function confirmHapusSemua(){
   }
 }
 document.addEventListener('DOMContentLoaded',function(){ setTimeout(updateTargetDisplay,1000); });
+
+
+// ===== V13 GLASS TRANSPARENCY 0-100% =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = (1 - opacity) * 24 + 4; // 0% -> 28px blur, 100% -> 4px blur
+  var saturate = (1 - opacity) * 0.5 + 1; // more glass when transparent
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', saturate);
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  syncOpacitySliders(opacity);
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  // Update blur preview
+  var blur = (1 - opacity) * 24 + 4;
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+}
+function loadSavedOpacity(){
+  var saved = localStorage.getItem('wedding_box_opacity');
+  var opacity = saved!==null ? parseFloat(saved) : 0.85;
+  changeBoxOpacity(opacity);
+}
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(loadSavedOpacity, 300);
+});
+
+// ===== GANTI PIN CUSTOM MODAL =====
+function openGantiPinModal(){
+  var m=document.getElementById('gantiPinModal');
+  if(!m) return;
+  m.classList.add('active');
+  document.body.style.overflow='hidden';
+  // Clear inputs
+  document.querySelectorAll('#oldPinInputs .pin-input').forEach(function(i){ i.value=''; });
+  document.querySelectorAll('#newPinInputs .pin-input').forEach(function(i){ i.value=''; });
+  document.getElementById('pinError').classList.add('hidden');
+  setTimeout(function(){ document.querySelector('#oldPinInputs .pin-input').focus(); }, 100);
+}
+function closeGantiPinModal(){
+  var m=document.getElementById('gantiPinModal');
+  if(m) m.classList.remove('active');
+  document.body.style.overflow='';
+}
+function handlePinInput(el, type){
+  var val=el.value.replace(/[^0-9]/g,'');
+  el.value=val;
+  if(val && el.dataset.index < 5){
+    var next = document.querySelector('#'+(type==='old'?'oldPinInputs':'newPinInputs')+' .pin-input[data-index="'+(parseInt(el.dataset.index)+1)+'"]');
+    if(next) next.focus();
+  }
+}
+function handlePinKeydown(e, type){
+  if(e.key==='Backspace' && !e.target.value && e.target.dataset.index > 0){
+    var prev = document.querySelector('#'+(type==='old'?'oldPinInputs':'newPinInputs')+' .pin-input[data-index="'+(parseInt(e.target.dataset.index)-1)+'"]');
+    if(prev){ prev.focus(); prev.value=''; }
+  }
+}
+function getPinValue(type){
+  var inputs = document.querySelectorAll('#'+(type==='old'?'oldPinInputs':'newPinInputs')+' .pin-input');
+  var pin='';
+  inputs.forEach(function(i){ pin+=i.value; });
+  return pin;
+}
+function simpanPinBaru(){
+  var oldPin=getPinValue('old');
+  var newPin=getPinValue('new');
+  var err=document.getElementById('pinError');
+  err.classList.add('hidden');
+  if(oldPin.length!==6){ err.innerText='PIN lama harus 6 digit'; err.classList.remove('hidden'); return; }
+  if(newPin.length!==6){ err.innerText='PIN baru harus 6 digit'; err.classList.remove('hidden'); return; }
+  var savedPin = localStorage.getItem('customPin') || '150522';
+  var defaultPin='150522';
+  var currentPin = localStorage.getItem('customPin') || defaultPin;
+  // Check old pin
+  if(oldPin!==currentPin && oldPin!==defaultPin){
+    err.innerText='PIN lama salah!'; err.classList.remove('hidden'); return;
+  }
+  if(oldPin===newPin){
+    err.innerText='PIN baru tidak boleh sama dengan lama'; err.classList.remove('hidden'); return;
+  }
+  try{localStorage.setItem('customPin', newPin);}catch(e){}
+  closeGantiPinModal();
+  // Show success
+  setTimeout(function(){ alert('PIN berhasil diganti ke: '+newPin); }, 300);
+}
+
+// Override old openGantiPinModal that used prompt
+window.openGantiPinModal = openGantiPinModal;
+
+// ===== KUNCI APLIKASI CUSTOM 3 PILIHAN =====
+function openKunciModal(){
+  var m=document.getElementById('kunciAplikasiModal');
+  if(!m) return;
+  m.classList.add('active');
+  document.body.style.overflow='hidden';
+  var saved = parseInt(localStorage.getItem('autoLockTime')||'5');
+  updateLockOptionsUI(saved);
+}
+function closeKunciModal(){
+  var m=document.getElementById('kunciAplikasiModal');
+  if(m) m.classList.remove('active');
+  document.body.style.overflow='';
+}
+function updateLockOptionsUI(activeVal){
+  document.querySelectorAll('.lock-option').forEach(function(el){
+    el.classList.remove('active');
+    el.querySelector('.check-icon').classList.add('hidden');
+  });
+  var activeEl=document.getElementById('lockOpt'+activeVal);
+  if(activeEl){ activeEl.classList.add('active'); activeEl.querySelector('.check-icon').classList.remove('hidden'); }
+}
+function setKunciWaktu(minutes){
+  try{localStorage.setItem('autoLockTime', minutes);}catch(e){}
+  updateLockOptionsUI(minutes);
+  // Reset timer
+  resetAutoLockTimer();
+  var txt = minutes===0?'Tidak Dikunci':minutes+' Menit';
+  // Show toast
+  setTimeout(function(){ 
+    var toast=document.createElement('div');
+    toast.className='fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2 rounded-full text-xs font-bold z-[90] shadow-xl';
+    toast.innerText='Kunci otomatis: '+txt;
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.remove(); }, 2000);
+  }, 100);
+}
+function kunciSekarang(){
+  closeKunciModal();
+  setTimeout(function(){ kunciAplikasi(); }, 300);
+}
+function kunciAplikasi(){
+  var lock=document.getElementById('pinLockScreen');
+  if(lock){ lock.classList.remove('hidden'); }
+  else { location.reload(); }
+}
+window.kunciAplikasi = kunciAplikasi;
+window.openKunciModal = openKunciModal;
+
+// Override old Kunci Aplikasi button to open custom modal
+var oldKunciBtn = document.querySelector('button[onclick="kunciAplikasi()"]');
+if(oldKunciBtn){ oldKunciBtn.setAttribute('onclick','openKunciModal()'); }
+
+// Auto lock timer
+var autoLockTimer=null;
+var lastActivity=Date.now();
+function resetAutoLockTimer(){
+  if(autoLockTimer) clearTimeout(autoLockTimer);
+  var minutes = parseInt(localStorage.getItem('autoLockTime')||'5');
+  if(minutes===0) return; // never lock
+  autoLockTimer=setTimeout(function(){
+    var inactive = Date.now() - lastActivity;
+    if(inactive >= minutes*60*1000){
+      kunciAplikasi();
+    }
+  }, minutes*60*1000);
+}
+['click','keydown','mousemove','touchstart'].forEach(function(ev){
+  document.addEventListener(ev, function(){ lastActivity=Date.now(); resetAutoLockTimer(); }, {passive:true});
+});
+document.addEventListener('DOMContentLoaded', function(){ resetAutoLockTimer(); });
+
+// Close modals on backdrop click
+document.getElementById('gantiPinModal').addEventListener('click', function(e){ if(e.target===this) closeGantiPinModal(); });
+document.getElementById('kunciAplikasiModal').addEventListener('click', function(e){ if(e.target===this) closeKunciModal(); });
 </script>
+
+<!-- Custom Ganti PIN Modal -->
+<div class="custom-themed-modal" id="gantiPinModal">
+<div class="custom-themed-modal-box">
+<div class="flex items-center justify-between mb-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center"><i class="fa-solid fa-key"></i></div>
+<div><h3 class="font-bold text-[15px] text-slate-900 dark:text-white">Ganti PIN</h3><p class="text-[11px] text-slate-500">Masukkan PIN baru 6 digit</p></div>
+</div>
+<button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500" onclick="closeGantiPinModal()"><i class="fa-solid fa-xmark text-xs"></i></button>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-2">PIN Lama</label>
+<div class="flex gap-2 justify-center" id="oldPinInputs">
+<input class="pin-input" data-index="0" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'old')" onkeydown="handlePinKeydown(event, 'old')" type="password"/>
+<input class="pin-input" data-index="1" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'old')" onkeydown="handlePinKeydown(event, 'old')" type="password"/>
+<input class="pin-input" data-index="2" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'old')" onkeydown="handlePinKeydown(event, 'old')" type="password"/>
+<input class="pin-input" data-index="3" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'old')" onkeydown="handlePinKeydown(event, 'old')" type="password"/>
+<input class="pin-input" data-index="4" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'old')" onkeydown="handlePinKeydown(event, 'old')" type="password"/>
+<input class="pin-input" data-index="5" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'old')" onkeydown="handlePinKeydown(event, 'old')" type="password"/>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-2">PIN Baru</label>
+<div class="flex gap-2 justify-center" id="newPinInputs">
+<input class="pin-input" data-index="0" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'new')" onkeydown="handlePinKeydown(event, 'new')" type="password"/>
+<input class="pin-input" data-index="1" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'new')" onkeydown="handlePinKeydown(event, 'new')" type="password"/>
+<input class="pin-input" data-index="2" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'new')" onkeydown="handlePinKeydown(event, 'new')" type="password"/>
+<input class="pin-input" data-index="3" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'new')" onkeydown="handlePinKeydown(event, 'new')" type="password"/>
+<input class="pin-input" data-index="4" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'new')" onkeydown="handlePinKeydown(event, 'new')" type="password"/>
+<input class="pin-input" data-index="5" inputmode="numeric" maxlength="1" oninput="handlePinInput(this, 'new')" onkeydown="handlePinKeydown(event, 'new')" type="password"/>
+</div>
+</div>
+<div class="hidden text-[11px] text-rose-600 bg-rose-50 border border-rose-100 rounded-xl p-2.5 text-center" id="pinError"></div>
+<div class="grid grid-cols-2 gap-2 pt-2">
+<button class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-sm" onclick="closeGantiPinModal()">Batal</button>
+<button class="py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm shadow-lg" onclick="simpanPinBaru()">Simpan PIN</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Custom Kunci Aplikasi Modal -->
+<div class="custom-themed-modal" id="kunciAplikasiModal">
+<div class="custom-themed-modal-box">
+<div class="flex items-center justify-between mb-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-slate-800 text-white flex items-center justify-center"><i class="fa-solid fa-lock"></i></div>
+<div><h3 class="font-bold text-[15px] text-slate-900 dark:text-white">Kunci Otomatis</h3><p class="text-[11px] text-slate-500">Pilih waktu kunci</p></div>
+</div>
+<button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500" onclick="closeKunciModal()"><i class="fa-solid fa-xmark text-xs"></i></button>
+</div>
+<div class="space-y-2.5">
+<button class="lock-option" id="lockOpt1" onclick="setKunciWaktu(1)">
+<div class="lock-option-icon bg-amber-500"><i class="fa-solid fa-clock"></i></div>
+<div class="flex-1"><p class="font-bold text-sm">1 Menit</p><p class="text-[11px] text-slate-500">Kunci setelah 1 menit tidak aktif</p></div>
+<i class="fa-solid fa-check text-blue-600 hidden check-icon"></i>
+</button>
+<button class="lock-option" id="lockOpt5" onclick="setKunciWaktu(5)">
+<div class="lock-option-icon bg-blue-500"><i class="fa-solid fa-clock"></i></div>
+<div class="flex-1"><p class="font-bold text-sm">5 Menit</p><p class="text-[11px] text-slate-500">Kunci setelah 5 menit tidak aktif</p></div>
+<i class="fa-solid fa-check text-blue-600 hidden check-icon"></i>
+</button>
+<button class="lock-option" id="lockOpt0" onclick="setKunciWaktu(0)">
+<div class="lock-option-icon bg-slate-500"><i class="fa-solid fa-lock-open"></i></div>
+<div class="flex-1"><p class="font-bold text-sm">Tidak Dikunci</p><p class="text-[11px] text-slate-500">Aplikasi tetap terbuka</p></div>
+<i class="fa-solid fa-check text-blue-600 hidden check-icon"></i>
+</button>
+<div class="pt-3">
+<button class="w-full py-3.5 rounded-xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-bold text-sm flex items-center justify-center gap-2" onclick="kunciSekarang()"><i class="fa-solid fa-lock"></i> Kunci Sekarang</button>
+</div>
+<p class="text-[10px] text-slate-400 text-center">Pengaturan disimpan otomatis di perangkat ini</p>
+</div>
+</div>
+</div>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
