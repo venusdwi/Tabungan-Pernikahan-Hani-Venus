@@ -464,6 +464,31 @@ body.dark .filter-btn{
   border-color:#475569!important;
   color:#94a3b8!important;
 }
+
+/* ===== V12 FIX CLOSE BUTTON + SETELAN ===== */
+/* Close button - light mode */
+#tambahModalBox button[onclick="closeTambahModal()"]{
+  background:#f1f5f9!important;
+  color:#475569!important;
+  border:1px solid #e2e8f0!important;
+}
+#tambahModalBox button[onclick="closeTambahModal()"] i{
+  color:#475569!important;
+  font-size:12px!important;
+  display:block!important;
+}
+/* Close button - dark mode */
+body.dark #tambahModalBox button[onclick="closeTambahModal()"]{
+  background:#1e293b!important;
+  color:#e2e8f0!important;
+  border-color:#334155!important;
+}
+body.dark #tambahModalBox button[onclick="closeTambahModal()"] i{
+  color:#e2e8f0!important;
+}
+
+/* Setelan extra cards */
+.setelan-card-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;color:white}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -670,20 +695,49 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <div class="space-y-3" id="transactionList"></div>
 </div>
 </div>
+
 <div class="tab-content" id="tab-setelan">
-<div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Setelan</h2><p class="text-sky-200/70 text-[11px] mt-1">Kelola tampilan</p></div>
+<div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Setelan</h2><p class="text-sky-200/70 text-[11px] mt-1">Kelola tampilan &amp; data</p></div>
 <div class="space-y-3">
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-palette text-blue-600"></i> Tampilan &amp; Tema</h3>
 <div class="space-y-3">
-<div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border"><div><p class="text-[13px] font-semibold">Mode Gelap</p><p class="text-[11px] text-slate-500">Tema gelap</p></div><button class="w-11 h-6 rounded-full bg-slate-300 relative p-1 flex items-center transition" id="darkModeToggleSetelan" onclick="toggleDarkMode()"><div class="w-4 h-4 rounded-full bg-white shadow-sm flex items-center justify-center text-[9px] transition" id="darkToggleKnobSetelan"><i class="fa-solid fa-sun"></i></div></button></div>
+<div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border"><div><p class="text-[13px] font-semibold">Mode Gelap</p><p class="text-[11px] text-slate-500">Tema gelap terang otomatis</p></div><button class="w-11 h-6 rounded-full bg-slate-300 relative p-1 flex items-center transition" id="darkModeToggleSetelan" onclick="toggleDarkMode()"><div class="w-4 h-4 rounded-full bg-white shadow-sm flex items-center justify-center text-[9px] transition" id="darkToggleKnobSetelan"><i class="fa-solid fa-sun"></i></div></button></div>
 <div class="p-3 bg-slate-50 rounded-xl border"><p class="text-xs font-semibold mb-2">Transparansi Kotak</p><div class="flex items-center gap-2"><i class="fa-solid fa-circle-half-stroke text-slate-400 text-xs"></i><input class="flex-1 accent-blue-600" id="opacitySliderSetelan" max="1.0" min="0.2" oninput="changeBoxOpacity(this.value); syncOpacitySliders(this.value)" step="0.05" type="range" value="0.75"/><span class="text-xs font-bold w-8" id="opacityValue">75%</span></div></div>
 <div class="grid grid-cols-2 gap-2"><button class="bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs" onclick="openBgPicker()"><i class="fa-solid fa-image mr-1"></i> Ganti BG</button><button class="bg-slate-100 border py-2.5 rounded-xl text-xs font-bold" id="btnResetBgSetelan" onclick="resetBgImage()">Reset BG</button></div>
 </div>
 </div>
-<div class="glass-box rounded-2xl p-4"><h3 class="font-bold text-sm mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-info text-slate-500"></i> Tentang Firebase</h3><div class="text-xs text-slate-600 space-y-1"><p><b>Target:</b> 03 April 2027</p><p><b>Countdown:</b> <span id="setelanCountdown">-</span></p><p class="text-[11px] text-emerald-600 mt-2">Data otomatis dari Firestore: tabungan-hani-venus</p></div></div>
+<div class="glass-box rounded-2xl p-4">
+<h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
+<div class="space-y-3">
+<div class="flex gap-2">
+<div class="flex-1 relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span><input class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-3 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" id="targetTabunganInput" inputmode="numeric" oninput="formatRupiahInput(this)" placeholder="20.000.000" type="text"/></div>
+<button class="bg-emerald-600 text-white px-4 py-3 rounded-xl text-xs font-bold" onclick="simpanTargetTabungan()"><i class="fa-solid fa-floppy-disk mr-1"></i> Simpan</button>
+</div>
+<p class="text-[11px] text-slate-500">Target saat ini: <span class="font-bold text-emerald-600" id="currentTargetDisplay">Rp 0</span> • Progress: <span class="font-bold" id="targetProgressDisplay">0%</span></p>
+<div class="w-full bg-slate-200 h-2 rounded-full"><div class="bg-emerald-500 h-2 rounded-full" id="targetProgressBar" style="width:0%"></div></div>
 </div>
 </div>
+<div class="glass-box rounded-2xl p-4">
+<h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-indigo-600"></i> Keamanan</h3>
+<div class="grid grid-cols-2 gap-2">
+<button class="flex items-center gap-2 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs font-bold text-indigo-700" onclick="openGantiPinModal()"><div class="setelan-card-icon bg-indigo-500"><i class="fa-solid fa-key"></i></div> Ganti PIN</button>
+<button class="flex items-center gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700" onclick="kunciAplikasi()"><div class="setelan-card-icon bg-slate-700"><i class="fa-solid fa-lock"></i></div> Kunci Aplikasi</button>
+</div>
+</div>
+<div class="glass-box rounded-2xl p-4">
+<h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-database text-blue-600"></i> Data &amp; Backup</h3>
+<div class="grid grid-cols-2 gap-2">
+<button class="flex items-center gap-2 p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-700" onclick="downloadPDF()"><div class="setelan-card-icon bg-rose-500"><i class="fa-solid fa-file-pdf"></i></div> Export PDF</button>
+<button class="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-xs font-bold text-emerald-700" onclick="exportExcelCSV()"><div class="setelan-card-icon bg-emerald-500"><i class="fa-solid fa-file-excel"></i></div> Export Excel</button>
+<button class="flex items-center gap-2 p-3 bg-blue-50 border border-blue-100 rounded-xl text-xs font-bold text-blue-700" onclick="backupData()"><div class="setelan-card-icon bg-blue-500"><i class="fa-solid fa-cloud-arrow-down"></i></div> Backup</button>
+<button class="flex items-center gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600" onclick="confirmHapusSemua()"><div class="setelan-card-icon bg-slate-500"><i class="fa-solid fa-trash-can"></i></div> Hapus Semua</button>
+</div>
+</div>
+<div class="glass-box rounded-2xl p-4"><h3 class="font-bold text-sm mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-info text-slate-500"></i> Tentang</h3><div class="text-xs text-slate-600 space-y-1"><p><b>Target:</b> 03 April 2027</p><p><b>Countdown:</b> <span id="setelanCountdown">-</span></p><p><b>Versi:</b> V12 Dark Perfect + Setelan Lengkap</p><p class="text-[11px] text-emerald-600 mt-2">Firebase: tabungan-hani-venus • Auto Sync</p></div></div>
+</div>
+</div>
+
 </div>
 </div>
 <!-- MODAL POP-UP FULLSCREEN: OUR JOURNEY TO HALAL & GALERI KITA -->
@@ -2346,6 +2400,75 @@ window.updateUI = function() {
   try { updateDashboardDiagram(); } catch(e){ console.log('diagram err',e); }
   try { updateLaporanUI(); } catch(e){ console.log('laporan err',e); }
 };
+
+
+function simpanTargetTabungan(){
+  var inp=document.getElementById('targetTabunganInput');
+  if(!inp) return;
+  var val=inp.value.replace(/[^0-9]/g,'');
+  var num=parseInt(val)||0;
+  try{localStorage.setItem('targetTabungan',num);}catch(e){}
+  updateTargetDisplay();
+  alert('Target disimpan: Rp '+new Intl.NumberFormat('id-ID').format(num));
+}
+function updateTargetDisplay(){
+  try{
+    var t=parseInt(localStorage.getItem('targetTabungan')||'20000000');
+    var cur=document.getElementById('currentTargetDisplay');
+    if(cur) cur.innerText='Rp '+new Intl.NumberFormat('id-ID').format(t);
+    if(typeof transactions!=='undefined' && transactions){
+      var total=0; transactions.forEach(function(it){ if(it.tipe==='pemasukan') total+=it.jumlah; if(it.tipe==='pengeluaran') total-=it.jumlah; if(it.tipe==='pengembalian') total+=it.jumlah; });
+      var prog=t>0?Math.min(100,Math.round(total/t*100)):0;
+      var pd=document.getElementById('targetProgressDisplay'); if(pd) pd.innerText=prog+'%';
+      var pb=document.getElementById('targetProgressBar'); if(pb) pb.style.width=prog+'%';
+    }
+  }catch(e){}
+}
+function openGantiPinModal(){
+  var pin=prompt('Masukkan PIN baru (6 digit):');
+  if(!pin) return;
+  if(pin.length!==6 || isNaN(pin)){ alert('PIN harus 6 digit angka'); return; }
+  try{localStorage.setItem('customPin',pin);}catch(e){}
+  alert('PIN baru disimpan: '+pin);
+}
+function kunciAplikasi(){
+  var lock=document.getElementById('pinLockScreen');
+  if(lock){ lock.classList.remove('hidden'); }
+  else { location.reload(); }
+}
+function exportExcelCSV(){
+  if(typeof transactions==='undefined' || !transactions || transactions.length===0){ alert('Tidak ada data'); return; }
+  var csv='Tanggal,Jam,Tipe,Penabung,Jumlah,Keterangan\n';
+  transactions.forEach(function(it){
+    csv+= (it.tgl||'')+','+(it.jam||'')+','+(it.tipe||'')+','+(it.penabung||'')+','+(it.jumlah||0)+',"'+(it.ket||'').replace(/"/g,'""')+'"\n';
+  });
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='tabungan-hani-venus.csv'; a.click();
+}
+function backupData(){
+  if(typeof transactions==='undefined'){ alert('Tidak ada data'); return; }
+  var data=JSON.stringify(transactions,null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='backup-tabungan-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+}
+function confirmHapusSemua(){
+  if(confirm('Hapus SEMUA transaksi? Tidak bisa dikembalikan!')){
+    if(confirm('Yakin? Ketik OK untuk lanjut')){
+      // Firebase delete would need batch - for now clear local
+      if(typeof db!=='undefined' && typeof transactions!=='undefined'){
+        if(confirm('Hapus dari Firebase juga?')){
+          transactions.forEach(function(it){
+            try{ db.collection('transactions').doc(it.id).delete(); }catch(e){}
+          });
+        }
+      }
+      alert('Fitur hapus semua - hubungkan ke Firebase untuk hapus permanen');
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(updateTargetDisplay,1000); });
 </script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
