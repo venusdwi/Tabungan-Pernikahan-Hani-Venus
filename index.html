@@ -1764,7 +1764,7 @@
 
                     showSuccessModal();
                 }).catch(err => {
-                    alert("Gagal menyimpan ke Cloud Firestore!");
+                            alert("Gagal: " + err.message);
                     btnSubmit.disabled = false;
                     btnSubmitText.classList.remove('hidden');
                     btnSubmitSpinner.classList.add('hidden');
