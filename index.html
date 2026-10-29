@@ -224,6 +224,124 @@ body.dark .glass-box{background:rgba(30,41,59,0.9)!important;border-color:rgba(7
 .riwayat-item-presisi .side{display:flex;align-items:flex-start;gap:8px}
 .riwayat-item-presisi .amount{font-size:13px;font-weight:800;white-space:nowrap;text-align:right;line-height:1.2}
 .riwayat-item-presisi .edit{width:28px;height:28px;border-radius:50%;background:white;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#94a3b8}
+
+/* ===== DARK MODE PERFECT FIX ===== */
+body.dark{background:#0a0f1e!important}
+body.dark #bgOverlay{opacity:0.4!important}
+
+/* Glass box dark */
+body.dark .glass-box{background:rgba(15,23,42,0.94)!important;border-color:rgba(51,65,85,0.35)!important;box-shadow:0 4px 20px rgba(0,0,0,0.3)!important}
+body.dark .glass-box .bg-slate-50{background:rgba(30,41,59,0.7)!important;border-color:rgba(71,85,105,0.4)!important}
+body.dark .glass-box .bg-white{ background:rgba(30,41,59,0.9)!important; }
+
+/* Text colors dark */
+body.dark .text-slate-900{color:#f1f5f9!important}
+body.dark .text-slate-800{color:#e2e8f0!important}
+body.dark .text-slate-700{color:#cbd5e1!important}
+body.dark .text-slate-600{color:#94a3b8!important}
+body.dark .text-slate-500{color:#94a3b8!important}
+body.dark label{color:#cbd5e1!important}
+body.dark .font-serif{color:#f8fafc!important}
+
+/* Form inputs dark - all inputs */
+body.dark input[type="text"],
+body.dark input[type="date"],
+body.dark input[type="time"],
+body.dark input[type="hidden"],
+body.dark select,
+body.dark textarea,
+body.dark #jumlahRupiah,
+body.dark #keteranganTransaksi,
+body.dark #tglTransaksi,
+body.dark #jamTransaksi{
+  background:rgba(30,41,59,0.9)!important;
+  color:#f1f5f9!important;
+  border-color:#475569!important;
+}
+body.dark input::placeholder{color:#64748b!important}
+body.dark .bg-white\/90,
+body.dark .bg-white{
+  background:rgba(30,41,59,0.9)!important;
+  color:#f1f5f9!important;
+  border-color:#475569!important;
+}
+
+/* Dropdown buttons Pilih Tipe & Penabung */
+body.dark button#textTipeTransaksi,
+body.dark #textTipeTransaksi,
+body.dark #textNamaPenabung{
+  color:#cbd5e1!important;
+}
+body.dark button.w-full.bg-white\/90{
+  background:rgba(30,41,59,0.9)!important;
+  border-color:#475569!important;
+  color:#e2e8f0!important;
+}
+
+/* Filter presisi dark */
+body.dark .filter-sel{
+  background:#1e293b!important;
+  color:#f1f5f9!important;
+  border-color:#475569!important;
+}
+body.dark .filter-btn{
+  background:#1e293b!important;
+  border-color:#475569!important;
+  color:#94a3b8!important;
+}
+body.dark .filter-btn.pdf{
+  background:rgba(127,29,29,0.3)!important;
+  border-color:#7f1d1d!important;
+  color:#fca5a5!important;
+}
+
+/* Riwayat item dark */
+body.dark .riwayat-item-presisi.bg-emerald-50\/70{background:rgba(16,78,52,0.25)!important;border-color:rgba(52,211,153,0.2)!important}
+body.dark .riwayat-item-presisi.bg-rose-50\/70{background:rgba(76,5,25,0.25)!important;border-color:rgba(251,113,133,0.2)!important}
+body.dark .riwayat-item-presisi .date{color:#94a3b8!important}
+body.dark .riwayat-item-presisi .edit{background:#1e293b!important;border-color:#334155!important;color:#94a3b8!important}
+
+/* Top bar dark */
+body.dark #topControlsBar .bg-white\/90{
+  background:rgba(30,41,59,0.9)!important;
+  border-color:rgba(71,85,105,0.4)!important;
+}
+body.dark #topControlsBar button.bg-white\/90{
+  background:rgba(30,41,59,0.9)!important;
+  color:#7dd3fc!important;
+}
+
+/* Bottom tab bar dark */
+body.dark .bottom-tab-bar{background:rgba(15,23,42,0.97)!important;border-top-color:rgba(51,65,85,0.4)!important}
+body.dark .bottom-tab-item{color:#64748b!important}
+body.dark .bottom-tab-item.active{color:#38bdf8!important;background:rgba(56,189,248,0.12)!important}
+body.dark .bottom-tab-item.center-tab{background:#0284c7!important}
+
+/* Modal dark */
+body.dark #tambahModalBox{background:#0f172a!important}
+body.dark #tambahModalBox .bg-white{background:#0f172a!important}
+body.dark #tambahModalBox .border-b{border-color:rgba(51,65,85,0.4)!important}
+body.dark #tambahModalBox h3{color:#f1f5f9!important}
+body.dark #tambahModalBox p{color:#94a3b8!important}
+
+/* Custom select modal dark */
+body.dark #customSelectModal .bg-white{background:#1e293b!important}
+body.dark #customSelectModal h3{color:#f1f5f9!important}
+
+/* Countdown dark - keep contrast */
+body.dark .countdown-box{background:rgba(30,41,59,0.9)!important}
+body.dark .font-num{color:inherit}
+
+/* Total saldo dark */
+body.dark #totalSaldo{color:#34d399!important}
+body.dark #topTotalIn{color:#60a5fa!important}
+body.dark #topTotalOut{color:#fb7185!important}
+
+/* Ensure all small badges visible */
+body.dark .bg-sky-100{ background:rgba(7,89,133,0.4)!important; color:#7dd3fc!important}
+body.dark .bg-emerald-100{ background:rgba(6,78,59,0.4)!important; color:#6ee7b7!important}
+body.dark .bg-rose-100{ background:rgba(76,5,25,0.4)!important; color:#fda4af!important}
+body.dark .bg-blue-100{ background:rgba(30,58,138,0.4)!important; color:#93c5fd!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
