@@ -615,15 +615,15 @@
         </div>
     </div>
 
-    <!-- MODAL NOTIFIKASI SELESAI -->
+    <!-- MODAL NOTIFIKASI SUKSES KUSTOM (SESUAI TEMA APLIKASI & SOUND) -->
     <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none">
-        <div class="bg-white rounded-3xl p-8 sm:p-10 text-center max-w-sm w-full shadow-2xl transform scale-90 transition-transform duration-300">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5 animate-bounce text-4xl">
+        <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 max-w-sm w-full shadow-2xl rounded-[2rem] text-center relative mx-4 transform scale-95 transition-transform duration-300" id="successModalBox">
+            <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
                 <i class="fa-solid fa-check"></i>
             </div>
-            <h3 class="font-serif text-3xl font-extrabold text-slate-900 mb-2">SELESAI!</h3>
-            <p class="text-base text-slate-500 mb-8 font-medium">Transaksi berhasil tersimpan & tersinkronisasi online!</p>
-            <button onclick="closeSuccessModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 text-lg">
+            <h3 class="font-serif text-2xl font-bold text-slate-900 dark:text-white mb-1">Berhasil!</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Transaksi berhasil disimpan & tersinkronisasi ke Cloud Firestore.</p>
+            <button onclick="closeSuccessModalAndReload()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
                 Oke, Mengerti
             </button>
         </div>
@@ -1429,6 +1429,47 @@
             }
         }
 
+        // FUNGSI EFEK SUARA SUKSES KUSTOM (WEB AUDIO API)
+        function playSuccessSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nada D5
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); // Nada A5
+                
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        // FUNGSI MUNCULKAN MODAL SUKSES KUSTOM + SOUND
+        function showSuccessModal() {
+            playSuccessSound();
+            const modal = document.getElementById('successModal');
+            const box = document.getElementById('successModalBox');
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('scale-95');
+                box.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeSuccessModalAndReload() {
+            location.reload();
+        }
+
         function playNotificationSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -1761,14 +1802,15 @@
                     btnSubmit.disabled = false;
                     btnSubmitText.classList.remove('hidden');
                     btnSubmitSpinner.classList.add('hidden');
-        alert("Transaksi berhasil disimpan!");
-        location.reload();
-    }).catch(err => {
-        alert("Gagal: " + err.message);
-        btnSubmit.disabled = false;
-        btnSubmitText.classList.remove('hidden');
-        btnSubmitSpinner.classList.add('hidden');
-    });
+                    
+                    // MEMUNCULKAN MODAL SUKSES KUSTOM BESERTA EFEK SUARA
+                    showSuccessModal();
+                }).catch(err => {
+                    alert("Gagal: " + err.message);
+                    btnSubmit.disabled = false;
+                    btnSubmitText.classList.remove('hidden');
+                    btnSubmitSpinner.classList.add('hidden');
+                });
             }, 2000);
         }
 
