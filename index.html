@@ -1761,14 +1761,14 @@
                     btnSubmit.disabled = false;
                     btnSubmitText.classList.remove('hidden');
                     btnSubmitSpinner.classList.add('hidden');
-
-                    showSuccessModal();
-                }).catch(err => {
-                            alert("Gagal: " + err.message);
-                    btnSubmit.disabled = false;
-                    btnSubmitText.classList.remove('hidden');
-                    btnSubmitSpinner.classList.add('hidden');
-                });
+        alert("Transaksi berhasil disimpan!");
+        location.reload();
+    }).catch(err => {
+        alert("Gagal: " + err.message);
+        btnSubmit.disabled = false;
+        btnSubmitText.classList.remove('hidden');
+        btnSubmitSpinner.classList.add('hidden');
+    });
             }, 2000);
         }
 
