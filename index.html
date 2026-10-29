@@ -913,6 +913,125 @@ body.dark #tab-setelan .glass-box{
 body.dark #tambahModalBox{
   background: rgba(15,23,42, calc(var(--box-opacity)*0.15 + 0.85))!important;
 }
+
+/* ===== V18 TUNTAS - NO DELAY SAMA SEKALI, INSTANT 100% ===== */
+
+/* Matikan SEMUA transisi di tab dan glass untuk 0 delay */
+.tab-content,
+.tab-content.active,
+.tab-content.tab-exit,
+.glass-box,
+.glass-box *,
+#topControlsBar,
+#topControlsBar *,
+.bottom-tab-bar,
+.bottom-tab-bar *,
+#tambahModalBox,
+.custom-themed-modal-box,
+.filter-sel,
+.filter-btn,
+.riwayat-item-presisi{
+  transition: none!important;
+  animation: none!important;
+  transition-delay: 0s!important;
+  animation-delay: 0s!important;
+}
+
+/* Tab instant - display based, no opacity animation */
+#tabContents{
+  position:relative;
+}
+.tab-content{
+  display:none!important;
+  opacity:1!important;
+  transform:none!important;
+  position:relative!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+.tab-content.active{
+  display:block!important;
+  opacity:1!important;
+  transform:none!important;
+  position:relative!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  z-index:2;
+}
+
+/* Glass instant - no transition, blur -50% tetap */
+:root{
+  --box-opacity:0.85;
+  --glass-blur:6px;
+  --glass-saturate:1.15;
+}
+.glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  background-color: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border: 1px solid rgba(255,255,255,0.5)!important;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.04)!important;
+}
+body.dark .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+  background-color: rgba(15,23,42,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border-color: rgba(51,65,85,0.3)!important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18)!important;
+}
+
+/* Top & Bottom instant */
+#topControlsBar > button,
+#topControlsBar > div{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+}
+body.dark #topControlsBar > button,
+body.dark #topControlsBar > div{
+  background: rgba(30,41,59,var(--box-opacity))!important;
+}
+.bottom-tab-bar{
+  background: rgba(255,255,255,0.96)!important;
+  backdrop-filter: blur(8px) saturate(1.1)!important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.1)!important;
+}
+body.dark .bottom-tab-bar{
+  background: rgba(15,23,42,0.96)!important;
+}
+
+/* All pages same */
+#tab-dashboard .glass-box,
+#tab-laporan .glass-box,
+#tab-riwayat .glass-box,
+#tab-setelan .glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+}
+body.dark #tab-dashboard .glass-box,
+body.dark #tab-laporan .glass-box,
+body.dark #tab-riwayat .glass-box,
+body.dark #tab-setelan .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+}
+
+#tambahModalBox{
+  background: rgba(255,255,255,0.96)!important;
+  backdrop-filter: blur(8px)!important;
+  -webkit-backdrop-filter: blur(8px)!important;
+}
+body.dark #tambahModalBox{
+  background: rgba(15,23,42,0.96)!important;
+}
+
+/* Bottom tab item no transition */
+.bottom-tab-item{
+  transition: none!important;
+}
+.bottom-tab-item.active{
+  transition: none!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3177,6 +3296,71 @@ window.switchTab = function(tabName){
   if(tabName==='dashboard') updateDashboardDiagram();
   try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
 };
+
+
+// ===== V18 TUNTAS INSTANT - NO DELAY AT ALL =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = (1 - opacity) * 12 + 2; // blur -50%
+  var saturate = 1.15;
+  // Direct sync set - no rAF, no delay
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', saturate);
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  // Sync sliders instantly
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  var blur = (1 - opacity) * 12 + 2;
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+}
+// INSTANT TAB SWITCH - 0ms delay, tuntas
+window.switchTab = function(tabName){
+  if(tabName==='tambah'){ openTambahModal(); return; }
+  if(window.currentActiveTab===tabName){
+    window.scrollTo(0,0);
+    document.documentElement.scrollTop=0;
+    return;
+  }
+  // Hide all instantly
+  document.querySelectorAll('.tab-content').forEach(function(el){
+    el.classList.remove('active');
+    el.style.display='none';
+  });
+  // Show target instantly
+  var target=document.getElementById('tab-'+tabName);
+  if(target){
+    target.style.display='block';
+    target.classList.add('active');
+  }
+  window.currentActiveTab=tabName;
+  // Update bottom tab
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){
+    b.classList.remove('active');
+    if(b.dataset.tab===tabName) b.classList.add('active');
+  });
+  // Scroll top instant
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  var tc=document.getElementById('tabContents');
+  if(tc) tc.scrollTop=0;
+  if(tabName==='laporan') updateLaporanUI();
+  if(tabName==='dashboard') updateDashboardDiagram();
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+};
+window.currentActiveTab = window.currentActiveTab || 'dashboard';
 </script>
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
