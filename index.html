@@ -688,52 +688,7 @@ body.dark .filter-sel{
   background: rgba(30,41,59, calc(var(--box-opacity)*0.9 + 0.1))!important;
 }
 
-/* TEXT READABLE - light mode */
-body:not(.dark) .glass-box h1,
-body:not(.dark) .glass-box h2,
-body:not(.dark) .glass-box h3,
-body:not(.dark) .glass-box .font-bold,
-body:not(.dark) .glass-box .text-slate-900{
-  color:#0f172a!important;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 1px 3px rgba(255,255,255,0.6)!important;
-}
-body:not(.dark) .glass-box .text-slate-600,
-body:not(.dark) .glass-box .text-slate-500,
-body:not(.dark) .glass-box p,
-body:not(.dark) .glass-box span{
-  text-shadow: 0 1px 2px rgba(255,255,255,0.7)!important;
-}
-body:not(.dark) .glass-box .font-num{
-  text-shadow: 0 1px 2px rgba(255,255,255,0.9)!important;
-}
 
-/* TEXT READABLE - dark mode */
-body.dark .glass-box h1,
-body.dark .glass-box h2,
-body.dark .glass-box h3,
-body.dark .glass-box .font-bold,
-body.dark .glass-box .text-slate-900,
-body.dark .glass-box .text-white{
-  color:#f8fafc!important;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 1px 6px rgba(0,0,0,0.5)!important;
-}
-body.dark .glass-box .text-slate-600,
-body.dark .glass-box .text-slate-500,
-body.dark .glass-box p{
-  color:#cbd5e1!important;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6)!important;
-}
-
-/* Countdown boxes - keep solid for readability even at 0% glass */
-#tab-dashboard .glass-box .bg-white,
-#tab-dashboard .glass-box [class*="bg-slate"]{
-  background: rgba(255,255,255,0.92)!important;
-  backdrop-filter: blur(4px)!important;
-}
-body.dark #tab-dashboard .glass-box .bg-white,
-body.dark #tab-dashboard .glass-box [class*="bg-slate"]{
-  background: rgba(30,41,59,0.88)!important;
-}
 
 /* Setelan - already handled but ensure all pages */
 #tab-setelan .glass-box,
@@ -761,6 +716,105 @@ body.dark #tambahModalBox{
 @media (prefers-reduced-motion: no-preference){
   .glass-box{ transform: translateZ(0); }
 }
+
+/* ===== V16 CLEAN - TRANSPARENCY ALL PAGES, TEXT BALIK NORMAL ===== */
+:root{
+  --box-opacity:0.85;
+  --glass-blur:14px;
+  --glass-saturate:1.2;
+}
+
+/* 60FPS Tab Switch - no delay */
+#tabContents{ transform:translateZ(0); }
+.tab-content{
+  position:absolute; top:0; left:0; width:100%;
+  opacity:0; transform:translate3d(0,10px,0);
+  pointer-events:none; visibility:hidden;
+  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
+  will-change: transform, opacity;
+  backface-visibility:hidden;
+}
+.tab-content.active{
+  position:relative; opacity:1; transform:translate3d(0,0,0);
+  pointer-events:auto; visibility:visible; z-index:2;
+  transition: opacity 0.13s ease-out, transform 0.13s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* Glass for ALL pages - Dashboard, Laporan, Riwayat, Setelan, Top, Bottom */
+.glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  background-color: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border: 1px solid rgba(255,255,255,0.55)!important;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.06), 0 2px 8px rgba(0,0,0,0.03)!important;
+  will-change: backdrop-filter, background-color;
+  transform: translateZ(0);
+}
+body.dark .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+  background-color: rgba(15,23,42,var(--box-opacity))!important;
+  border-color: rgba(51,65,85,0.35)!important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.32), 0 2px 12px rgba(0,0,0,0.2)!important;
+}
+
+/* Top bar - Our Journey, Galeri, slider, dark toggle */
+#topControlsBar > button,
+#topControlsBar > div{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border: 1px solid rgba(255,255,255,0.5)!important;
+}
+body.dark #topControlsBar > button,
+body.dark #topControlsBar > div{
+  background: rgba(30,41,59,var(--box-opacity))!important;
+  border-color: rgba(71,85,105,0.4)!important;
+}
+
+/* Bottom tab bar */
+.bottom-tab-bar{
+  background: rgba(255,255,255, calc(var(--box-opacity)*0.9 + 0.08))!important;
+  backdrop-filter: blur(calc(var(--glass-blur) + 6px)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 6px)) saturate(var(--glass-saturate))!important;
+}
+body.dark .bottom-tab-bar{
+  background: rgba(15,23,42, calc(var(--box-opacity)*0.9 + 0.08))!important;
+}
+
+/* All tab containers follow glass */
+#tab-dashboard .glass-box,
+#tab-laporan .glass-box,
+#tab-riwayat .glass-box,
+#tab-setelan .glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+}
+body.dark #tab-dashboard .glass-box,
+body.dark #tab-laporan .glass-box,
+body.dark #tab-riwayat .glass-box,
+body.dark #tab-setelan .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+}
+
+/* Tambah modal */
+#tambahModalBox{
+  background: rgba(255,255,255, calc(var(--box-opacity)*0.15 + 0.85))!important;
+  backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(var(--glass-saturate))!important;
+}
+body.dark #tambahModalBox{
+  background: rgba(15,23,42, calc(var(--box-opacity)*0.15 + 0.85))!important;
+}
+
+/* Text balik normal - tanpa text-shadow jelek */
+.glass-box h1, .glass-box h2, .glass-box h3,
+.glass-box .font-bold,
+.glass-box .text-slate-900,
+.glass-box p, .glass-box span{
+  text-shadow: none!important;
+}
+body:not(.dark) .glass-box{ color: #0f172a; }
+body.dark .glass-box{ color: #f1f5f9; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
