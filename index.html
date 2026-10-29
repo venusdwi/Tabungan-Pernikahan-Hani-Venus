@@ -342,6 +342,128 @@ body.dark .bg-sky-100{ background:rgba(7,89,133,0.4)!important; color:#7dd3fc!im
 body.dark .bg-emerald-100{ background:rgba(6,78,59,0.4)!important; color:#6ee7b7!important}
 body.dark .bg-rose-100{ background:rgba(76,5,25,0.4)!important; color:#fda4af!important}
 body.dark .bg-blue-100{ background:rgba(30,58,138,0.4)!important; color:#93c5fd!important}
+
+/* ===== V11 LIGHT/DARK THEME SYNC FIX ===== */
+
+/* Light mode base (default) - ensure tambah modal light */
+body:not(.dark) #tambahModalBox{
+  background:#ffffff!important;
+}
+body:not(.dark) #tambahModalBox .bg-white,
+body:not(.dark) #tambahModalBox .bg-white\/90{
+  background:#ffffff!important;
+}
+body:not(.dark) #tambahModalBox .glass-box{
+  background:rgba(255,255,255,0.97)!important;
+  border-color:rgba(226,232,240,0.8)!important;
+}
+body:not(.dark) #tambahModalBox label{
+  color:#475569!important;
+}
+body:not(.dark) #tambahModalBox input,
+body:not(.dark) #tambahModalBox select,
+body:not(.dark) #tambahModalBox textarea,
+body:not(.dark) #tambahModalBox button.w-full.bg-white\/90{
+  background:#ffffff!important;
+  color:#1e293b!important;
+  border-color:#e2e8f0!important;
+}
+body:not(.dark) #tambahModalBox input::placeholder{
+  color:#94a3b8!important;
+}
+
+/* Dark mode - tambah modal dark */
+body.dark #tambahModalBox{
+  background:#0f172a!important;
+}
+body.dark #tambahModalBox .glass-box{
+  background:rgba(15,23,42,0.96)!important;
+  border-color:rgba(51,65,85,0.4)!important;
+}
+body.dark #tambahModalBox .bg-white,
+body.dark #tambahModalBox [class*="bg-white"]{
+  background:rgba(30,41,59,0.9)!important;
+}
+body.dark #tambahModalBox label{
+  color:#cbd5e1!important;
+}
+body.dark #tambahModalBox input,
+body.dark #tambahModalBox select,
+body.dark #tambahModalBox textarea,
+body.dark #tambahModalBox button.w-full{
+  background:rgba(30,41,59,0.9)!important;
+  color:#f1f5f9!important;
+  border-color:#475569!important;
+}
+
+/* Top bar - light vs dark */
+body:not(.dark) #topControlsBar [class*="bg-white"]{
+  background:rgba(255,255,255,0.92)!important;
+  border-color:rgba(226,232,240,0.8)!important;
+  color:#0369a1!important;
+}
+body.dark #topControlsBar [class*="bg-white"]{
+  background:rgba(30,41,59,0.9)!important;
+  border-color:rgba(71,85,105,0.4)!important;
+  color:#7dd3fc!important;
+}
+
+/* Bottom tab - light vs dark */
+body:not(.dark) .bottom-tab-bar{
+  background:rgba(255,255,255,0.97)!important;
+  border-top-color:#e2e8f0!important;
+}
+body.dark .bottom-tab-bar{
+  background:rgba(15,23,42,0.97)!important;
+  border-top-color:rgba(51,65,85,0.4)!important;
+}
+
+/* Tab Tambah placeholder - light vs dark */
+body:not(.dark) #tab-tambah h3{
+  color:#0f172a!important;
+}
+body:not(.dark) #tab-tambah p{
+  color:#64748b!important;
+}
+body.dark #tab-tambah h3{
+  color:#f1f5f9!important;
+}
+body.dark #tab-tambah p{
+  color:#94a3b8!important;
+}
+
+/* Countdown & saldo boxes - ensure follow theme */
+body:not(.dark) .glass-box{
+  background:rgba(255,255,255,0.94)!important;
+}
+body.dark .glass-box{
+  background:rgba(15,23,42,0.94)!important;
+}
+body:not(.dark) .glass-box .text-slate-900{color:#0f172a!important}
+body:not(.dark) .glass-box .text-slate-600{color:#475569!important}
+body:not(.dark) .glass-box .text-slate-500{color:#64748b!important}
+
+/* Ensure filter follows theme */
+body:not(.dark) .filter-sel{
+  background:white!important;
+  color:#1e293b!important;
+  border-color:#e2e8f0!important;
+}
+body:not(.dark) .filter-btn{
+  background:#f1f5f9!important;
+  border-color:#e2e8f0!important;
+  color:#475569!important;
+}
+body.dark .filter-sel{
+  background:#1e293b!important;
+  color:#f1f5f9!important;
+  border-color:#475569!important;
+}
+body.dark .filter-btn{
+  background:#1e293b!important;
+  border-color:#475569!important;
+  color:#94a3b8!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
