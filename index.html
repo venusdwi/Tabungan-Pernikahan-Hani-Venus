@@ -1,47 +1,58 @@
 <!DOCTYPE html>
+
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TABUNGAN PERNIKAHAN Hani & Venus 💍</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- jsPDF Library untuk Export PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
-    <!-- DUKUNGAN APLIKASI PWA UNTUK ANDROID & IOS -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0284c7">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Tabungan HV">
-    <link rel="apple-touch-icon" href="logo.png">
-
-    <meta property="og:title" content="TABUNGAN PERNIKAHAN Hani & Venus 💍">
-    <meta property="og:description" content="Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia.">
-    <meta property="og:image" content="https://venusdwi.github.io/Tabungan-Pernikahan-Hani-Venus/logo.png">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
-
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-      }
-    </script>
-
-    <!-- FIREBASE SDK (FIRESTORE & APP) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-
-    <script>
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>TABUNGAN PERNIKAHAN Hani &amp; Venus 💍</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&amp;family=Playfair+Display:ital,wght@0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- jsPDF Library untuk Export PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<!-- DUKUNGAN APLIKASI PWA UNTUK ANDROID & IOS -->
+<link href="manifest.json" rel="manifest"/>
+<meta content="#0284c7" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tabungan HV" name="apple-mobile-web-app-title"/>
+<link href="logo.png" rel="apple-touch-icon"/>
+<meta content="TABUNGAN PERNIKAHAN Hani &amp; Venus 💍" property="og:title"/>
+<meta content="Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia." property="og:description"/>
+<meta content="https://venusdwi.github.io/Tabungan-Pernikahan-Hani-Venus/logo.png" property="og:image"/>
+<meta content="512" property="og:image:width"/>
+<meta content="512" property="og:image:height"/>
+<!-- FIREBASE SDK (FIRESTORE & APP) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -61,7 +72,7 @@
             }
         }
     </script>
-    <style>
+<style>
         html, body {
             overflow-x: hidden;
             position: relative;
@@ -174,547 +185,472 @@
         .effect-zoom { animation: animZoom 0.8s cubic-bezier(0.25, 1, 0.3, 1) forwards; }
         .effect-slide { animation: animSlide 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .effect-rotate { animation: animRotate 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-    </style>
+    
+#tabContents{position:relative;min-height:60vh}
+.tab-content{position:absolute;top:0;left:0;width:100%;opacity:0;transform:translate3d(0,8px,0);pointer-events:none;visibility:hidden;transition:opacity 0.2s ease-out,transform 0.22s}
+.tab-content.active{position:relative;opacity:1;transform:translate3d(0,0,0);pointer-events:auto;visibility:visible;z-index:2}
+.tab-content.tab-exit{opacity:0;transform:translate3d(0,-6px,0);transition-duration:0.14s}
+.bottom-tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:40;background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-top:1px solid #e2e8f0;padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
+.bottom-tab-inner{max-width:500px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px;padding:0 8px;align-items:center}
+.bottom-tab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 4px;border-radius:12px;font-size:10px;font-weight:700;color:#64748b;background:transparent;border:none;cursor:pointer;min-height:48px}
+.bottom-tab-item i{font-size:18px}
+.bottom-tab-item.active{color:#0284c7;background:rgba(2,132,199,0.08)}
+.bottom-tab-item.center-tab{background:#0284c7;color:white;border-radius:16px;min-height:56px;margin:0 4px;box-shadow:0 4px 12px rgba(2,132,199,0.3)}
+.bottom-tab-item.center-tab i{font-size:20px;color:white}
+.glass-box{background:rgba(255,255,255,0.94)!important;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.6)!important;box-shadow:0 2px 10px rgba(0,0,0,0.05)!important}
+.transaction-item-precise{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:12px;border-radius:16px;border:1px solid;cursor:pointer}
+.transaction-item-precise .badge{font-size:11px;font-weight:800;padding:4px 8px;border-radius:8px;background:#dbeafe;color:#1d4ed8;white-space:nowrap}
+.transaction-item-precise .title{font-size:13px;font-weight:800;text-transform:uppercase;line-height:1.2;word-break:break-word}
+.transaction-item-precise .date{font-size:11px;color:#64748b;margin-top:2px}
+.transaction-item-precise .amount{font-size:14px;font-weight:800;white-space:nowrap;text-align:right}
+body.dark{background:#0a0f1e!important}
+body.dark .glass-box{background:rgba(30,41,59,0.9)!important;border-color:rgba(71,85,105,0.25)!important}
+
+/* V7 PRESISI FIX - kotak putih presisi */
+
+/* V8 FLEX PRESISI - anti keluar kolom */
+.filter-presisi{display:flex;gap:6px;align-items:center;width:100%;box-sizing:border-box}
+.filter-presisi .filter-sel{flex:1 1 0;min-width:0;height:44px;background:white;border:1px solid #e2e8f0;border-radius:12px;padding:0 10px;font-size:12.5px;font-weight:800;color:#1e293b;box-shadow:0 1px 2px rgba(0,0,0,0.04);box-sizing:border-box}
+.filter-presisi .filter-sel:nth-child(2){flex:0.85 1 0;max-width:95px}
+.filter-presisi .filter-btn{flex:0 0 44px;width:44px;height:44px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#475569;box-sizing:border-box;cursor:pointer}
+.filter-presisi .filter-btn.pdf{background:#fef2f2;border-color:#fecdd3;color:#e11d48}
+.glass-box .filter-presisi{margin-bottom:12px}
+
+.riwayat-item-presisi{display:grid;grid-template-columns:68px 1fr auto;gap:10px;align-items:start;padding:12px 14px;border-radius:16px;border:1px solid;cursor:pointer}
+.riwayat-item-presisi .badge{font-size:10px;font-weight:800;padding:5px 8px;border-radius:8px;background:#dbeafe;color:#1e40af;text-align:center;white-space:nowrap;height:fit-content}
+.riwayat-item-presisi .main{min-width:0}
+.riwayat-item-presisi .title{font-size:12.5px;font-weight:800;line-height:1.25;word-break:break-word;text-transform:uppercase;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.riwayat-item-presisi .date{font-size:11px;color:#64748b;margin-top:3px}
+.riwayat-item-presisi .side{display:flex;align-items:flex-start;gap:8px}
+.riwayat-item-presisi .amount{font-size:13px;font-weight:800;white-space:nowrap;text-align:right;line-height:1.2}
+.riwayat-item-presisi .edit{width:28px;height:28px;border-radius:50%;background:white;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#94a3b8}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function(){ var _w=console.warn; console.warn=function(){ var m=[].join.call(arguments,' '); if(m.indexOf('cdn.tailwindcss.com should not be used in production')>-1) return; _w.apply(console,arguments); }; })();
+if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.hostname !== '') {
+  navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW skip'); });
+}
+</script>
 </head>
-<body id="appBody" class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950">
-
-    <div id="bgImageLayer" class="zoom-in-bg opacity-100"></div>
-
-    <!-- OVERLAY LAYAR KUNCI PIN -->
-    <div id="pinLockScreen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-700">
-        <div class="bg-slate-900/70 backdrop-blur-xl border border-sky-500/30 p-6 sm:p-8 rounded-[2rem] max-w-sm w-full text-center shadow-[0_8px_32px_rgba(2,132,199,0.3)] transform transition-all duration-300 overflow-hidden relative">
-            
-            <div id="pinInputContent" class="transition-opacity duration-300">
-                <div class="w-14 h-14 bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-xl shadow-inner">
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                
-                <h2 class="font-serif text-2xl font-bold text-white mb-1">Akses Terkunci</h2>
-                <p class="text-xs text-sky-200/80 mb-6">Masukkan PIN keamanan 6 digit</p>
-
-                <div class="relative mb-6">
-                    <div class="flex justify-center gap-2 sm:gap-3 z-10 relative">
-                        <div id="dot-0" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
-                        <div id="dot-1" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
-                        <div id="dot-2" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
-                        <div id="dot-3" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
-                        <div id="dot-4" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
-                        <div id="dot-5" class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200"></div>
-                    </div>
-                </div>
-
-                <p id="pinErrMsg" class="text-xs text-rose-400 font-semibold mb-4 hidden">PIN Salah! Silakan coba lagi.</p>
-
-                <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-2 px-2 sm:px-4 place-items-center">
-                    <button type="button" onclick="appendPin('1')" class="pin-btn">1</button>
-                    <button type="button" onclick="appendPin('2')" class="pin-btn">2</button>
-                    <button type="button" onclick="appendPin('3')" class="pin-btn">3</button>
-                    <button type="button" onclick="appendPin('4')" class="pin-btn">4</button>
-                    <button type="button" onclick="appendPin('5')" class="pin-btn">5</button>
-                    <button type="button" onclick="appendPin('6')" class="pin-btn">6</button>
-                    <button type="button" onclick="appendPin('7')" class="pin-btn">7</button>
-                    <button type="button" onclick="appendPin('8')" class="pin-btn">8</button>
-                    <button type="button" onclick="appendPin('9')" class="pin-btn">9</button>
-                    
-                    <button type="button" onclick="clearAllPin()" class="pin-btn pin-btn-reset"><i class="fa-solid fa-xmark"></i></button>
-                    <button type="button" onclick="appendPin('0')" class="pin-btn">0</button>
-                    <button type="button" onclick="deletePin()" class="pin-btn pin-btn-del text-[1.25rem]"><i class="fa-solid fa-delete-left"></i></button>
-                </div>
-
-                <div id="btnPinSubmit" class="hidden mt-4 w-full bg-blue-600/20 border border-blue-500/30 text-blue-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2">
-                    <span id="btnPinSpinner"><i class="fa-solid fa-spinner animate-spin"></i> Memeriksa...</span>
-                </div>
-            </div>
-
-            <div id="ringAnimationContainer" class="hidden flex-col items-center justify-center py-10 opacity-0 transition-opacity duration-300">
-                <h3 class="font-serif text-2xl font-bold text-white mb-10 tracking-wide drop-shadow-md">Akses Diberikan</h3>
-                
-                <div class="relative flex justify-center items-center w-full h-16 mb-8">
-                    <!-- Cincin Cowok (Lebih Besar) -->
-                    <div id="ringMale" class="absolute w-14 h-14 rounded-full border-[4px] border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] transform -translate-x-16 transition-all duration-700 ease-out z-10"></div>
-                    
-                    <!-- Cincin Cewek (Lebih Mungil / Kecil dengan Permata) -->
-                    <div id="ringFemale" class="absolute w-11 h-11 rounded-full border-[3.5px] border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] transform translate-x-16 transition-all duration-700 ease-out z-20 flex justify-center items-center">
-                        <div class="absolute -top-[13px] text-sky-100 text-[13px] drop-shadow-[0_0_8px_rgba(186,230,253,0.9)]">
-                            <i class="fa-solid fa-gem"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <p id="welcomeText" class="text-sm text-sky-200/90 font-medium opacity-0 transition-opacity duration-500">Menyatukan Impian...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- BACKGROUND OVERLAY -->
-    <div id="bgOverlay" class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/60 via-slate-950 to-slate-950 pointer-events-none -z-10 transition-opacity duration-300"></div>
-
-    <div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
-        <!-- TOP BAR -->
-        <div class="flex flex-row items-center justify-between gap-2 mb-6">
-            <!-- TOMBOL OUR JOURNEY TO HALAL YANG BISA DIKLIK -->
-            <button type="button" onclick="openJourneyModal()" class="inline-flex items-center gap-1.5 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-1.5 rounded-full border border-sky-300 text-[11px] sm:text-xs font-bold text-sky-700 shadow-sm transition transform active:scale-95 whitespace-nowrap cursor-pointer z-30 relative">
-                <i class="fa-solid fa-heart text-sky-500 animate-pulse"></i>
-                <span>Our Journey to Halal</span>
-                <i class="fa-solid fa-chevron-right text-[9px] ml-0.5 opacity-70"></i>
-            </button>
-
-            <div class="flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 shadow-sm">
-                <input type="file" id="bgImageInput" accept="image/*" class="hidden" onchange="uploadBgImage(event)">
-                <button type="button" onclick="openBgPicker()" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap">
-                    <i class="fa-solid fa-image"></i>
-                    <span>Galeri Foto</span>
-                </button>
-                <button type="button" id="btnResetBg" onclick="resetBgImage()" class="hidden text-slate-400 hover:text-rose-500 text-xs transition px-0.5">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <div class="h-3.5 w-[1px] bg-slate-300 mx-0.5"></div>
-                <div class="flex items-center gap-1 text-slate-600 font-semibold">
-                    <i class="fa-solid fa-circle-half-stroke text-slate-500 text-xs"></i>
-                    <input type="range" id="opacitySlider" min="0.2" max="1.0" step="0.05" value="0.75" oninput="changeBoxOpacity(this.value)" class="w-12 sm:w-20 accent-blue-600 cursor-pointer">
-                </div>
-            </div>
-        </div>
-
-        <!-- HEADER BANNER -->
-        <div class="text-center mb-8">
-            <h1 class="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-md">
-                TABUNGAN PERNIKAHAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-indigo-300">Hani & Venus</span> 💍
+<body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
+<div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
+<!-- OVERLAY LAYAR KUNCI PIN -->
+<div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-700" id="pinLockScreen">
+<div class="bg-slate-900/70 backdrop-blur-xl border border-sky-500/30 p-6 sm:p-8 rounded-[2rem] max-w-sm w-full text-center shadow-[0_8px_32px_rgba(2,132,199,0.3)] transform transition-all duration-300 overflow-hidden relative">
+<div class="transition-opacity duration-300" id="pinInputContent">
+<div class="w-14 h-14 bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-xl shadow-inner">
+<i class="fa-solid fa-lock"></i>
+</div>
+<h2 class="font-serif text-2xl font-bold text-white mb-1">Akses Terkunci</h2>
+<p class="text-xs text-sky-200/80 mb-6">Masukkan PIN keamanan 6 digit</p>
+<div class="relative mb-6">
+<div class="flex justify-center gap-2 sm:gap-3 z-10 relative">
+<div class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200" id="dot-0"></div>
+<div class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200" id="dot-1"></div>
+<div class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200" id="dot-2"></div>
+<div class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200" id="dot-3"></div>
+<div class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200" id="dot-4"></div>
+<div class="w-10 h-12 flex items-center justify-center font-bold bg-slate-800/60 border border-slate-600/50 rounded-xl text-xl text-white transition-all duration-200" id="dot-5"></div>
+</div>
+</div>
+<p class="text-xs text-rose-400 font-semibold mb-4 hidden" id="pinErrMsg">PIN Salah! Silakan coba lagi.</p>
+<div class="grid grid-cols-3 gap-3 sm:gap-4 mb-2 px-2 sm:px-4 place-items-center">
+<button class="pin-btn" onclick="appendPin('1')" type="button">1</button>
+<button class="pin-btn" onclick="appendPin('2')" type="button">2</button>
+<button class="pin-btn" onclick="appendPin('3')" type="button">3</button>
+<button class="pin-btn" onclick="appendPin('4')" type="button">4</button>
+<button class="pin-btn" onclick="appendPin('5')" type="button">5</button>
+<button class="pin-btn" onclick="appendPin('6')" type="button">6</button>
+<button class="pin-btn" onclick="appendPin('7')" type="button">7</button>
+<button class="pin-btn" onclick="appendPin('8')" type="button">8</button>
+<button class="pin-btn" onclick="appendPin('9')" type="button">9</button>
+<button class="pin-btn pin-btn-reset" onclick="clearAllPin()" type="button"><i class="fa-solid fa-xmark"></i></button>
+<button class="pin-btn" onclick="appendPin('0')" type="button">0</button>
+<button class="pin-btn pin-btn-del text-[1.25rem]" onclick="deletePin()" type="button"><i class="fa-solid fa-delete-left"></i></button>
+</div>
+<div class="hidden mt-4 w-full bg-blue-600/20 border border-blue-500/30 text-blue-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2" id="btnPinSubmit">
+<span id="btnPinSpinner"><i class="fa-solid fa-spinner animate-spin"></i> Memeriksa...</span>
+</div>
+</div>
+<div class="hidden flex-col items-center justify-center py-10 opacity-0 transition-opacity duration-300" id="ringAnimationContainer">
+<h3 class="font-serif text-2xl font-bold text-white mb-10 tracking-wide drop-shadow-md">Akses Diberikan</h3>
+<div class="relative flex justify-center items-center w-full h-16 mb-8">
+<!-- Cincin Cowok (Lebih Besar) -->
+<div class="absolute w-14 h-14 rounded-full border-[4px] border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] transform -translate-x-16 transition-all duration-700 ease-out z-10" id="ringMale"></div>
+<!-- Cincin Cewek (Lebih Mungil / Kecil dengan Permata) -->
+<div class="absolute w-11 h-11 rounded-full border-[3.5px] border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] transform translate-x-16 transition-all duration-700 ease-out z-20 flex justify-center items-center" id="ringFemale">
+<div class="absolute -top-[13px] text-sky-100 text-[13px] drop-shadow-[0_0_8px_rgba(186,230,253,0.9)]">
+<i class="fa-solid fa-gem"></i>
+</div>
+</div>
+</div>
+<p class="text-sm text-sky-200/90 font-medium opacity-0 transition-opacity duration-500" id="welcomeText">Menyatukan Impian...</p>
+</div>
+</div>
+</div>
+<!-- BACKGROUND OVERLAY -->
+<div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/60 via-slate-950 to-slate-950 pointer-events-none -z-10 transition-opacity duration-300" id="bgOverlay"></div>
+<div class="max-w-4xl mx-auto px-4 pt-6 sm:pt-10">
+<div class="pb-28 relative" id="tabContents">
+<div class="tab-content active" id="tab-dashboard">
+<div class="flex items-center justify-between gap-2 mb-5" id="topControlsBar">
+<button class="bg-white/90 px-3.5 py-2 rounded-full border border-sky-200 text-[11px] font-bold text-sky-700 shadow-sm flex items-center gap-1.5" onclick="openJourneyModal()"><i class="fa-solid fa-heart text-sky-500 animate-pulse"></i> Our Journey to Halal</button>
+<div class="flex items-center gap-1.5 bg-white/90 px-2.5 py-1.5 rounded-full border shadow-sm">
+<input accept="image/*" class="hidden" id="bgImageInput" onchange="uploadBgImage(event)" type="file"/>
+<button class="bg-blue-600 text-white px-2.5 py-1.5 rounded-full text-[11px] font-bold" onclick="openBgPicker()"><i class="fa-solid fa-image mr-1"></i>Galeri Foto</button>
+<button class="hidden text-slate-400 px-1" id="btnResetBg" onclick="resetBgImage()"><i class="fa-solid fa-trash-can"></i></button>
+<div class="h-4 w-[1px] bg-slate-300"></div>
+<input class="w-10 accent-blue-600 h-1" id="opacitySlider" max="1.0" min="0.2" oninput="changeBoxOpacity(this.value); syncOpacitySliders(this.value)" step="0.05" type="range" value="0.75"/>
+<div class="h-4 w-[1px] bg-slate-300"></div>
+<button class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-[11px]" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="darkModeIcon"></i></button>
+</div>
+</div>
+<div class="text-center mb-8">
+<h1 class="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-md">
+                TABUNGAN PERNIKAHAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-indigo-300">Hani &amp; Venus</span> 💍
             </h1>
-            <p class="text-sky-200/90 text-sm sm:text-base font-medium">Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia.</p>
-
-            <div class="mt-6 inline-block w-full max-w-xl">
-                <div class="glass-box rounded-2xl p-4 sm:p-5 text-center">
-                    <div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-600 mb-3 flex flex-col items-center justify-center gap-1">
-                        <div class="flex items-center justify-center gap-2 whitespace-nowrap">
-                            <i class="fa-solid fa-hourglass-half text-blue-500"></i>
-                            <span>Countdown Menuju Hari Pernikahan</span>
-                        </div>
-                        <div class="text-blue-700 font-extrabold text-xs sm:text-sm tracking-widest whitespace-nowrap">(03 APRIL 2027)</div>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2 sm:gap-4 text-center">
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-days" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Hari</span>
-                        </div>
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-hours" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Jam</span>
-                        </div>
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-minutes" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Menit</span>
-                        </div>
-                        <div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
-                            <span id="cd-seconds" class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700">00</span>
-                            <span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Detik</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-3 text-center">
-                    <button onclick="location.reload()" class="bg-white/80 hover:bg-white text-slate-700 hover:text-blue-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 transition inline-flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        <span>Refresh Halaman</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- SALDO SUMMARY CARDS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
-                        <span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
-                    </div>
-                    <h2 id="totalSaldo" class="font-num text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight mb-1">Rp 0</h2>
-                </div>
-            </div>
-
-            <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
-                        <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
-                    </div>
-                    <h2 id="topTotalIn" class="font-num text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight mb-1">Rp 0</h2>
-                </div>
-            </div>
-
-            <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
-                        <span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">- Keluar</span>
-                    </div>
-                    <h2 id="topTotalOut" class="font-num text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight mb-1">Rp 0</h2>
-                </div>
-            </div>
-        </div>
-
-        <!-- FORM INPUT TABUNGAN (DIPERBESAR) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
-            <div class="lg:col-span-12">
-                <div class="glass-box rounded-2xl p-6 sm:p-8">
-                    <div class="flex items-center gap-3 mb-6 border-b border-sky-100 pb-4">
-                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-serif text-xl font-bold text-slate-900">Input Catatan Tabungan</h3>
-                            <p class="text-sm text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
-                        </div>
-                    </div>
-
-                    <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
-                        
-                        <!-- TOMBOL POPUP TIPE TRANSAKSI -->
-                        <div>
-                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Tipe Transaksi *</label>
-                            <input type="hidden" id="tipeTransaksi" required>
-                            <button type="button" onclick="openPopup('tipe', 'main')" class="w-full bg-white/90 border border-slate-200 hover:border-blue-400 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-400 flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
-                                <span id="textTipeTransaksi">-- Pilih Tipe Transaksi --</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </button>
-                        </div>
-
-                        <!-- TOMBOL POPUP NAMA PENABUNG -->
-                        <div>
-                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Nama Penabung *</label>
-                            <input type="hidden" id="namaPenabung" required>
-                            <button type="button" onclick="openPopup('penabung', 'main')" class="w-full bg-white/90 border border-slate-200 hover:border-blue-400 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-400 flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
-                                <span id="textNamaPenabung">-- Pilih Nama Penabung --</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </button>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Tanggal & Jam *</label>
-                            <div class="grid grid-cols-2 gap-3">
-                                <input type="date" id="tglTransaksi" required class="w-full bg-white/90 border border-slate-200 rounded-xl px-3 sm:px-4 py-3.5 text-base font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-                                <input type="time" id="jamTransaksi" required class="w-full bg-white/90 border border-slate-200 rounded-xl px-3 sm:px-4 py-3.5 text-base font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Jumlah (Rp) *</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-lg">Rp</span>
-                                <input type="text" id="jumlahRupiah" inputmode="numeric" placeholder="0" required oninput="formatRupiahInput(this)" class="w-full bg-white/90 border border-slate-200 rounded-xl pl-12 pr-4 py-4 text-slate-900 font-num font-extrabold text-xl sm:text-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
-                                Keterangan / Catatan <span id="ketRequiredMark" class="text-rose-500 hidden">*</span> <span id="ketOptionalMark" class="text-slate-400 font-normal">(Opsional)</span>
-                            </label>
-                            <input type="text" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Tabungan Bulanan" class="w-full bg-white/90 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Lampirkan Bukti Transfer (Opsional)</label>
-                            <input type="file" id="buktiTransfer" accept="image/*" onchange="previewMainBukti(event)" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                            <div id="buktiPreviewContainer" class="hidden mt-3 relative w-28 h-28 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden cursor-pointer" onclick="openImageModal(document.getElementById('buktiPreviewImg').src)">
-                                <img id="buktiPreviewImg" src="" alt="Preview Bukti" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-
-                        <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2 mt-2 text-lg">
-                            <span id="btnSubmitText">Simpan Transaksi</span>
-                            <span id="btnSubmitSpinner" class="hidden"><i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- RIWAYAT TRANSAKSI -->
-        <div class="glass-box rounded-2xl p-6 sm:p-8">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b border-slate-200/60 pb-4">
-                <div>
-                    <h3 class="font-serif text-xl font-bold text-slate-900">Riwayat Transaksi</h3>
-                    <span class="text-xs text-slate-500 italic">*Klik pada item untuk edit/hapus</span>
-                </div>
-
-                <!-- Bagian Filter & Cetak PDF -->
-                <div class="flex flex-wrap items-center gap-2 mt-3 sm:mt-0">
-                    <select id="filterBulan" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-sm font-bold text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
-                        <option value="all">Semua Bulan</option>
-                        <option value="01">Januari</option>
-                        <option value="02">Februari</option>
-                        <option value="03">Maret</option>
-                        <option value="04">April</option>
-                        <option value="05">Mei</option>
-                        <option value="06">Juni</option>
-                        <option value="07">Juli</option>
-                        <option value="08">Agustus</option>
-                        <option value="09">September</option>
-                        <option value="10">Oktober</option>
-                        <option value="11">November</option>
-                        <option value="12">Desember</option>
-                    </select>
-
-                    <select id="filterTahun" onchange="updateUI()" class="bg-white/90 border border-slate-200 text-sm font-bold text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
-                        <option value="all">Semua Tahun</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                    </select>
-
-                    <button onclick="resetFilter()" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-3 py-2.5 rounded-xl transition border border-slate-200 shadow-sm" title="Reset Filter">
-                        <i class="fa-solid fa-rotate-left"></i>
-                    </button>
-
-                    <!-- TOMBOL DOWNLOAD PDF -->
-                    <button onclick="downloadPDF()" class="text-sm bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-3 py-2.5 rounded-xl transition border border-rose-200 flex items-center gap-2 shadow-sm" title="Download Laporan PDF">
-                        <i class="fa-solid fa-file-pdf"></i> <span class="hidden sm:inline">Rekap PDF</span>
-                    </button>
-                </div>
-            </div>
-
-            <div id="transactionList" class="space-y-4">
-                <p class="text-sm text-slate-500 text-center py-4">Mengambil data cloud...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL POP-UP FULLSCREEN: OUR JOURNEY TO HALAL & GALERI KITA -->
-    <div id="journeyModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[70] hidden opacity-0 transition-opacity duration-300 flex flex-col pointer-events-none">
-        <!-- Header Pop-up -->
-        <div id="journeyHeader" class="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-slate-900/55 transition-colors duration-300">
-            <div class="flex items-center gap-2 text-sky-300 font-serif text-lg sm:text-xl font-bold">
-                <i class="fa-solid fa-heart text-rose-500 animate-pulse"></i>
-                <span>Our Journey to Halal Gallery</span>
-            </div>
-            <button onclick="closeJourneyModal()" class="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-        </div>
-
-        <!-- Body Content Pop-up Galeri -->
-        <div id="journeyBody" class="flex-1 overflow-y-auto p-4 sm:p-8 max-w-4xl w-full mx-auto transition-colors duration-300">
-            <div class="text-center mb-6 relative">
-                <p id="journeyDesc" class="text-slate-300 text-sm max-w-md mx-auto mb-4 transition-colors duration-300">Abadikan setiap momen indah kebersamaan Hani & Venus menuju hari pernikahan.</p>
-                
-                <!-- TOMBOL SLIDE SHOW HANYA LOGO PLAY -->
-                <div class="flex items-center justify-center gap-3 mb-5">
-                    <button onclick="startSlideShow()" class="w-14 h-14 bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-500 hover:scale-105 text-white rounded-full flex items-center justify-center text-xl shadow-[0_0_20px_rgba(244,63,94,0.6)] transition transform active:scale-95 cursor-pointer" title="Mulai Slide Show & Musik">
-                        <i class="fa-solid fa-play ml-1"></i>
-                    </button>
-                </div>
-
-                <!-- Input Tambah Foto Galeri (Original File Tanpa Kompresi) -->
-                <div class="inline-block">
-                    <input type="file" id="journeyPhotoInput" accept="image/*" class="hidden" onchange="uploadJourneyPhoto(event)">
-                    <button type="button" onclick="document.getElementById('journeyPhotoInput').click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2">
-                        <i class="fa-solid fa-camera-retro"></i>
-                        <span>Tambah Foto Kenangan</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Grid Foto Galeri (Foto Terbaru Otomatis di Atas Sebelah Kiri) -->
-            <div id="journeyGalleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pb-12">
-                <div class="text-slate-400 text-center col-span-full py-8 text-sm">Memuat galeri foto...</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL SLIDE SHOW FULLSCREEN -->
-    <div id="slideshowModal" class="fixed inset-0 bg-slate-950 z-[80] hidden opacity-0 transition-opacity duration-500 flex flex-col items-center justify-between p-4 sm:p-6 pointer-events-none">
-        
-        <!-- Audio Player Resmi Overnight: Kita Lewati Berdua -->
-        <audio id="overnightAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
-
-        <!-- Header Atas Slide Show -->
-        <div class="w-full flex items-center justify-between z-20">
-            <div class="text-sky-200/90 font-serif text-xs sm:text-sm flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md shadow-md border border-white/10 truncate max-w-[75%]">
-                <i class="fa-solid fa-music text-pink-400 animate-spin"></i>
-                <span id="playingSongTitle" class="truncate">Memutar: Overnight - Kita Lewati Berdua 🎵</span>
-            </div>
-
-            <button onclick="stopSlideShowAndReturnToJourney()" class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-lg transition shadow-lg cursor-pointer">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <!-- Container Gambar Slide Show Fullscreen di Tengah -->
-        <div class="relative w-full flex-1 flex items-center justify-center overflow-hidden my-2">
-            <img id="slideshowImage" src="" alt="Kenangan Romantis" class="max-h-[75vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl border border-white/10">
-        </div>
-
-        <!-- Footer Bawah Indikator Slide -->
-        <div class="w-full flex flex-col items-center justify-center gap-1.5 z-20 pb-2">
-            <span id="slideshowCounter" class="bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md border border-white/10 shadow-lg">Slide 1 / 1</span>
-            <span class="text-rose-400 text-xs drop-shadow-md"><i class="fa-solid fa-heart"></i> Hani & Venus Journey</span>
-        </div>
-    </div>
-
-    <!-- MODAL LIGHTBOX FOTO GALERI BESAR -->
-    <div id="lightboxModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[90] hidden opacity-0 transition-opacity duration-300 flex flex-col items-center justify-between p-4 pointer-events-none">
-        
-        <!-- Header Lightbox -->
-        <div class="w-full flex items-center justify-between max-w-4xl z-20 pt-2 relative">
-            
-            <span id="lightboxCounter" class="text-white text-sm font-bold bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/10 transition-colors duration-300">1 / 1</span>
-
-            <!-- POSISI TENGAH ATAS: TOMBOL HAPUS, DOWNLOAD, & DARK/WHITE MODE -->
-            <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-                <!-- Tombol Hapus -->
-                <button onclick="deleteCurrentLightboxPhoto()" class="w-11 h-11 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-base backdrop-blur-md transition shadow-lg cursor-pointer" title="Hapus Foto Ini">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <!-- Tombol Download Foto Original -->
-                <button onclick="downloadCurrentLightboxPhoto()" class="w-11 h-11 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-base backdrop-blur-md transition shadow-lg cursor-pointer" title="Download Foto Original">
-                    <i class="fa-solid fa-download"></i>
-                </button>
-                <!-- Tombol Dark Mode / White Mode -->
-                <button id="themeToggleBtn" onclick="toggleThemeMode()" class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-lg backdrop-blur-md transition shadow-lg cursor-pointer" title="Ganti Mode Terang / Gelap">
-                    <i id="themeToggleIcon" class="fa-solid fa-sun"></i>
-                </button>
-            </div>
-
-            <button id="lightboxCloseBtn" onclick="closeLightbox()" class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-xl transition shadow-lg cursor-pointer">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <!-- Gambar Utama Lightbox dengan Tombol Navigasi Kiri / Kanan -->
-        <div class="relative w-full flex-1 flex items-center justify-center max-w-4xl px-2 my-2">
-            <!-- Tombol Geser Kiri (Prev) -->
-            <button id="lightboxPrevBtn" onclick="prevLightboxImage()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer">
-                <i class="fa-solid fa-chevron-left text-lg"></i>
-            </button>
-
-            <img id="lightboxImageSrc" src="" alt="Zoom Foto" class="max-h-[80vh] max-w-full object-contain rounded-2xl shadow-2xl border border-white/10">
-
-            <!-- Tombol Geser Kanan (Next) -->
-            <button id="lightboxNextBtn" onclick="nextLightboxImage()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer">
-                <i class="fa-solid fa-chevron-right text-lg"></i>
-            </button>
-        </div>
-
-        <div class="text-slate-400 text-xs pb-2"><i class="fa-solid fa-heart text-rose-500"></i> Hani & Venus Kenangan</div>
-    </div>
-
-    <!-- MODAL CUSTOM SELECT POP-UP (TIPE TRANSAKSI & NAMA PENABUNG) -->
-    <div id="customSelectModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center pointer-events-none">
-        <div id="customSelectContent" class="bg-white w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 transform translate-y-full sm:translate-y-0 sm:scale-95 transition-transform duration-300 shadow-2xl pb-10 sm:pb-8">
-            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5 sm:hidden"></div>
-            
-            <div class="flex justify-between items-center mb-6">
-                <h3 id="popupTitle" class="font-serif text-xl sm:text-2xl font-bold text-slate-900">Pilih Opsi</h3>
-                <button onclick="closePopup()" class="text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 transition"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div id="popupOptionsContainer" class="space-y-3"></div>
-        </div>
-    </div>
-
-    <!-- MODAL NOTIFIKASI SUKSES KUSTOM (SESUAI TEMA APLIKASI & SOUND) -->
-    <div id="successModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none">
-        <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 max-w-sm w-full shadow-2xl rounded-[2rem] text-center relative mx-4 transform scale-95 transition-transform duration-300" id="successModalBox">
-            <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
-                <i class="fa-solid fa-check"></i>
-            </div>
-            <h3 class="font-serif text-2xl font-bold text-slate-900 dark:text-white mb-1">Berhasil!</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Transaksi berhasil disimpan & tersinkronisasi ke Cloud Firestore.</p>
-            <button onclick="closeSuccessModalAndReload()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
+<p class="text-sky-200/90 text-sm sm:text-base font-medium">Mengumpulkan kebaikan, menyatukan impian menuju hari bahagia.</p>
+<div class="mt-6 inline-block w-full max-w-xl">
+<div class="glass-box rounded-2xl p-4 sm:p-5 text-center">
+<div class="text-xs sm:text-sm font-bold uppercase tracking-wider text-blue-600 mb-3 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center justify-center gap-2 whitespace-nowrap">
+<i class="fa-solid fa-hourglass-half text-blue-500"></i>
+<span>Countdown Menuju Hari Pernikahan</span>
+</div>
+<div class="text-blue-700 font-extrabold text-xs sm:text-sm tracking-widest whitespace-nowrap">(03 APRIL 2027)</div>
+</div>
+<div class="grid grid-cols-4 gap-2 sm:gap-4 text-center">
+<div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+<span class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700" id="cd-days">00</span>
+<span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Hari</span>
+</div>
+<div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+<span class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700" id="cd-hours">00</span>
+<span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Jam</span>
+</div>
+<div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+<span class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700" id="cd-minutes">00</span>
+<span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Menit</span>
+</div>
+<div class="bg-blue-50/80 rounded-xl p-2 sm:p-3 border border-blue-100 shadow-sm">
+<span class="block font-num text-2xl sm:text-4xl font-extrabold text-blue-700" id="cd-seconds">00</span>
+<span class="text-[10px] sm:text-xs text-blue-600 font-semibold uppercase">Detik</span>
+</div>
+</div>
+</div>
+<div class="mt-3 text-center">
+<button class="bg-white/80 hover:bg-white text-slate-700 hover:text-blue-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 transition inline-flex items-center gap-1.5" onclick="location.reload()">
+<i class="fa-solid fa-rotate-right"></i>
+<span>Refresh Halaman</span>
+</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
+<span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
+</div>
+<h2 class="font-num text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight mb-1" id="totalSaldo">Rp 0</h2>
+</div>
+</div>
+<div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
+<span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
+</div>
+<h2 class="font-num text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight mb-1" id="topTotalIn">Rp 0</h2>
+</div>
+</div>
+<div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
+<span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">- Keluar</span>
+</div>
+<h2 class="font-num text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight mb-1" id="topTotalOut">Rp 0</h2>
+</div>
+</div>
+</div>
+<div class="mt-5 space-y-3">
+<div class="glass-box rounded-2xl p-4">
+<div class="flex justify-between items-center mb-3"><h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie text-blue-600"></i> Alokasi Keuangan</h3><span class="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold">LIVE Firebase</span></div>
+<div class="relative h-[200px] flex items-center justify-center"><canvas id="financeDonutChart"></canvas><div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"><p class="text-[9px] font-bold text-slate-400 uppercase">Net Balance</p><p class="font-num text-base font-extrabold" id="donutCenterSaldo">Rp 0</p><p class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full mt-1" id="donutCenterPercent">0%</p></div></div>
+<div class="grid grid-cols-3 gap-2 mt-3">
+<div class="bg-emerald-50 border border-emerald-100 rounded-xl p-2 text-center"><p class="text-[9px] font-bold text-emerald-600 uppercase">Saldo</p><p class="font-num text-[11px] font-bold text-emerald-700" id="diagramSaldo">Rp 0</p></div>
+<div class="bg-blue-50 border border-blue-100 rounded-xl p-2 text-center"><p class="text-[9px] font-bold text-blue-600 uppercase">Masuk</p><p class="font-num text-[11px] font-bold text-blue-700" id="diagramMasuk">Rp 0</p></div>
+<div class="bg-rose-50 border border-rose-100 rounded-xl p-2 text-center"><p class="text-[9px] font-bold text-rose-600 uppercase">Keluar</p><p class="font-num text-[11px] font-bold text-rose-700" id="diagramKeluar">Rp 0</p></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="glass-box rounded-xl p-3"><div class="flex items-center gap-2 mb-1"><div class="w-6 h-6 rounded bg-indigo-500 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-user-astronaut"></i></div><span class="text-[11px] font-bold">HANI</span><span class="ml-auto text-[10px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full" id="haniPercent">0%</span></div><p class="font-num text-xs font-bold text-indigo-600" id="haniContrib">Rp 0</p><div class="w-full bg-slate-200 h-1.5 rounded-full mt-1"><div class="bg-indigo-500 h-1.5 rounded-full" id="haniBar" style="width:0%"></div></div></div>
+<div class="glass-box rounded-xl p-3"><div class="flex items-center gap-2 mb-1"><div class="w-6 h-6 rounded bg-violet-500 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-user-ninja"></i></div><span class="text-[11px] font-bold">VENUS</span><span class="ml-auto text-[10px] bg-violet-50 text-violet-600 px-1.5 py-0.5 rounded-full" id="venusPercent">0%</span></div><p class="font-num text-xs font-bold text-violet-600" id="venusContrib">Rp 0</p><div class="w-full bg-slate-200 h-1.5 rounded-full mt-1"><div class="bg-violet-500 h-1.5 rounded-full" id="venusBar" style="width:0%"></div></div></div>
+</div>
+<div class="glass-box rounded-xl p-3"><div class="flex justify-between items-center mb-1"><span class="text-[10px] font-bold text-slate-500 uppercase">Progress ke 03 April 2027</span><span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-bold" id="progressPercent">0%</span></div><div class="w-full bg-slate-200 h-2 rounded-full"><div class="bg-blue-600 h-2 rounded-full" id="progressBar" style="width:30%"></div></div><p class="text-[10px] text-slate-500 mt-1"><span id="hariTersisa">0</span> hari lagi - <span id="cd-days-copy">0</span> hari (auto)</p></div>
+<div class="glass-box rounded-xl p-3"><div class="flex justify-between items-center mb-2"><h4 class="font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-clock-rotate-left text-slate-500"></i> Terbaru (auto Firebase)</h4><button class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-bold" onclick="switchTab('riwayat')">Lihat Semua</button></div><div class="space-y-2" id="dashboardMiniList"></div></div>
+</div>
+</div>
+<div class="tab-content" id="tab-laporan">
+<div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Laporan Keuangan</h2><p class="text-sky-200/70 text-[11px] mt-1">Auto dari Firebase</p></div>
+<div class="glass-box rounded-2xl p-4 mb-3">
+<div class="filter-presisi">
+<select class="filter-sel" id="filterBulanLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select>
+<select class="filter-sel" id="filterTahunLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
+<button class="filter-btn" onclick="resetFilterLaporan()"><i class="fa-solid fa-rotate-left"></i></button>
+<button class="filter-btn pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i></button>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-2 mb-3">
+<div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p></div>
+<div class="grid grid-cols-2 gap-2"><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-emerald-600 uppercase">Masuk</p><p class="font-num text-sm font-bold text-blue-600" id="laporanMasuk">Rp 0</p></div><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-rose-600 uppercase">Keluar</p><p class="font-num text-sm font-bold text-rose-600" id="laporanKeluar">Rp 0</p></div></div>
+</div>
+<div class="glass-box rounded-xl p-3"><h4 class="font-bold text-xs mb-2">Detail Periode (auto Firebase)</h4><div class="space-y-2 max-h-[50vh] overflow-y-auto" id="laporanList"></div></div>
+</div>
+<div class="tab-content" id="tab-tambah">
+<div class="flex flex-col items-center justify-center py-16 text-center">
+<div class="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center text-white text-xl mb-3"><i class="fa-solid fa-plus"></i></div>
+<h3 class="font-bold text-white">Tambah Transaksi</h3>
+<p class="text-sky-200/60 text-[11px] mb-4">Data langsung masuk Firebase</p>
+<button class="bg-white text-blue-600 font-bold px-4 py-2 rounded-xl text-xs" onclick="openTambahModal()">Buka Form</button>
+</div>
+</div>
+<div class="tab-content" id="tab-riwayat">
+<div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Riwayat Transaksi</h2><p class="text-sky-200/70 text-[11px] mt-1">Auto dari Firebase - Klik item untuk edit / hapus</p></div>
+<div class="glass-box rounded-2xl p-4">
+<div class="filter-presisi mb-3">
+<select class="filter-sel" id="filterBulan" onchange="updateUI()"><option value="all">Semua Bulan</option><option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select>
+<select class="filter-sel" id="filterTahun" onchange="updateUI()"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
+<button class="filter-btn" onclick="resetFilter()"><i class="fa-solid fa-rotate-left"></i></button>
+<button class="filter-btn pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i></button>
+</div>
+<div class="space-y-3" id="transactionList"></div>
+</div>
+</div>
+<div class="tab-content" id="tab-setelan">
+<div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Setelan</h2><p class="text-sky-200/70 text-[11px] mt-1">Kelola tampilan</p></div>
+<div class="space-y-3">
+<div class="glass-box rounded-2xl p-4">
+<h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-palette text-blue-600"></i> Tampilan &amp; Tema</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border"><div><p class="text-[13px] font-semibold">Mode Gelap</p><p class="text-[11px] text-slate-500">Tema gelap</p></div><button class="w-11 h-6 rounded-full bg-slate-300 relative p-1 flex items-center transition" id="darkModeToggleSetelan" onclick="toggleDarkMode()"><div class="w-4 h-4 rounded-full bg-white shadow-sm flex items-center justify-center text-[9px] transition" id="darkToggleKnobSetelan"><i class="fa-solid fa-sun"></i></div></button></div>
+<div class="p-3 bg-slate-50 rounded-xl border"><p class="text-xs font-semibold mb-2">Transparansi Kotak</p><div class="flex items-center gap-2"><i class="fa-solid fa-circle-half-stroke text-slate-400 text-xs"></i><input class="flex-1 accent-blue-600" id="opacitySliderSetelan" max="1.0" min="0.2" oninput="changeBoxOpacity(this.value); syncOpacitySliders(this.value)" step="0.05" type="range" value="0.75"/><span class="text-xs font-bold w-8" id="opacityValue">75%</span></div></div>
+<div class="grid grid-cols-2 gap-2"><button class="bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs" onclick="openBgPicker()"><i class="fa-solid fa-image mr-1"></i> Ganti BG</button><button class="bg-slate-100 border py-2.5 rounded-xl text-xs font-bold" id="btnResetBgSetelan" onclick="resetBgImage()">Reset BG</button></div>
+</div>
+</div>
+<div class="glass-box rounded-2xl p-4"><h3 class="font-bold text-sm mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-info text-slate-500"></i> Tentang Firebase</h3><div class="text-xs text-slate-600 space-y-1"><p><b>Target:</b> 03 April 2027</p><p><b>Countdown:</b> <span id="setelanCountdown">-</span></p><p class="text-[11px] text-emerald-600 mt-2">Data otomatis dari Firestore: tabungan-hani-venus</p></div></div>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL POP-UP FULLSCREEN: OUR JOURNEY TO HALAL & GALERI KITA -->
+<nav class="bottom-tab-bar"><div class="bottom-tab-inner">
+<button class="bottom-tab-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>Dashboard</span></button>
+<button class="bottom-tab-item" data-tab="laporan" onclick="switchTab('laporan')"><i class="fa-solid fa-chart-pie"></i><span>Laporan</span></button>
+<button class="bottom-tab-item center-tab" data-tab="tambah" onclick="openTambahModal()"><i class="fa-solid fa-plus"></i><span>Tambah</span></button>
+<button class="bottom-tab-item" data-tab="riwayat" onclick="switchTab('riwayat')"><i class="fa-solid fa-clock-rotate-left"></i><span>Riwayat</span></button>
+<button class="bottom-tab-item" data-tab="setelan" onclick="switchTab('setelan')"><i class="fa-solid fa-gear"></i><span>Setelan</span></button>
+</div></nav>
+<div class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[70] hidden opacity-0 transition-opacity duration-300 flex flex-col pointer-events-none" id="journeyModal">
+<!-- Header Pop-up -->
+<div class="flex items-center justify-between p-4 sm:p-6 border-b border-white/10 bg-slate-900/55 transition-colors duration-300" id="journeyHeader">
+<div class="flex items-center gap-2 text-sky-300 font-serif text-lg sm:text-xl font-bold">
+<i class="fa-solid fa-heart text-rose-500 animate-pulse"></i>
+<span>Our Journey to Halal Gallery</span>
+</div>
+<button class="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition" onclick="closeJourneyModal()">
+<i class="fa-solid fa-xmark text-lg"></i>
+</button>
+</div>
+<!-- Body Content Pop-up Galeri -->
+<div class="flex-1 overflow-y-auto p-4 sm:p-8 max-w-4xl w-full mx-auto transition-colors duration-300" id="journeyBody">
+<div class="text-center mb-6 relative">
+<p class="text-slate-300 text-sm max-w-md mx-auto mb-4 transition-colors duration-300" id="journeyDesc">Abadikan setiap momen indah kebersamaan Hani &amp; Venus menuju hari pernikahan.</p>
+<!-- TOMBOL SLIDE SHOW HANYA LOGO PLAY -->
+<div class="flex items-center justify-center gap-3 mb-5">
+<button class="w-14 h-14 bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-500 hover:scale-105 text-white rounded-full flex items-center justify-center text-xl shadow-[0_0_20px_rgba(244,63,94,0.6)] transition transform active:scale-95 cursor-pointer" onclick="startSlideShow()" title="Mulai Slide Show &amp; Musik">
+<i class="fa-solid fa-play ml-1"></i>
+</button>
+</div>
+<!-- Input Tambah Foto Galeri (Original File Tanpa Kompresi) -->
+<div class="inline-block">
+<input accept="image/*" class="hidden" id="journeyPhotoInput" onchange="uploadJourneyPhoto(event)" type="file"/>
+<button class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center gap-2" onclick="document.getElementById('journeyPhotoInput').click()" type="button">
+<i class="fa-solid fa-camera-retro"></i>
+<span>Tambah Foto Kenangan</span>
+</button>
+</div>
+</div>
+<!-- Grid Foto Galeri (Foto Terbaru Otomatis di Atas Sebelah Kiri) -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pb-12" id="journeyGalleryGrid">
+<div class="text-slate-400 text-center col-span-full py-8 text-sm">Memuat galeri foto...</div>
+</div>
+</div>
+</div>
+<!-- MODAL SLIDE SHOW FULLSCREEN -->
+<div class="fixed inset-0 bg-slate-950 z-[80] hidden opacity-0 transition-opacity duration-500 flex flex-col items-center justify-between p-4 sm:p-6 pointer-events-none" id="slideshowModal">
+<!-- Audio Player Resmi Overnight: Kita Lewati Berdua -->
+<audio id="overnightAudio" preload="auto" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<!-- Header Atas Slide Show -->
+<div class="w-full flex items-center justify-between z-20">
+<div class="text-sky-200/90 font-serif text-xs sm:text-sm flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md shadow-md border border-white/10 truncate max-w-[75%]">
+<i class="fa-solid fa-music text-pink-400 animate-spin"></i>
+<span class="truncate" id="playingSongTitle">Memutar: Overnight - Kita Lewati Berdua 🎵</span>
+</div>
+<button class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-lg transition shadow-lg cursor-pointer" onclick="stopSlideShowAndReturnToJourney()">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
+<!-- Container Gambar Slide Show Fullscreen di Tengah -->
+<div class="relative w-full flex-1 flex items-center justify-center overflow-hidden my-2">
+<img alt="Kenangan Romantis" class="max-h-[75vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl border border-white/10" id="slideshowImage" src=""/>
+</div>
+<!-- Footer Bawah Indikator Slide -->
+<div class="w-full flex flex-col items-center justify-center gap-1.5 z-20 pb-2">
+<span class="bg-black/60 text-white px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md border border-white/10 shadow-lg" id="slideshowCounter">Slide 1 / 1</span>
+<span class="text-rose-400 text-xs drop-shadow-md"><i class="fa-solid fa-heart"></i> Hani &amp; Venus Journey</span>
+</div>
+</div>
+<!-- MODAL LIGHTBOX FOTO GALERI BESAR -->
+<div class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[90] hidden opacity-0 transition-opacity duration-300 flex flex-col items-center justify-between p-4 pointer-events-none" id="lightboxModal">
+<!-- Header Lightbox -->
+<div class="w-full flex items-center justify-between max-w-4xl z-20 pt-2 relative">
+<span class="text-white text-sm font-bold bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/10 transition-colors duration-300" id="lightboxCounter">1 / 1</span>
+<!-- POSISI TENGAH ATAS: TOMBOL HAPUS, DOWNLOAD, & DARK/WHITE MODE -->
+<div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+<!-- Tombol Hapus -->
+<button class="w-11 h-11 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-base backdrop-blur-md transition shadow-lg cursor-pointer" onclick="deleteCurrentLightboxPhoto()" title="Hapus Foto Ini">
+<i class="fa-solid fa-trash-can"></i>
+</button>
+<!-- Tombol Download Foto Original -->
+<button class="w-11 h-11 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-base backdrop-blur-md transition shadow-lg cursor-pointer" onclick="downloadCurrentLightboxPhoto()" title="Download Foto Original">
+<i class="fa-solid fa-download"></i>
+</button>
+<!-- Tombol Dark Mode / White Mode -->
+<button class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-lg backdrop-blur-md transition shadow-lg cursor-pointer" id="themeToggleBtn" onclick="toggleThemeMode()" title="Ganti Mode Terang / Gelap">
+<i class="fa-solid fa-sun" id="themeToggleIcon"></i>
+</button>
+</div>
+<button class="w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-xl transition shadow-lg cursor-pointer" id="lightboxCloseBtn" onclick="closeLightbox()">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
+<!-- Gambar Utama Lightbox dengan Tombol Navigasi Kiri / Kanan -->
+<div class="relative w-full flex-1 flex items-center justify-center max-w-4xl px-2 my-2">
+<!-- Tombol Geser Kiri (Prev) -->
+<button class="absolute left-2 sm:left-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer" id="lightboxPrevBtn" onclick="prevLightboxImage()">
+<i class="fa-solid fa-chevron-left text-lg"></i>
+</button>
+<img alt="Zoom Foto" class="max-h-[80vh] max-w-full object-contain rounded-2xl shadow-2xl border border-white/10" id="lightboxImageSrc" src=""/>
+<!-- Tombol Geser Kanan (Next) -->
+<button class="absolute right-2 sm:right-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer" id="lightboxNextBtn" onclick="nextLightboxImage()">
+<i class="fa-solid fa-chevron-right text-lg"></i>
+</button>
+</div>
+<div class="text-slate-400 text-xs pb-2"><i class="fa-solid fa-heart text-rose-500"></i> Hani &amp; Venus Kenangan</div>
+</div>
+<!-- MODAL CUSTOM SELECT POP-UP (TIPE TRANSAKSI & NAMA PENABUNG) -->
+<div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center pointer-events-none" id="customSelectModal">
+<div class="bg-white w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 transform translate-y-full sm:translate-y-0 sm:scale-95 transition-transform duration-300 shadow-2xl pb-10 sm:pb-8" id="customSelectContent">
+<div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5 sm:hidden"></div>
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-serif text-xl sm:text-2xl font-bold text-slate-900" id="popupTitle">Pilih Opsi</h3>
+<button class="text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 transition" onclick="closePopup()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="space-y-3" id="popupOptionsContainer"></div>
+</div>
+</div>
+<!-- MODAL NOTIFIKASI SUKSES KUSTOM (SESUAI TEMA APLIKASI & SOUND) -->
+<div class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="successModal">
+<div class="bg-white dark:bg-slate-900 p-6 sm:p-8 max-w-sm w-full shadow-2xl rounded-[2rem] text-center relative mx-4 transform scale-95 transition-transform duration-300" id="successModalBox">
+<div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+<i class="fa-solid fa-check"></i>
+</div>
+<h3 class="font-serif text-2xl font-bold text-slate-900 dark:text-white mb-1">Berhasil!</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Transaksi berhasil disimpan &amp; tersinkronisasi ke Cloud Firestore.</p>
+<button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer" onclick="closeSuccessModalAndReload()">
                 Oke, Mengerti
             </button>
-        </div>
-    </div>
-
-    <!-- MODAL EDIT / HAPUS TRANSAKSI -->
-    <div id="editModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none">
-        <div class="bg-white rounded-[2rem] p-6 sm:p-8 max-w-md w-full shadow-2xl relative max-h-[95vh] overflow-y-auto pointer-events-auto">
-            <button onclick="closeEditModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-xl z-10 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
-            <h3 class="font-serif text-2xl font-bold text-slate-900 mb-1">Edit Transaksi</h3>
-            <p class="text-sm text-slate-500 mb-5">Ubah detail data atau hapus jika salah.</p>
-
-            <form id="editForm" onsubmit="handleEditSubmit(event)" class="space-y-4">
-                <input type="hidden" id="editId">
-
-                <div>
-                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Tipe Transaksi</label>
-                    <input type="hidden" id="editTipe" required>
-                    <button type="button" onclick="openPopup('tipe', 'edit')" class="w-full text-left bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-800 flex justify-between items-center transition shadow-sm">
-                        <span id="textEditTipeTransaksi">Memuat...</span>
-                        <i class="fa-solid fa-chevron-down text-slate-400"></i>
+</div>
+</div>
+<!-- MODAL EDIT / HAPUS TRANSAKSI -->
+<div class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="editModal">
+<div class="bg-white rounded-[2rem] p-6 sm:p-8 max-w-md w-full shadow-2xl relative max-h-[95vh] overflow-y-auto pointer-events-auto">
+<button class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-xl z-10 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100" onclick="closeEditModal()">
+<i class="fa-solid fa-xmark"></i>
+</button>
+<h3 class="font-serif text-2xl font-bold text-slate-900 mb-1">Edit Transaksi</h3>
+<p class="text-sm text-slate-500 mb-5">Ubah detail data atau hapus jika salah.</p>
+<form class="space-y-4" id="editForm" onsubmit="handleEditSubmit(event)">
+<input id="editId" type="hidden"/>
+<div>
+<label class="block text-sm font-bold uppercase text-slate-600 mb-2">Tipe Transaksi</label>
+<input id="editTipe" required="" type="hidden"/>
+<button class="w-full text-left bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-800 flex justify-between items-center transition shadow-sm" onclick="openPopup('tipe', 'edit')" type="button">
+<span id="textEditTipeTransaksi">Memuat...</span>
+<i class="fa-solid fa-chevron-down text-slate-400"></i>
+</button>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase text-slate-600 mb-2">Nama Penabung</label>
+<input id="editPenabung" required="" type="hidden"/>
+<button class="w-full text-left bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-800 flex justify-between items-center transition shadow-sm" onclick="openPopup('penabung', 'edit')" type="button">
+<span id="textEditNamaPenabung">Memuat...</span>
+<i class="fa-solid fa-chevron-down text-slate-400"></i>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block text-sm font-bold uppercase text-slate-600 mb-2">Tanggal</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3.5 text-base font-medium text-slate-800" id="editTgl" required="" type="date"/>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase text-slate-600 mb-2">Jam</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3.5 text-base font-medium text-slate-800" id="editJam" required="" type="time"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase text-slate-600 mb-2">Jumlah (Rp)</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-num font-bold text-lg text-slate-900" id="editJumlah" oninput="formatRupiahInput(this)" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase text-slate-600 mb-2">Keterangan / Catatan</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-800" id="editKet" type="text"/>
+</div>
+<div class="hidden pt-2" id="editBuktiContainer">
+<div class="flex justify-between items-center mb-2">
+<label class="block text-sm font-bold uppercase text-slate-600">Bukti Transfer</label>
+<span class="text-xs text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto</span>
+</div>
+<div class="relative w-full h-56 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" onclick="openImageModal(document.getElementById('editBuktiImg').src)">
+<img alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300" id="editBuktiImg" src=""/>
+</div>
+</div>
+<div class="pt-4 flex gap-3">
+<button class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-xl border border-rose-200 text-sm sm:text-base transition" onclick="confirmDeleteTransaction()" type="button">
+<i class="fa-solid fa-trash sm:mr-1"></i> Hapus
                     </button>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Nama Penabung</label>
-                    <input type="hidden" id="editPenabung" required>
-                    <button type="button" onclick="openPopup('penabung', 'edit')" class="w-full text-left bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-800 flex justify-between items-center transition shadow-sm">
-                        <span id="textEditNamaPenabung">Memuat...</span>
-                        <i class="fa-solid fa-chevron-down text-slate-400"></i>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Tanggal</label>
-                        <input type="date" id="editTgl" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3.5 text-base font-medium text-slate-800">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Jam</label>
-                        <input type="time" id="editJam" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3.5 text-base font-medium text-slate-800">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Jumlah (Rp)</label>
-                    <input type="text" id="editJumlah" required oninput="formatRupiahInput(this)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 font-num font-bold text-lg text-slate-900">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Keterangan / Catatan</label>
-                    <input type="text" id="editKet" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-800">
-                </div>
-
-                <div id="editBuktiContainer" class="hidden pt-2">
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-sm font-bold uppercase text-slate-600">Bukti Transfer</label>
-                        <span class="text-xs text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto</span>
-                    </div>
-                    <div class="relative w-full h-56 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" onclick="openImageModal(document.getElementById('editBuktiImg').src)">
-                        <img id="editBuktiImg" src="" alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
-                    </div>
-                </div>
-
-                <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="confirmDeleteTransaction()" class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-xl border border-rose-200 text-sm sm:text-base transition">
-                        <i class="fa-solid fa-trash sm:mr-1"></i> Hapus
-                    </button>
-                    <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-sm sm:text-base shadow-md transition">
+<button class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-sm sm:text-base shadow-md transition" type="submit">
                         Simpan Perubahan
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL FULLSCREEN BUKTI FOTO -->
-    <div id="imageModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300 pointer-events-none" onclick="closeImageModal()">
-        <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center pointer-events-auto" onclick="event.stopPropagation()">
-            <button onclick="closeImageModal()" class="absolute -top-12 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl backdrop-blur-md transition z-10 shadow-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <img id="imageModalSrc" src="" alt="Bukti Transfer Full" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20">
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT & CLOUD FIRESTORE INTEGRATION -->
-    <script>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL FULLSCREEN BUKTI FOTO -->
+<div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="imageModal" onclick="closeImageModal()">
+<div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center pointer-events-auto" onclick="event.stopPropagation()">
+<button class="absolute -top-12 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl backdrop-blur-md transition z-10 shadow-lg" onclick="closeImageModal()">
+<i class="fa-solid fa-xmark"></i>
+</button>
+<img alt="Bukti Transfer Full" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20" id="imageModalSrc" src=""/>
+</div>
+</div>
+<!-- JAVASCRIPT & CLOUD FIRESTORE INTEGRATION -->
+<script>
         const firebaseConfig = {
             apiKey: "AIzaSyBrnOBF6b9NRnFvWEqB17ycW8lrqmEsRJg",
             authDomain: "tabungan-hani-venus.firebaseapp.com",
@@ -1971,5 +1907,205 @@
             document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
         }
     </script>
-</body>
+<div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-[60] hidden opacity-0 transition-all duration-200 flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none" id="tambahModal">
+<div class="bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-hidden shadow-2xl transform translate-y-full sm:translate-y-4 sm:scale-95 transition-all duration-200 flex flex-col" id="tambahModalBox">
+<div class="flex items-center justify-between p-4 border-b bg-white dark:bg-slate-900"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center"><i class="fa-solid fa-plus text-sm"></i></div><div><h3 class="font-bold text-sm">Tambah Transaksi</h3><p class="text-[11px] text-slate-500">Masuk Firebase otomatis</p></div></div><button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center" onclick="closeTambahModal()"><i class="fa-solid fa-xmark text-xs"></i></button></div>
+<div class="overflow-y-auto p-4 flex-1"><div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+<div class="lg:col-span-12">
+<div class="glass-box rounded-2xl p-6 sm:p-8">
+<div class="flex items-center gap-3 mb-6 border-b border-sky-100 pb-4">
+<div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+<i class="fa-solid fa-plus"></i>
+</div>
+<div>
+<h3 class="font-serif text-xl font-bold text-slate-900">Input Catatan Tabungan</h3>
+<p class="text-sm text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
+</div>
+</div>
+<form class="space-y-5" id="transactionForm" onsubmit="handleFormSubmit(event)">
+<!-- TOMBOL POPUP TIPE TRANSAKSI -->
+<div>
+<label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Tipe Transaksi *</label>
+<input id="tipeTransaksi" required="" type="hidden"/>
+<button class="w-full bg-white/90 border border-slate-200 hover:border-blue-400 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-400 flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm" onclick="openPopup('tipe', 'main')" type="button">
+<span id="textTipeTransaksi">-- Pilih Tipe Transaksi --</span>
+<i class="fa-solid fa-chevron-down"></i>
+</button>
+</div>
+<!-- TOMBOL POPUP NAMA PENABUNG -->
+<div>
+<label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Nama Penabung *</label>
+<input id="namaPenabung" required="" type="hidden"/>
+<button class="w-full bg-white/90 border border-slate-200 hover:border-blue-400 rounded-xl px-4 py-3.5 text-base font-semibold text-slate-400 flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm" onclick="openPopup('penabung', 'main')" type="button">
+<span id="textNamaPenabung">-- Pilih Nama Penabung --</span>
+<i class="fa-solid fa-chevron-down"></i>
+</button>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Tanggal &amp; Jam *</label>
+<div class="grid grid-cols-2 gap-3">
+<input class="w-full bg-white/90 border border-slate-200 rounded-xl px-3 sm:px-4 py-3.5 text-base font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" id="tglTransaksi" required="" type="date"/>
+<input class="w-full bg-white/90 border border-slate-200 rounded-xl px-3 sm:px-4 py-3.5 text-base font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" id="jamTransaksi" required="" type="time"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Jumlah (Rp) *</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-lg">Rp</span>
+<input class="w-full bg-white/90 border border-slate-200 rounded-xl pl-12 pr-4 py-4 text-slate-900 font-num font-extrabold text-xl sm:text-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" id="jumlahRupiah" inputmode="numeric" oninput="formatRupiahInput(this)" placeholder="0" required="" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
+                                Keterangan / Catatan <span class="text-rose-500 hidden" id="ketRequiredMark">*</span> <span class="text-slate-400 font-normal" id="ketOptionalMark">(Opsional)</span>
+</label>
+<input class="w-full bg-white/90 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" id="keteranganTransaksi" placeholder="Contoh: DP Catering / Tabungan Bulanan" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">Lampirkan Bukti Transfer (Opsional)</label>
+<input accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" id="buktiTransfer" onchange="previewMainBukti(event)" type="file"/>
+<div class="hidden mt-3 relative w-28 h-28 rounded-xl border-2 border-dashed border-sky-300 overflow-hidden cursor-pointer" id="buktiPreviewContainer" onclick="openImageModal(document.getElementById('buktiPreviewImg').src)">
+<img alt="Preview Bukti" class="w-full h-full object-cover" id="buktiPreviewImg" src=""/>
+</div>
+</div>
+<button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2 mt-2 text-lg" id="btnSubmit" type="submit">
+<span id="btnSubmitText">Simpan Transaksi</span>
+<span class="hidden" id="btnSubmitSpinner"><i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...</span>
+</button>
+</form>
+</div>
+</div>
+</div></div>
+</div></div>
+<script>
+try{ var _s=localStorage.getItem('darkMode'); if(_s!==null) isDarkMode=_s==='true'; }catch(e){}
+function applyDarkMode(){
+  var b=document.body, ic=document.getElementById('darkModeIcon'), knob=document.getElementById('darkToggleKnobSetelan'), tog=document.getElementById('darkModeToggleSetelan');
+  if(isDarkMode){ b.classList.add('dark'); if(ic) ic.className='fa-solid fa-sun'; if(knob){knob.style.transform='translateX(20px)'; knob.innerHTML='<i class="fa-solid fa-moon"></i>';} if(tog){tog.classList.remove('bg-slate-300'); tog.classList.add('bg-blue-600');} }
+  else { b.classList.remove('dark'); if(ic) ic.className='fa-solid fa-moon'; if(knob){knob.style.transform='translateX(0)'; knob.innerHTML='<i class="fa-solid fa-sun"></i>';} if(tog){tog.classList.add('bg-slate-300'); tog.classList.remove('bg-blue-600');} }
+}
+function toggleDarkMode(){ isDarkMode=!isDarkMode; try{localStorage.setItem('darkMode',isDarkMode);}catch(e){} applyDarkMode(); }
+document.addEventListener('DOMContentLoaded',function(){ applyDarkMode(); });
+
+var currentActiveTab='dashboard';
+function switchTab(tabName){
+  if(tabName==='tambah'){ openTambahModal(); return; }
+  if(tabName===currentActiveTab){ window.scrollTo({top:0,behavior:'smooth'}); return; }
+  var oldEl=document.getElementById('tab-'+currentActiveTab);
+  var newEl=document.getElementById('tab-'+tabName);
+  if(oldEl){ oldEl.classList.add('tab-exit'); oldEl.classList.remove('active'); setTimeout(function(){ oldEl.classList.remove('tab-exit'); },160); }
+  if(newEl){ newEl.style.willChange='opacity, transform'; void newEl.offsetWidth; newEl.classList.add('active'); setTimeout(function(){ newEl.style.willChange=''; },260); }
+  currentActiveTab=tabName;
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){ b.classList.remove('active'); if(b.dataset.tab===tabName) b.classList.add('active'); });
+  window.scrollTo({top:0,behavior:'instant'}); document.documentElement.scrollTop=0;
+  requestAnimationFrame(function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  if(tabName==='laporan') setTimeout(function(){ updateLaporanUI(); },80);
+  if(tabName==='dashboard') setTimeout(function(){ updateDashboardDiagram(); },80);
+  if(tabName==='setelan'){ var cd=document.getElementById('cd-days'), sc=document.getElementById('setelanCountdown'); if(cd&&sc){ var t=new Date("2027-04-03T00:00:00").getTime(), n=new Date().getTime(), d=t-n; if(d>0){ var days=Math.floor(d/(1000*60*60*24)), h=Math.floor((d%(1000*60*60*24))/(1000*60*60)); sc.innerText=days+' hari, '+h+' jam lagi'; } } }
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+}
+function syncOpacitySliders(v){ var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue'); if(s1) s1.value=v; if(s2) s2.value=v; if(vd) vd.innerText=Math.round(v*100)+'%'; document.documentElement.style.setProperty('--box-opacity',v); try{localStorage.setItem('wedding_box_opacity',v);}catch(e){} }
+function syncLaporanFilter(){ var bL=document.getElementById('filterBulanLaporan').value, tL=document.getElementById('filterTahunLaporan').value, b=document.getElementById('filterBulan'), t=document.getElementById('filterTahun'); if(b) b.value=bL; if(t) t.value=tL; updateUI(); updateLaporanUI(); }
+function resetFilterLaporan(){ document.getElementById('filterBulanLaporan').value='all'; document.getElementById('filterTahunLaporan').value='all'; syncLaporanFilter(); }
+var financeChartInstance=null;
+function initFinanceChart(){ var ctx=document.getElementById('financeDonutChart'); if(!ctx) return; if(financeChartInstance){ try{financeChartInstance.destroy();}catch(e){} } financeChartInstance=new Chart(ctx,{type:'doughnut',data:{labels:['Masuk','Keluar'],datasets:[{data:[1,0.1],backgroundColor:['#0284c7','#fb7185'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,0.9)',padding:10,cornerRadius:10,callbacks:{label:function(c){ return c.label+': Rp '+new Intl.NumberFormat('id-ID').format(c.parsed); } } }},animation:{duration:600}}}); }
+function updateDashboardDiagram(){
+  if(typeof transactions==='undefined' || !transactions) return;
+  var m=0,k=0,h=0,v=0,b=0;
+  transactions.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') k-=it.jumlah; var p=(it.penabung||'').toUpperCase(); if(p.indexOf('HANI')>-1&&p.indexOf('BERSAMA')===-1) h+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('VENUS')>-1&&p.indexOf('BERSAMA')===-1) v+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('BERSAMA')>-1) b+=(it.tipe==='pemasukan'?it.jumlah:0); });
+  var s=m-k, up=m>0?Math.round(k/m*100):0;
+  if(financeChartInstance){ financeChartInstance.data.datasets[0].data=[m||1,k||0.1]; financeChartInstance.update(); }
+  function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
+  function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
+  el('diagramSaldo',fmt(s)); el('diagramMasuk',fmt(m)); el('diagramKeluar',fmt(k)); el('donutCenterSaldo',fmt(s)); el('donutCenterPercent',up+'% terpakai');
+  el('haniContrib',fmt(h)); el('venusContrib',fmt(v)); 
+  var tot=h+v+b||1; el('haniPercent',Math.round(h/tot*100)+'%'); el('venusPercent',Math.round(v/tot*100)+'%');
+  var hb=document.getElementById('haniBar'); if(hb) hb.style.width=(h/tot*100)+'%'; var vb=document.getElementById('venusBar'); if(vb) vb.style.width=(v/tot*100)+'%';
+  var ml=document.getElementById('dashboardMiniList');
+  if(ml){ ml.innerHTML=''; var last3=transactions.slice().reverse().slice(0,3); if(last3.length===0) ml.innerHTML='<p class="text-xs text-slate-500 text-center py-2">Belum ada transaksi</p>'; else last3.forEach(function(it){ var isM=it.tipe==='pemasukan'||it.tipe==='pengembalian'; var d=document.createElement('div'); d.className='flex justify-between items-center p-2.5 rounded-xl bg-white border text-xs'; d.innerHTML='<div><p class="font-bold '+(isM?'text-emerald-700':'text-rose-700')+'">'+(it.ket||it.tipe)+'</p><p class="text-[11px] text-slate-500">'+it.tgl+' • '+(it.penabung||'')+'</p></div><div class="font-num font-bold '+(isM?'text-emerald-600':'text-rose-600')+'">'+(isM?'+':'-')+'Rp '+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div>'; ml.appendChild(d); }); }
+  var cd=document.getElementById('cd-days'); 
+  if(cd){ 
+    var hr=document.getElementById('hariTersisa'); if(hr) hr.innerText=cd.innerText; 
+    var copy=document.getElementById('cd-days-copy'); if(copy) copy.innerText=cd.innerText;
+    var pr=document.getElementById('progressPercent'), br=document.getElementById('progressBar'); 
+    if(pr&&br){ var totD=700, rem=parseInt(cd.innerText)||0, prog=Math.max(5,Math.min(95,100-(rem/totD*100))); pr.innerText=Math.round(prog)+'%'; br.style.width=prog+'%'; } 
+  }
+}
+function updateLaporanUI(){
+  if(typeof transactions==='undefined' || !transactions) return;
+  var sbEl=document.getElementById('filterBulanLaporan'); var stEl=document.getElementById('filterTahunLaporan');
+  if(!sbEl || !stEl) return;
+  var sb=sbEl.value, st=stEl.value;
+  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (sb==='all'||p[1]===sb)&&(st==='all'||p[0]===st); });
+  var m=0,k=0; filt.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') k-=it.jumlah; });
+  var s=m-k;
+  function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
+  function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
+  el('laporanSaldo',fmt(s)); el('laporanMasuk',fmt(m)); el('laporanKeluar',fmt(k));
+  var lbl=document.getElementById('laporanPeriodeLabel');
+  if(lbl){ if(sb==='all'&&st==='all') lbl.innerText='Semua Periode (auto Firebase)'; else { var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; var l=''; if(sb!=='all') l+=bn[parseInt(sb)]+' '; if(st!=='all') l+=st; lbl.innerText=l; } }
+  var lc=document.getElementById('laporanList');
+  if(lc){ lc.innerHTML=''; if(filt.length===0) lc.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi di periode ini (coba ganti ke Semua)</p>'; else filt.slice().reverse().forEach(function(it){ var isM=it.tipe==='pemasukan'||it.tipe==='pengembalian'; var d=document.createElement('div'); d.className='riwayat-item-presisi '+(isM?'bg-emerald-50/70 border-emerald-100':'bg-rose-50/70 border-rose-100'); d.innerHTML='<span class="badge">'+(it.penabung||'HANI')+'</span><div class="main"><div class="title '+(isM?'text-emerald-700':'text-rose-700')+'">'+it.ket+'</div><div class="date">'+it.tgl+' | '+it.jam+'</div></div><div class="side"><div class="amount '+(isM?'text-emerald-600':'text-rose-600')+'">'+(isM?'+ Rp ':'- Rp ')+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>'; lc.appendChild(d); }); }
+}
+function openTambahModal(){ var m=document.getElementById('tambahModal'), b=document.getElementById('tambahModalBox'); if(!m||!b) return; m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0','pointer-events-none'); m.classList.add('opacity-100'); b.classList.remove('translate-y-full','sm:translate-y-4','sm:scale-95'); b.classList.add('translate-y-0','sm:scale-100'); document.body.style.overflow='hidden'; }
+function closeTambahModal(){ var m=document.getElementById('tambahModal'), b=document.getElementById('tambahModalBox'); if(!m||!b) return; m.classList.add('opacity-0'); b.classList.add('translate-y-full','sm:translate-y-4','sm:scale-95'); b.classList.remove('translate-y-0','sm:scale-100'); setTimeout(function(){ m.classList.add('hidden','pointer-events-none'); document.body.style.overflow=''; },200); }
+document.addEventListener('click',function(e){ var m=document.getElementById('tambahModal'); if(e.target===m) closeTambahModal(); });
+document.addEventListener('DOMContentLoaded',function(){ 
+  setTimeout(function(){ initFinanceChart(); updateDashboardDiagram(); },900);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'); 
+  if(s1&&s2){ var so=localStorage.getItem('wedding_box_opacity')||'0.75'; s1.value=so; s2.value=so; var vd=document.getElementById('opacityValue'); if(vd) vd.innerText=Math.round(so*100)+'%'; } 
+  // Default laporan ke 'all' biar data langsung kelihatan
+  var fb=document.getElementById('filterBulanLaporan'), ft=document.getElementById('filterTahunLaporan'); 
+  if(fb) fb.value='all'; if(ft) ft.value='all';
+});
+
+var _origUpdateUI = window.updateUI;
+window.updateUI = function() {
+  var totalMasuk = 0, totalKeluar = 0;
+  var selBulanEl = document.getElementById('filterBulan');
+  var selTahunEl = document.getElementById('filterTahun');
+  if(!selBulanEl || !selTahunEl){ if(_origUpdateUI) try{_origUpdateUI();}catch(e){} return; }
+  var selBulan = selBulanEl.value;
+  var selTahun = selTahunEl.value;
+  var listContainer = document.getElementById('transactionList');
+  if (!listContainer) { if(_origUpdateUI) try{_origUpdateUI();}catch(e){} return; }
+  listContainer.innerHTML = '';
+  if(typeof transactions==='undefined' || !transactions){ listContainer.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Memuat data Firebase...</p>'; return; }
+  transactions.forEach(function(item){
+    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
+    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+    if (item.tipe === 'pengembalian') totalKeluar -= item.jumlah;
+  });
+  var filtered = transactions.filter(function(item){
+    if (!item.tgl) return true;
+    var parts = item.tgl.split('-');
+    var y = parts[0], mo = parts[1];
+    return (selBulan==='all'||mo===selBulan)&&(selTahun==='all'||y===selTahun);
+  });
+  if (filtered.length === 0) {
+    listContainer.innerHTML = '<p class="text-sm text-slate-500 text-center py-6">Tidak ada transaksi pada periode ini. Coba ganti filter ke Semua Bulan.</p>';
+  } else {
+    filtered.slice().reverse().forEach(function(item){
+      var isMasuk = item.tipe === 'pemasukan' || item.tipe === 'pengembalian';
+      var penabungName = item.penabung || 'HANI';
+      var elem = document.createElement('div');
+      elem.className = 'riwayat-item-presisi '+(isMasuk ? 'bg-emerald-50/70 border-emerald-100' : 'bg-rose-50/70 border-rose-100')+' hover:shadow-md';
+      elem.onclick = function(){ openEditModal(item.id); };
+      var clip = item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
+      elem.innerHTML = '<span class="badge">'+penabungName+'</span><div class="main"><div class="title '+(isMasuk ? 'text-emerald-700' : 'text-rose-700')+'">'+item.ket+' '+clip+'</div><div class="date">'+item.tgl+' | '+item.jam+'</div></div><div class="side"><div class="amount '+(isMasuk ? 'text-emerald-600' : 'text-rose-600')+'">'+(isMasuk ? '+ Rp ' : '- Rp ')+new Intl.NumberFormat('id-ID').format(item.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
+      listContainer.appendChild(elem);
+    });
+  }
+  var net = totalMasuk - totalKeluar;
+  var elSaldo = document.getElementById('totalSaldo');
+  if (elSaldo) elSaldo.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(net);
+  var elIn = document.getElementById('topTotalIn');
+  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk);
+  var elOut = document.getElementById('topTotalOut');
+  if (elOut) elOut.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalKeluar);
+  try { updateDashboardDiagram(); } catch(e){ console.log('diagram err',e); }
+  try { updateLaporanUI(); } catch(e){ console.log('laporan err',e); }
+};
+</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
