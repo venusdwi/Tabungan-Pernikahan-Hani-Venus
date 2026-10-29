@@ -1275,6 +1275,42 @@ body.dark .card-pengembalian{
   background: rgba(120, 53, 15, 0.3)!important;
   border-color: rgba(180, 83, 9, 0.4)!important;
 }
+
+/* ===== V24 FIX SPINNER + SUCCESS MODAL Z-INDEX ===== */
+
+/* Allow spinner animations to work even though we disabled other animations */
+.fa-spin,
+.fa-spinner,
+.animate-spin,
+#btnSubmitSpinner i,
+#btnSubmitSpinner svg{
+  animation: spin 1s linear infinite!important;
+  -webkit-animation: spin 1s linear infinite!important;
+}
+@keyframes spin{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+@-webkit-keyframes spin{
+  from{-webkit-transform:rotate(0deg);}
+  to{-webkit-transform:rotate(360deg);}
+}
+
+/* Success modal should be on top of tambah modal */
+#successModal{
+  z-index: 90!important;
+}
+#successModalBox{
+  z-index: 91!important;
+}
+
+/* Ensure tambah modal close button and others still visible */
+#tambahModal{
+  z-index: 60!important;
+}
+#customSelectModal{
+  z-index: 70!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -1464,13 +1500,11 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <div class="mt-3 w-full bg-slate-200 h-1.5 rounded-full"><div class="bg-emerald-500 h-1.5 rounded-full transition-all" id="laporanProgressBar" style="width:0%"></div></div>
 </div>
-
 <div class="grid grid-cols-3 gap-2.5">
 <div class="glass-box rounded-2xl p-3"><div class="flex justify-between items-center mb-1"><p class="text-[9px] font-bold text-emerald-600 uppercase">Masuk</p><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i></div><p class="font-num text-[13px] font-bold text-blue-600" id="laporanMasuk">Rp 0</p><p class="text-[9px] text-slate-500 mt-1" id="laporanMasukCount">0</p></div>
 <div class="glass-box rounded-2xl p-3 card-pengembalian"><div class="flex justify-between items-center mb-1"><p class="text-[9px] font-bold text-amber-700 uppercase">Kembali</p><i class="fa-solid fa-rotate-left text-amber-600 text-[10px]"></i></div><p class="font-num text-[13px] font-bold text-amber-600" id="laporanKembali">Rp 0</p><p class="text-[9px] text-slate-500 mt-1" id="laporanKembaliCount">0</p></div>
 <div class="glass-box rounded-2xl p-3"><div class="flex justify-between items-center mb-1"><p class="text-[9px] font-bold text-rose-600 uppercase">Keluar</p><i class="fa-solid fa-arrow-trend-down text-rose-500 text-[10px]"></i></div><p class="font-num text-[13px] font-bold text-rose-600" id="laporanKeluar">Rp 0</p><p class="text-[9px] text-slate-500 mt-1" id="laporanKeluarCount">0</p></div>
 </div>
-
 </div>
 <!-- Charts - BEDA DARI RIWAYAT -->
 <div class="grid grid-cols-1 gap-2.5 mb-3">
@@ -1685,7 +1719,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 </div>
 <!-- MODAL NOTIFIKASI SUKSES KUSTOM (SESUAI TEMA APLIKASI & SOUND) -->
-<div class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="successModal">
+<div class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-[90] hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="successModal">
 <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 max-w-sm w-full shadow-2xl rounded-[2rem] text-center relative mx-4 transform scale-95 transition-transform duration-300" id="successModalBox">
 <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
 <i class="fa-solid fa-check"></i>
@@ -2524,7 +2558,27 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
         }
 
         function closeSuccessModalAndReload() {
-            location.reload();
+            // Close success modal
+            var sm=document.getElementById('successModal');
+            if(sm){
+              sm.classList.add('opacity-0','pointer-events-none');
+              setTimeout(function(){ sm.classList.add('hidden'); }, 300);
+            }
+            // Close tambah modal
+            if(typeof closeTambahModal==='function') closeTambahModal();
+            
+            // Stay on Riwayat (transaction page) instead of dashboard
+            if(typeof switchTab==='function'){
+              switchTab('riwayat');
+            }
+            
+            // Reset submit button
+            var btnSubmit=document.getElementById('btnSubmit');
+            var btnText=document.getElementById('btnSubmitText');
+            var btnSpinner=document.getElementById('btnSubmitSpinner');
+            if(btnSubmit){ btnSubmit.disabled=false; }
+            if(btnText) btnText.classList.remove('hidden');
+            if(btnSpinner) btnSpinner.classList.add('hidden');
         }
 
         function playNotificationSound() {
