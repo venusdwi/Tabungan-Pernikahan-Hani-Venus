@@ -1338,15 +1338,13 @@ body.dark .bottom-tab-bar{
 .card-pengembalian{ background: rgba(219,234,254,0.9)!important; border: 1px solid rgba(147,197,253,0.5)!important; }
 body.dark .card-pengembalian{ background: rgba(30,58,138,0.35)!important; border-color: rgba(59,130,246,0.4)!important; }
 
-/* ===== V28 FIX FINAL - PENGEMBALIAN BIRU + POPUP TERANG/GELAP ===== */
-
-/* Pengembalian - BIRU TEGAS beda dari Hijau & Merah */
+/* ===== V29 FIX - TABS WORKING + PENGEMBALIAN BIRU TEGAS + POPUP LIGHT/DARK ===== */
 .riwayat-item-presisi.pengembalian,
-.riwayat-item-presisi.pengembalian[data-tipe="pengembalian"]{
+.riwayat-item-presisi[data-tipe="pengembalian"]{
   background: #dbeafe!important;
   background-color: #dbeafe!important;
   border: 1px solid #93c5fd!important;
-  border-left: 4px solid #2563eb!important;
+  border-left: 5px solid #2563eb!important;
 }
 body.dark .riwayat-item-presisi.pengembalian{
   background: #1e3a8a!important;
@@ -1354,62 +1352,28 @@ body.dark .riwayat-item-presisi.pengembalian{
   border-color: #3b82f6!important;
   border-left-color: #60a5fa!important;
 }
-.riwayat-item-presisi.pengembalian .title{
-  color: #1e40af!important;
-}
-body.dark .riwayat-item-presisi.pengembalian .title{
-  color: #bfdbfe!important;
-}
-.riwayat-item-presisi.pengembalian .amount{
-  color: #1d4ed8!important;
-  font-weight: 800!important;
-}
-body.dark .riwayat-item-presisi.pengembalian .amount{
-  color: #93c5fd!important;
-}
-.riwayat-item-presisi.pengembalian .date{
-  color: #2563eb!important;
-}
-body.dark .riwayat-item-presisi.pengembalian .date{
-  color: #60a5fa!important;
-}
+.riwayat-item-presisi.pengembalian .title{ color: #1e40af!important; font-weight: 800!important; }
+body.dark .riwayat-item-presisi.pengembalian .title{ color: #bfdbfe!important; }
+.riwayat-item-presisi.pengembalian .amount{ color: #1d4ed8!important; font-weight: 800!important; }
+body.dark .riwayat-item-presisi.pengembalian .amount{ color: #93c5fd!important; }
+.riwayat-item-presisi.pengembalian .date{ color: #2563eb!important; }
+body.dark .riwayat-item-presisi.pengembalian .date{ color: #60a5fa!important; }
 
 .badge-pengembalian{
-  background: #3b82f6!important;
-  background-color: #3b82f6!important;
+  background: #2563eb!important;
+  background-color: #2563eb!important;
   color: white!important;
-  border: 1px solid #2563eb!important;
-  font-weight: 800!important;
+  border: 1px solid #1d4ed8!important;
+  font-weight: 900!important;
   font-size: 10px!important;
+  letter-spacing: 0.5px!important;
 }
-.badge-pemasukan{
-  background: #10b981!important;
-  color: white!important;
-  border: 1px solid #059669!important;
-}
-.badge-pengeluaran{
-  background: #f43f5e!important;
-  color: white!important;
-  border: 1px solid #e11d48!important;
-}
+.badge-pemasukan{ background: #10b981!important; color: white!important; border: 1px solid #059669!important; }
+.badge-pengeluaran{ background: #f43f5e!important; color: white!important; border: 1px solid #e11d48!important; }
 
-/* Pemasukan hijau, Pengeluaran merah tetap */
-.riwayat-item-presisi.bg-emerald-50\/70{
-  background: #d1fae5!important;
-  border: 1px solid #6ee7b7!important;
-  border-left: 4px solid #10b981!important;
-}
-.riwayat-item-presisi.bg-rose-50\/70{
-  background: #ffe4e6!important;
-  border: 1px solid #fda4af!important;
-  border-left: 4px solid #f43f5e!important;
-}
-
-/* Popup Berhasil - Light mode PUTIH, Dark mode GELAP */
-#successModal{
-  background: rgba(15, 23, 42, 0.5)!important;
-  backdrop-filter: blur(8px)!important;
-}
+/* Popup light/dark fix */
+#successModal{ z-index: 90!important; background: rgba(15,23,42,0.5)!important; backdrop-filter: blur(8px)!important; }
+#successModalBox{ z-index: 91!important; }
 #successModalBox{
   background: white!important;
   background-color: white!important;
@@ -1420,20 +1384,16 @@ body.dark #successModalBox{
   background: #1e293b!important;
   background-color: #1e293b!important;
   border-color: #334155!important;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5)!important;
 }
-#successModalBox h3{
-  color: #0f172a!important;
-}
-body.dark #successModalBox h3{
-  color: white!important;
-}
-#successModalBox p{
-  color: #64748b!important;
-}
-body.dark #successModalBox p{
-  color: #94a3b8!important;
-}
+#successModalBox h3{ color: #0f172a!important; }
+body.dark #successModalBox h3{ color: white!important; }
+#successModalBox p{ color: #64748b!important; }
+body.dark #successModalBox p{ color: #94a3b8!important; }
+
+/* Ensure tabs work - override any display:none */
+.tab-content.active{ display:block!important; opacity:1!important; visibility:visible!important; pointer-events:auto!important; }
+.tab-content{ display:none!important; }
+.tab-content.active{ display:block!important; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3224,7 +3184,6 @@ function applyDarkMode(){
 function toggleDarkMode(){ isDarkMode=!isDarkMode; try{localStorage.setItem('darkMode',isDarkMode);}catch(e){} applyDarkMode(); }
 document.addEventListener('DOMContentLoaded',function(){ applyDarkMode(); });
 
-var currentActiveTab='dashboard';
 
 
 function updateLaporanUI(){
@@ -3258,12 +3217,139 @@ document.addEventListener('DOMContentLoaded',function(){
 var _origUpdateUI = window.updateUI;
 
 
+, 200);
+  }
+  if(typeof closeTambahModal==='function') closeTambahModal();
+  switchTab('riwayat');
+  var btnSubmit=document.getElementById('btnSubmit');
+  var btnText=document.getElementById('btnSubmitText');
+  var btnSpinner=document.getElementById('btnSubmitSpinner');
+  if(btnSubmit) btnSubmit.disabled=false;
+  if(btnText) btnText.classList.remove('hidden');
+  if(btnSpinner) btnSpinner.classList.add('hidden');
+}
+
+
+// Ensure DOM ready shows dashboard
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.tab-content').forEach(function(el){
+    if(el.id!=='tab-dashboard') el.style.display='none';
+  });
+  var dash=document.getElementById('tab-dashboard');
+  if(dash){ dash.style.display='block'; dash.classList.add('active'); }
+});
+
+
+// ===== V29 FINAL CLEAN - TABS + BIRU + POPUP =====
+var currentActiveTab = 'dashboard';
+
+function switchTab(tabName){
+  if(tabName==='tambah'){ if(typeof openTambahModal==='function') openTambahModal(); return; }
+  if(currentActiveTab===tabName){
+    window.scrollTo(0,0);
+    document.documentElement.scrollTop=0;
+    return;
+  }
+  document.querySelectorAll('.tab-content').forEach(function(el){
+    el.classList.remove('active');
+    el.style.display='none';
+  });
+  var target=document.getElementById('tab-'+tabName);
+  if(target){
+    target.style.display='block';
+    target.classList.add('active');
+  }
+  currentActiveTab=tabName;
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){
+    b.classList.remove('active');
+    if(b.dataset.tab===tabName) b.classList.add('active');
+  });
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  if(tabName==='laporan'){ setTimeout(function(){ if(typeof updateLaporanUI==='function') updateLaporanUI(); }, 50); }
+  if(tabName==='dashboard'){ setTimeout(function(){ if(typeof updateDashboardDiagram==='function') updateDashboardDiagram(); }, 50); }
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+}
+window.switchTab = switchTab;
+
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', '2px');
+  document.documentElement.style.setProperty('--glass-saturate', '1.05');
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  document.documentElement.style.setProperty('--glass-blur', '2px');
+}
+
+function getTipeStyle(tipe){
+  if(tipe==='pengembalian'){
+    return { bg: 'pengembalian', badgeClass: 'badge-pengembalian', titleClass: 'text-blue-700', amountClass: 'text-blue-600', sign: '+ Rp ', label: 'PENGEMBALIAN', icon: 'fa-rotate-left', color: '#2563eb' };
+  } else if(tipe==='pengeluaran'){
+    return { bg: 'bg-rose-50/70 border-rose-100', badgeClass: 'badge-pengeluaran', titleClass: 'text-rose-700', amountClass: 'text-rose-600', sign: '- Rp ', label: 'PENGELUARAN', icon: 'fa-arrow-down', color: '#f43f5e' };
+  } else {
+    return { bg: 'bg-emerald-50/70 border-emerald-100', badgeClass: 'badge-pemasukan', titleClass: 'text-emerald-700', amountClass: 'text-emerald-600', sign: '+ Rp ', label: 'PEMASUKAN', icon: 'fa-arrow-up', color: '#10b981' };
+  }
+}
+
+window.updateUI = function(){
+  if(typeof transactions==='undefined') return;
+  var sb=document.getElementById('filterBulan'), st=document.getElementById('filterTahun');
+  var b=sb?sb.value:'all', t=st?st.value:'all';
+  var listEl=document.getElementById('transactionList');
+  if(!listEl) listEl=document.getElementById('riwayatList');
+  if(!listEl) return;
+  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (b==='all'||p[1]===b)&&(t==='all'||p[0]===t); });
+  listEl.innerHTML='';
+  if(filt.length===0){
+    listEl.innerHTML='<p class="text-sm text-slate-500 text-center py-8">Belum ada transaksi</p>';
+  } else {
+    filt.slice().reverse().forEach(function(it){
+      var div=document.createElement('div');
+      var badgeClass, titleClass, amountClass, sign, badgeLabel, extra='';
+      if(it.tipe==='pengembalian'){
+        div.className='riwayat-item-presisi pengembalian';
+        div.setAttribute('data-tipe','pengembalian');
+        badgeClass='badge-pengembalian';
+        titleClass='text-blue-700';
+        amountClass='text-blue-600';
+        sign='+ Rp ';
+        badgeLabel='KEMBALI';
+        extra=' <span class="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded ml-1 font-bold">BIRU</span>';
+      } else if(it.tipe==='pemasukan'){
+        div.className='riwayat-item-presisi bg-emerald-50/70 border-emerald-100';
+        badgeClass='badge-pemasukan';
+        titleClass='text-emerald-700';
+        amountClass='text-emerald-600';
+        sign='+ Rp ';
+        badgeLabel=it.penabung||'HANI';
+      } else {
+        div.className='riwayat-item-presisi bg-rose-50/70 border-rose-100';
+        badgeClass='badge-pengeluaran';
+        titleClass='text-rose-700';
+        amountClass='text-rose-600';
+        sign='- Rp ';
+        badgeLabel=it.penabung||'HANI';
+      }
+      div.onclick=function(){ if(typeof openEditModal==='function') openEditModal(it.id); };
       var clip = it.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
       div.innerHTML='<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+it.ket+extra+' '+clip+'</div><div class="date">'+it.tgl+' | '+it.jam+(it.tipe==='pengembalian'?' • Pinjam dibalikin (BIRU)':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
       listEl.appendChild(div);
     });
   }
-  
   var totalMasuk=0, totalKeluar=0, totalKembali=0;
   transactions.forEach(function(item){
     if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
@@ -3280,7 +3366,6 @@ var _origUpdateUI = window.updateUI;
   try { if(typeof updateDashboardDiagram==='function') updateDashboardDiagram(); } catch(e){}
   try { if(typeof updateLaporanUI==='function') updateLaporanUI(); } catch(e){}
 };
-
 
 function closeSuccessModalAndReload(){
   var sm=document.getElementById('successModal');
@@ -3299,7 +3384,7 @@ function closeSuccessModalAndReload(){
 }
 window.closeSuccessModalAndReload = closeSuccessModalAndReload;
 
-// Ensure DOM ready shows dashboard
+// Ensure dashboard visible on load
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.tab-content').forEach(function(el){
     if(el.id!=='tab-dashboard') el.style.display='none';
@@ -3307,77 +3392,6 @@ document.addEventListener('DOMContentLoaded', function(){
   var dash=document.getElementById('tab-dashboard');
   if(dash){ dash.style.display='block'; dash.classList.add('active'); }
 });
-
-
-window.updateUI = function(){
-  if(typeof transactions==='undefined') return;
-  var sb=document.getElementById('filterBulan'), st=document.getElementById('filterTahun');
-  var b=sb?sb.value:'all', t=st?st.value:'all';
-  var listEl=document.getElementById('transactionList');
-  if(!listEl) listEl=document.getElementById('riwayatList');
-  if(!listEl) return;
-  
-  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (b==='all'||p[1]===b)&&(t==='all'||p[0]===t); });
-  listEl.innerHTML='';
-  
-  if(filt.length===0){
-    listEl.innerHTML='<p class="text-sm text-slate-500 text-center py-8">Belum ada transaksi</p>';
-  } else {
-    filt.slice().reverse().forEach(function(it){
-      var div=document.createElement('div');
-      var badgeClass, titleClass, amountClass, sign, badgeLabel, extra;
-      
-      if(it.tipe==='pengembalian'){
-        // BIRU - beda dari pemasukan hijau & pengeluaran merah
-        div.className='riwayat-item-presisi pengembalian';
-        div.setAttribute('data-tipe','pengembalian');
-        badgeClass='badge-pengembalian';
-        titleClass='text-blue-700';
-        amountClass='text-blue-600';
-        sign='+ Rp ';
-        badgeLabel='KEMBALI';
-        extra=' <span class="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded ml-1">↺ BIRU</span>';
-      } else if(it.tipe==='pemasukan'){
-        div.className='riwayat-item-presisi bg-emerald-50/70 border-emerald-100';
-        badgeClass='badge-pemasukan';
-        titleClass='text-emerald-700';
-        amountClass='text-emerald-600';
-        sign='+ Rp ';
-        badgeLabel=it.penabung||'HANI';
-        extra='';
-      } else {
-        div.className='riwayat-item-presisi bg-rose-50/70 border-rose-100';
-        badgeClass='badge-pengeluaran';
-        titleClass='text-rose-700';
-        amountClass='text-rose-600';
-        sign='- Rp ';
-        badgeLabel=it.penabung||'HANI';
-        extra='';
-      }
-      
-      div.onclick=function(){ openEditModal(it.id); };
-      var clip = it.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
-      div.innerHTML='<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+it.ket+extra+' '+clip+'</div><div class="date">'+it.tgl+' | '+it.jam+(it.tipe==='pengembalian'?' • Pinjam dibalikin (BIRU)':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
-      listEl.appendChild(div);
-    });
-  }
-  
-  var totalMasuk=0, totalKeluar=0, totalKembali=0;
-  transactions.forEach(function(item){
-    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
-    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
-    if (item.tipe === 'pengembalian') totalKembali += item.jumlah;
-  });
-  var net = totalMasuk - totalKeluar + totalKembali;
-  var elSaldo = document.getElementById('totalSaldo');
-  if (elSaldo) elSaldo.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(net);
-  var elIn = document.getElementById('topTotalIn');
-  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk);
-  var elOut = document.getElementById('topTotalOut');
-  if (elOut) elOut.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalKeluar);
-  try { if(typeof updateDashboardDiagram==='function') updateDashboardDiagram(); } catch(e){}
-  try { if(typeof updateLaporanUI==='function') updateLaporanUI(); } catch(e){}
-};
 </script>
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
