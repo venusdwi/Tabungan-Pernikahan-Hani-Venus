@@ -1347,6 +1347,28 @@ body.dark .card-pengembalian{
 body.dark .card-pengembalian p{
   color: #93c5fd!important;
 }
+
+/* ===== FIX PENGEMBALIAN BIRU TUNTAS ===== */
+.riwayat-item-presisi.pengembalian{
+  background: #dbeafe!important; /* blue-100 */
+  background-color: #dbeafe!important;
+  border: 1px solid #93c5fd!important;
+}
+.riwayat-item-presisi.pengembalian .title{
+  color: #1d4ed8!important;
+}
+.riwayat-item-presisi.pengembalian .amount{
+  color: #2563eb!important;
+}
+.riwayat-item-presisi.pengembalian .date{
+  color: #3b82f6!important;
+}
+.badge-pengembalian{
+  background: #bfdbfe!important;
+  color: #1e3a8a!important;
+  border: 1px solid #60a5fa!important;
+  font-weight: 800!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3270,38 +3292,38 @@ document.addEventListener('DOMContentLoaded',function(){
   if(fb) fb.value='all'; if(ft) ft.value='all';
 });
 
-var _origUpdateUI = window.updateUI;
-window.updateUI = function() {
-  var totalMasuk = 0, totalKeluar = 0;
-  var selBulanEl = document.getElementById('filterBulan');
-  var selTahunEl = document.getElementById('filterTahun');
-  if(!selBulanEl || !selTahunEl){ if(_origUpdateUI) try{_origUpdateUI();}catch(e){} return; }
-  var selBulan = selBulanEl.value;
-  var selTahun = selTahunEl.value;
-  var listContainer = document.getElementById('transactionList');
-  if (!listContainer) { if(_origUpdateUI) try{_origUpdateUI();}catch(e){} return; }
-  listContainer.innerHTML = '';
-  if(typeof transactions==='undefined' || !transactions){ listContainer.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Memuat data Firebase...</p>'; return; }
+var _origUpdateUI = window.updateUI
+
+      var clip = it.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
+      var badgeClass = isPengembalian ? 'badge-pengembalian' : (isMasuk ? 'badge-pemasukan' : 'badge-pengeluaran');
+      var titleClass = isPengembalian ? 'text-blue-700' : (isMasuk ? 'text-emerald-700' : 'text-rose-700');
+      var amountClass = isPengembalian ? 'text-blue-600' : (isMasuk ? 'text-emerald-600' : 'text-rose-600');
+      var sign = isKeluar ? '- Rp ' : '+ Rp ';
+      var badgeLabel = isPengembalian ? 'KEMBALI' : (it.penabung||'HANI');
+      var extraIcon = isPengembalian ? '<i class="fa-solid fa-rotate-left text-[10px] ml-1"></i>' : '';
+      div.innerHTML='<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+it.ket+extraIcon+' '+clip+'</div><div class="date">'+it.tgl+' | '+it.jam+(isPengembalian?' • Pinjam dibalikin':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
+      riwayatList.appendChild(div);
+    });
+  }
+  
+  // Update saldo totals
+  var totalMasuk=0, totalKeluar=0, totalKembali=0;
   transactions.forEach(function(item){
     if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
     if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
-    if (item.tipe === 'pengembalian') totalKeluar -= item.jumlah;
+    if (item.tipe === 'pengembalian') totalKembali += item.jumlah;
   });
-  var filtered = transactions.filter(function(item){
-    if (!item.tgl) return true;
-    var parts = item.tgl.split('-');
-    var y = parts[0], mo = parts[1];
-    return (selBulan==='all'||mo===selBulan)&&(selTahun==='all'||y===selTahun);
-  });
-  if (filtered.length === 0) {
-    listContainer.innerHTML = '<p class="text-sm text-slate-500 text-center py-6">Tidak ada transaksi pada periode ini. Coba ganti filter ke Semua Bulan.</p>';
-  } else {
-    filtered.slice().reverse().forEach(function(item){
-      var isMasuk = item.tipe === 'pemasukan' || item.tipe === 'pengembalian';
-      var penabungName = item.penabung || 'HANI';
-      var elem = document.createElement('div');
-      elem.className = 'riwayat-item-presisi '+(isMasuk ? 'bg-emerald-50/70 border-emerald-100' : 'bg-rose-50/70 border-rose-100')+' hover:shadow-md';
-      elem.onclick = function(){ openEditModal(item.id); };
+  var net = totalMasuk - totalKeluar + totalKembali;
+  var elSaldo = document.getElementById('totalSaldo');
+  if (elSaldo) elSaldo.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(net);
+  var elIn = document.getElementById('topTotalIn');
+  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk);
+  var elOut = document.getElementById('topTotalOut');
+  if (elOut) elOut.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalKeluar);
+  try { updateDashboardDiagram(); } catch(e){}
+  try { updateLaporanUI(); } catch(e){}
+};
+
       var clip = item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
       elem.innerHTML = '<span class="badge">'+penabungName+'</span><div class="main"><div class="title '+(isMasuk ? 'text-emerald-700' : 'text-rose-700')+'">'+item.ket+' '+clip+'</div><div class="date">'+item.tgl+' | '+item.jam+'</div></div><div class="side"><div class="amount '+(isMasuk ? 'text-emerald-600' : 'text-rose-600')+'">'+(isMasuk ? '+ Rp ' : '- Rp ')+new Intl.NumberFormat('id-ID').format(item.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
       listContainer.appendChild(elem);
@@ -4044,189 +4066,65 @@ function getTipeStyle(tipe){
 }
 
 // Override updateUI (Riwayat) to use pengembalian color
-var originalUpdateUI = window.updateUI;
+var originalUpdateUI = 
+
 window.updateUI = function(){
   if(typeof transactions==='undefined') return;
   var sb=document.getElementById('filterBulan'), st=document.getElementById('filterTahun');
   var b=sb?sb.value:'all', t=st?st.value:'all';
+  var listEl=document.getElementById('transactionList')||document.getElementById('riwayatList')||document.getElementById('laporanList');
+  // Find correct list for riwayat
+  var riwayatList=document.getElementById('transactionList');
+  if(!riwayatList) riwayatList=document.getElementById('riwayatList');
+  if(!riwayatList) return;
+  
   var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (b==='all'||p[1]===b)&&(t==='all'||p[0]===t); });
-  var listEl=document.getElementById('transactionList')||document.getElementById('riwayatList');
-  if(!listEl) return;
-  listEl.innerHTML='';
-  if(filt.length===0){ listEl.innerHTML='<p class="text-sm text-slate-500 text-center py-8">Belum ada transaksi</p>'; return; }
   
-  // Saldo calculation with pengembalian logic
-  var totalMasuk=0, totalKeluar=0, totalKembali=0;
-  filt.forEach(function(it){
-    if(it.tipe==='pemasukan') totalMasuk+=it.jumlah;
-    if(it.tipe==='pengeluaran') totalKeluar+=it.jumlah;
-    if(it.tipe==='pengembalian') totalKembali+=it.jumlah;
-  });
-  
-  // Render each with correct color
-  filt.slice().reverse().forEach(function(it){
-    var style=getTipeStyle(it.tipe);
-    var isPengembalian=it.tipe==='pengembalian';
-    var div=document.createElement('div');
-    div.className='riwayat-item-presisi '+(isPengembalian?'pengembalian':style.bg);
-    div.onclick=function(){ openEditModal(it.id); };
-    var sign = isPengembalian ? '+ Rp ' : (it.tipe==='pemasukan'?'+ Rp ':'- Rp ');
-    var badgeLabel = isPengembalian ? 'KEMBALI' : (it.penabung||'HANI');
-    div.innerHTML='<span class="badge '+style.badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+style.titleClass+'">'+it.ket+' '+(it.tipe==='pengembalian'?'<i class="fa-solid fa-rotate-left text-[10px] ml-1"></i>':'')+'</div><div class="date">'+it.tgl+' | '+it.jam+' • '+(isPengembalian?'Pinjam dibalikin':'')+'</div></div><div class="side"><div class="amount '+style.amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
-    listEl.appendChild(div);
-  });
-  
-  // Update dashboard saldo if exists
-  if(typeof updateDashboardStats==='function') updateDashboardStats(filt);
-};
-
-// Enhanced Laporan with pengembalian separate
-window.updateLaporanUI = function(){
-  if(typeof transactions==='undefined' || !transactions) return;
-  var sbEl=document.getElementById('filterBulanLaporan'); var stEl=document.getElementById('filterTahunLaporan');
-  if(!sbEl || !stEl) return;
-  var sb=sbEl.value, st=stEl.value;
-  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (sb==='all'||p[1]===sb)&&(st==='all'||p[0]===st); });
-  
-  var m=0,k=0,km=0, mc=0,kc=0,kmc=0;
-  var h=0,v=0,b=0;
-  var topKeluar=[];
-  filt.forEach(function(it){
-    if(it.tipe==='pemasukan'){ m+=it.jumlah; mc++; 
-      var pn=(it.penabung||'').toUpperCase();
-      if(pn.indexOf('HANI')>-1 && pn.indexOf('BERSAMA')===-1) h+=it.jumlah;
-      else if(pn.indexOf('VENUS')>-1 && pn.indexOf('BERSAMA')===-1) v+=it.jumlah;
-      else b+=it.jumlah;
-    }
-    if(it.tipe==='pengeluaran'){ k+=it.jumlah; kc++; topKeluar.push(it); }
-    if(it.tipe==='pengembalian'){ km+=it.jumlah; kmc++; }
-  });
-  var s=m - k + km; // Saldo = Masuk - Keluar + Kembali
-  
-  function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
-  function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
-  
-  el('laporanSaldo',fmt(s));
-  el('laporanMasuk',fmt(m));
-  el('laporanKeluar',fmt(k));
-  el('laporanMasukCount',mc+' pemasukan');
-  el('laporanKeluarCount',kc+' pengeluaran');
-  var totalEl=document.getElementById('laporanTotalTransaksi'); if(totalEl) totalEl.innerText=filt.length+' item ('+kmc+' kembali)';
-  
-  // Add pengembalian card if exists
-  var kembaliCard=document.getElementById('laporanKembali');
-  if(kembaliCard){
-    kembaliCard.innerText=fmt(km);
-    document.getElementById('laporanKembaliCount').innerText=kmc+' pengembalian';
-  }
-  
-  var lbl=document.getElementById('laporanPeriodeLabel');
-  if(lbl){ 
-    if(sb==='all'&&st==='all') lbl.innerText='Semua Periode • Masuk '+mc+' • Keluar '+kc+' • Kembali '+kmc; 
-    else { var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; var l=''; if(sb!=='all') l+=bn[parseInt(sb)]+' '; if(st!=='all') l+=st; lbl.innerText=l+' • Kembali: '+fmt(km); } 
-  }
-  
-  // Donut 3 warna: Masuk, Keluar, Kembali
-  if(laporanDonutInstance){
-    var totalMK = m+k+km;
-    var masukPct = totalMK>0 ? Math.round(m/totalMK*100) : 0;
-    var keluarPct = totalMK>0 ? Math.round(k/totalMK*100) : 0;
-    var kembaliPct = totalMK>0 ? Math.round(km/totalMK*100) : 0;
-    laporanDonutInstance.data.labels=['Masuk','Keluar','Kembali'];
-    laporanDonutInstance.data.datasets[0].data=[m||1,k||0.1,km||0.1];
-    laporanDonutInstance.data.datasets[0].backgroundColor=['#3b82f6','#fb7185','#60a5fa'];
-    laporanDonutInstance.update();
-    el('laporanChartMasukPct',masukPct+'%');
-    el('laporanChartKeluarPct',keluarPct+'%');
-    var kembaliPctEl=document.getElementById('laporanChartKembaliPct');
-    if(kembaliPctEl) kembaliPctEl.innerText=kembaliPct+'%';
-    el('laporanDonutCenter',kembaliPct+'%');
-    var progBar=document.getElementById('laporanProgressBar');
-    if(progBar){ progBar.style.width=masukPct+'%'; }
-  }
-  
-  // Hani vs Venus tetap
-  var totalHV = h+v+b||1;
-  el('laporanHaniPct',Math.round(h/totalHV*100)+'%');
-  el('laporanVenusPct',Math.round(v/totalHV*100)+'%');
-  el('laporanHaniNominal',fmt(h));
-  el('laporanVenusNominal',fmt(v));
-  var hb=document.getElementById('laporanHaniBar'); if(hb) hb.style.width=(h/totalHV*100)+'%';
-  var vb=document.getElementById('laporanVenusBar'); if(vb) vb.style.width=(v/totalHV*100)+'%';
-  
-  // Bar chart
-  if(laporanBarInstance){
-    var months={};
-    transactions.forEach(function(it){
-      if(!it.tgl) return;
-      var key=it.tgl.slice(0,7);
-      if(!months[key]) months[key]={m:0,k:0,km:0};
-      if(it.tipe==='pemasukan') months[key].m+=it.jumlah;
-      if(it.tipe==='pengeluaran') months[key].k+=it.jumlah;
-      if(it.tipe==='pengembalian') months[key].km+=it.jumlah;
+  riwayatList.innerHTML='';
+  if(filt.length===0){
+    riwayatList.innerHTML='<p class="text-sm text-slate-500 text-center py-8">Belum ada transaksi</p>';
+  } else {
+    filt.slice().reverse().forEach(function(it){
+      var isPengembalian = it.tipe==='pengembalian';
+      var isMasuk = it.tipe==='pemasukan';
+      var isKeluar = it.tipe==='pengeluaran';
+      var div=document.createElement('div');
+      if(isPengembalian){
+        div.className='riwayat-item-presisi pengembalian';
+      } else if(isMasuk){
+        div.className='riwayat-item-presisi bg-emerald-50/70 border-emerald-100';
+      } else {
+        div.className='riwayat-item-presisi bg-rose-50/70 border-rose-100';
+      }
+      div.onclick=function(){ openEditModal(it.id); };
+      var clip = it.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
+      var badgeClass = isPengembalian ? 'badge-pengembalian' : (isMasuk ? 'badge-pemasukan' : 'badge-pengeluaran');
+      var titleClass = isPengembalian ? 'text-blue-700' : (isMasuk ? 'text-emerald-700' : 'text-rose-700');
+      var amountClass = isPengembalian ? 'text-blue-600' : (isMasuk ? 'text-emerald-600' : 'text-rose-600');
+      var sign = isKeluar ? '- Rp ' : '+ Rp ';
+      var badgeLabel = isPengembalian ? 'KEMBALI' : (it.penabung||'HANI');
+      var extraIcon = isPengembalian ? '<i class="fa-solid fa-rotate-left text-[10px] ml-1"></i>' : '';
+      div.innerHTML='<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+it.ket+extraIcon+' '+clip+'</div><div class="date">'+it.tgl+' | '+it.jam+(isPengembalian?' • Pinjam dibalikin':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
+      riwayatList.appendChild(div);
     });
-    var sortedKeys=Object.keys(months).sort().slice(-6);
-    var labels=sortedKeys.map(function(k){ var p=k.split('-'); var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return bn[parseInt(p[1])]; });
-    var masukData=sortedKeys.map(function(k){ return months[k].m; });
-    var keluarData=sortedKeys.map(function(k){ return months[k].k; });
-    if(labels.length>0){
-      laporanBarInstance.data.labels=labels;
-      laporanBarInstance.data.datasets[0].data=masukData;
-      laporanBarInstance.data.datasets[1].data=keluarData;
-      laporanBarInstance.update();
-    }
   }
   
-  // Top pengeluaran
-  var topList=document.getElementById('laporanTopList');
-  if(topList){
-    topList.innerHTML='';
-    topKeluar.sort(function(a,b){ return b.jumlah - a.jumlah; });
-    var top3=topKeluar.slice(0,3);
-    if(top3.length===0){
-      topList.innerHTML='<p class="text-[11px] text-slate-500 text-center py-3">Belum ada pengeluaran</p>';
-    } else {
-      top3.forEach(function(it,idx){
-        var d=document.createElement('div');
-        d.className='flex items-center gap-2.5 p-2.5 rounded-xl bg-rose-50/70 border border-rose-100';
-        d.innerHTML='<span class="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">'+(idx+1)+'</span><div class="flex-1 min-w-0"><p class="font-bold text-[11px] text-rose-700 truncate uppercase">'+it.ket+'</p><p class="text-[10px] text-slate-500">'+it.tgl+'</p></div><span class="font-num font-bold text-xs text-rose-600">- Rp '+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</span>';
-        topList.appendChild(d);
-      });
-    }
-  }
-  
-  // Detail list dengan warna beda untuk pengembalian
-  var lc=document.getElementById('laporanList');
-  if(lc){ 
-    lc.innerHTML=''; 
-    if(filt.length===0) lc.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi</p>'; 
-    else filt.slice().reverse().forEach(function(it){ 
-      var style=getTipeStyle(it.tipe);
-      var isKembali=it.tipe==='pengembalian';
-      var d=document.createElement('div'); 
-      d.className='riwayat-item-presisi '+(isKembali?'pengembalian':(it.tipe==='pemasukan'?'bg-emerald-50/70 border-emerald-100':'bg-rose-50/70 border-rose-100')); 
-      d.onclick=function(){ openEditModal(it.id); }; 
-      var sign = isKembali ? '+ Rp ' : (it.tipe==='pemasukan'?'+ Rp ':'- Rp ');
-      d.innerHTML='<span class="badge '+style.badgeClass+'">'+(isKembali?'KEMBALI':it.penabung)+'</span><div class="main"><div class="title '+style.titleClass+'">'+it.ket+' '+(isKembali?'<i class="fa-solid fa-rotate-left ml-1"></i>':'')+'</div><div class="date">'+it.tgl+' | '+it.jam+'</div></div><div class="side"><div class="amount '+style.amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>'; 
-      lc.appendChild(d); 
-    }); 
-  }
-};
-
-// Update dashboard stats to include pengembalian
-window.updateDashboardStats = function(filt){
-  if(!filt) filt=transactions||[];
-  var m=0,k=0,km=0;
-  filt.forEach(function(it){
-    if(it.tipe==='pemasukan') m+=it.jumlah;
-    if(it.tipe==='pengeluaran') k+=it.jumlah;
-    if(it.tipe==='pengembalian') km+=it.jumlah;
+  // Update saldo totals
+  var totalMasuk=0, totalKeluar=0, totalKembali=0;
+  transactions.forEach(function(item){
+    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
+    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+    if (item.tipe === 'pengembalian') totalKembali += item.jumlah;
   });
-  var saldo=m - k + km;
-  // Update dashboard elements if exist
-  var els=document.querySelectorAll('[id*="total"]');
-  // Let original function handle
-  if(typeof originalDashboardStats==='function') originalDashboardStats(filt);
+  var net = totalMasuk - totalKeluar + totalKembali;
+  var elSaldo = document.getElementById('totalSaldo');
+  if (elSaldo) elSaldo.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(net);
+  var elIn = document.getElementById('topTotalIn');
+  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk);
+  var elOut = document.getElementById('topTotalOut');
+  if (elOut) elOut.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalKeluar);
+  try { updateDashboardDiagram(); } catch(e){}
+  try { updateLaporanUI(); } catch(e){}
 };
 </script>
 <!-- Custom Ganti PIN Modal -->
