@@ -815,6 +815,104 @@ body.dark #tambahModalBox{
 }
 body:not(.dark) .glass-box{ color: #0f172a; }
 body.dark .glass-box{ color: #f1f5f9; }
+
+/* ===== V17 INSTANT GLASS NO DELAY + BLUR -50% ===== */
+:root{
+  --box-opacity:0.85;
+  --glass-blur:7px; /* 50% dari 14px */
+  --glass-saturate:1.2;
+}
+
+/* Tab switch INSTANT - tanpa jeda kaca */
+#tabContents{
+  transform: translateZ(0);
+  contain: layout style;
+}
+.tab-content{
+  position:absolute; top:0; left:0; width:100%;
+  opacity:0; transform:translate3d(0,6px,0);
+  pointer-events:none; visibility:hidden;
+  transition: none!important; /* INSTANT NO DELAY */
+  will-change: auto;
+}
+.tab-content.active{
+  position:relative; opacity:1; transform:translate3d(0,0,0);
+  pointer-events:auto; visibility:visible; z-index:2;
+  transition: none!important; /* INSTANT */
+}
+
+/* Glass - INSTANT, no transition, blur -50% */
+.glass-box,
+#topControlsBar > button,
+#topControlsBar > div,
+.bottom-tab-bar,
+#tambahModalBox{
+  transition: none!important;
+  animation: none!important;
+  will-change: auto!important;
+}
+
+.glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  background-color: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border: 1px solid rgba(255,255,255,0.5)!important;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.05), 0 1px 4px rgba(0,0,0,0.02)!important;
+}
+body.dark .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+  background-color: rgba(15,23,42,var(--box-opacity))!important;
+  border-color: rgba(51,65,85,0.32)!important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.22), 0 1px 6px rgba(0,0,0,0.15)!important;
+}
+
+/* Top & Bottom instant */
+#topControlsBar > button,
+#topControlsBar > div{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  transition: none!important;
+}
+body.dark #topControlsBar > button,
+body.dark #topControlsBar > div{
+  background: rgba(30,41,59,var(--box-opacity))!important;
+}
+.bottom-tab-bar{
+  background: rgba(255,255,255, calc(var(--box-opacity)*0.9 + 0.08))!important;
+  backdrop-filter: blur(calc(var(--glass-blur) + 3px)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 3px)) saturate(var(--glass-saturate))!important;
+  transition: none!important;
+}
+body.dark .bottom-tab-bar{
+  background: rgba(15,23,42, calc(var(--box-opacity)*0.9 + 0.08))!important;
+}
+
+/* All pages follow same instant glass */
+#tab-dashboard .glass-box,
+#tab-laporan .glass-box,
+#tab-riwayat .glass-box,
+#tab-setelan .glass-box{
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  transition: none!important;
+}
+body.dark #tab-dashboard .glass-box,
+body.dark #tab-laporan .glass-box,
+body.dark #tab-riwayat .glass-box,
+body.dark #tab-setelan .glass-box{
+  background: rgba(15,23,42,var(--box-opacity))!important;
+}
+
+#tambahModalBox{
+  background: rgba(255,255,255, calc(var(--box-opacity)*0.15 + 0.85))!important;
+  backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(var(--glass-saturate))!important;
+  transition: none!important;
+}
+body.dark #tambahModalBox{
+  background: rgba(15,23,42, calc(var(--box-opacity)*0.15 + 0.85))!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3020,6 +3118,63 @@ window.switchTab = function(tabName){
   if(tabName==='laporan') setTimeout(function(){ updateLaporanUI(); }, 10);
   if(tabName==='dashboard') setTimeout(function(){ updateDashboardDiagram(); }, 10);
   if(tabName==='setelan'){ var cd=document.getElementById('cd-days'), sc=document.getElementById('setelanCountdown'); if(cd&&sc){ var t=new Date("2027-04-03T00:00:00").getTime(), n=new Date().getTime(), d=t-n; if(d>0){ var days=Math.floor(d/(1000*60*60*24)), h=Math.floor((d%(1000*60*60*24))/(1000*60*60)); sc.innerText=days+' hari, '+h+' jam lagi'; } } }
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+};
+
+
+// ===== V17 BLUR -50% + INSTANT NO DELAY =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = (1 - opacity) * 14 + 2; // -50% : 0% = 16px, 100% = 2px
+  var saturate = (1 - opacity) * 0.3 + 1.1;
+  // Instant update no rAF delay
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', saturate);
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  syncOpacitySliders(opacity);
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  var blur = (1 - opacity) * 14 + 2;
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+}
+// INSTANT TAB SWITCH - NO DELAY AT ALL
+window.switchTab = function(tabName){
+  if(tabName==='tambah'){ openTambahModal(); return; }
+  var oldTab = window.currentActiveTab;
+  if(tabName===oldTab){ window.scrollTo({top:0,behavior:'smooth'}); return; }
+  var oldEl=document.getElementById('tab-'+oldTab);
+  var newEl=document.getElementById('tab-'+tabName);
+  // INSTANT - no animation queue
+  if(oldEl){ 
+    oldEl.classList.remove('active'); 
+    oldEl.style.display='none';
+  }
+  if(newEl){ 
+    newEl.style.display='block';
+    newEl.classList.add('active'); 
+    newEl.style.opacity='1';
+    newEl.style.transform='translate3d(0,0,0)';
+  }
+  window.currentActiveTab=tabName;
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){ b.classList.remove('active'); if(b.dataset.tab===tabName) b.classList.add('active'); });
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  // Restore display after instant switch
+  setTimeout(function(){
+    if(oldEl) oldEl.style.display='';
+    if(newEl) newEl.style.display='';
+  },10);
+  if(tabName==='laporan') updateLaporanUI();
+  if(tabName==='dashboard') updateDashboardDiagram();
   try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
 };
 </script>
