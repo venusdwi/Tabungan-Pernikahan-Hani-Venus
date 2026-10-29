@@ -538,6 +538,54 @@ body.dark .pin-input:focus{border-color:#38bdf8}
 body.dark .lock-option{background:#0f172a; border-color:#334155; color:#e2e8f0}
 body.dark .lock-option.active{background:rgba(2,132,199,0.15); border-color:#0284c7}
 .lock-option-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0}
+
+/* ===== V14 FINAL GLASS FIX - LIGHT & DARK WORKING ===== */
+:root{ --box-opacity:0.85; --glass-blur:12px; --glass-saturate:1.2; }
+
+/* Light mode glass */
+.glass-box{
+  background-color: rgba(255,255,255,var(--box-opacity))!important;
+  background: rgba(255,255,255,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border: 1px solid rgba(255,255,255,0.5)!important;
+  box-shadow: 0 8px 32px rgba(2,132,199,0.12), 0 2px 8px rgba(0,0,0,0.04)!important;
+}
+
+/* Dark mode glass */
+body.dark .glass-box{
+  background-color: rgba(15,23,42,var(--box-opacity))!important;
+  background: rgba(15,23,42,var(--box-opacity))!important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
+  border-color: rgba(51,65,85,0.4)!important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 2px 12px rgba(0,0,0,0.2)!important;
+}
+
+/* Inner cards inside glass-box should be slightly more opaque to keep readability */
+.glass-box .bg-slate-50,
+.glass-box .bg-slate-100{
+  background: rgba(248,250,252,0.85)!important;
+}
+body.dark .glass-box .bg-slate-50,
+body.dark .glass-box .bg-slate-100{
+  background: rgba(30,41,59,0.75)!important;
+}
+
+/* Ensure all inner white boxes follow glass opacity for light mode */
+body:not(.dark) .glass-box [class*="bg-white"]{
+  background: rgba(255,255,255, calc(var(--box-opacity)*0.9 + 0.1))!important;
+}
+
+/* Fix for Setelan cards - keep them readable even at 0% */
+#tab-setelan .glass-box{
+  background-color: rgba(255,255,255, calc(var(--box-opacity)*0.8 + 0.15))!important;
+  background: rgba(255,255,255, calc(var(--box-opacity)*0.8 + 0.15))!important;
+}
+body.dark #tab-setelan .glass-box{
+  background-color: rgba(15,23,42, calc(var(--box-opacity)*0.8 + 0.15))!important;
+  background: rgba(15,23,42, calc(var(--box-opacity)*0.8 + 0.15))!important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -2689,7 +2737,6 @@ document.addEventListener('DOMContentLoaded', function(){ resetAutoLockTimer(); 
 document.getElementById('gantiPinModal').addEventListener('click', function(e){ if(e.target===this) closeGantiPinModal(); });
 document.getElementById('kunciAplikasiModal').addEventListener('click', function(e){ if(e.target===this) closeKunciModal(); });
 </script>
-
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
 <div class="custom-themed-modal-box">
