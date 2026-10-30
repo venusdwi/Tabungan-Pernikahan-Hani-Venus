@@ -1397,7 +1397,16 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW skip'); });
 }
 </script>
-</head>
+
+<!-- PWA - Installable Android & iOS - MINIMAL NO BREAK -->
+<meta content="#0f172a" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tabungan Pernikahan" name="apple-mobile-web-app-title"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<link href="https://cdn-icons-png.flaticon.com/512/1087/1087815.png" rel="apple-touch-icon"/>
+<link href="https://cdn-icons-png.flaticon.com/512/1087/1087815.png" rel="icon"/>
+<link href="data:application/json;base64,eyJuYW1lIjogIlRhYnVuZ2FuIFBlcm5pa2FoYW4gSGFuaSAmIFZlbnVzIiwgInNob3J0X25hbWUiOiAiVGFidW5nYW4gUGVybmlrYWhhbiIsICJkZXNjcmlwdGlvbiI6ICJUYWJ1bmdhbiBwZXJuaWthaGFuIEhhbmkgJiBWZW51cyAtIFRhcmdldCAwMyBBcHJpbCAyMDI3IiwgInN0YXJ0X3VybCI6ICIuIiwgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjE3MmEiLCAidGhlbWVfY29sb3IiOiAiIzBmMTcyYSIsICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsICJpY29ucyI6IFt7InNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8xMDg3LzEwODc4MTUucG5nIiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9wbmciLCAicHVycG9zZSI6ICJhbnkgbWFza2FibGUifSwgeyJzcmMiOiAiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMTA4Ny8xMDg3ODE1LnBuZyIsICJzaXplcyI6ICIxOTJ4MTkyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIn1dfQ==" rel="manifest"/></head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
 <!-- OVERLAY LAYAR KUNCI PIN -->
@@ -1606,6 +1615,70 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <div class="grid grid-cols-2 gap-2"><button class="bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs" onclick="openBgPicker()"><i class="fa-solid fa-image mr-1"></i> Ganti BG</button><button class="bg-slate-100 border py-2.5 rounded-xl text-xs font-bold" id="btnResetBgSetelan" onclick="resetBgImage()">Reset BG</button></div>
 </div>
 </div>
+<div class="glass-box rounded-[1.5rem] p-4 sm:p-5 mt-4" id="whatsappNotifBox">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#dcfce7; color:#16a34a;">
+<i class="fa-brands fa-whatsapp text-xl"></i>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-sm">Notifikasi WhatsApp</h3>
+<p class="text-[11px] opacity-70">Auto-kirim ke pasangan / grup</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" id="waNotifToggle" onchange="toggleWANotif(this.checked)" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+</label>
+</div>
+<div class="space-y-3 mt-3" id="waNotifSettings">
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2.5 rounded-xl text-xs font-bold border-2" id="waModePasangan" onclick="setWAMode('pasangan')" style="background:#dbeafe; border-color:#2563eb; color:#2563eb;">👫 Pasangan</button>
+<button class="py-2.5 rounded-xl text-xs font-bold border" id="waModeGrup" onclick="setWAMode('grup')" style="background:white; border-color:#e2e8f0; color:#64748b;">👥 Grup WA</button>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded-xl" style="background:#f8fafc; border:1px solid #e2e8f0;">
+<div><p class="text-xs font-bold">⚡ Auto-kirim</p><p class="text-[10px] opacity-60">Buka WA otomatis setelah transaksi</p></div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" id="waAutoToggle" onchange="toggleWAAuto(this.checked)" type="checkbox"/>
+<div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+</label>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="waPasanganInputs">
+<div><label class="text-[11px] font-bold mb-1.5 block">No. WA HANI</label><div class="flex gap-2"><span class="px-3 py-2.5 rounded-xl bg-slate-100 border text-xs font-bold">+62</span><input class="flex-1 px-3 py-2.5 rounded-xl text-sm border" id="waNumberHani" oninput="saveWANumbers()" placeholder="812xxx" type="tel"/></div></div>
+<div><label class="text-[11px] font-bold mb-1.5 block">No. WA VENUS</label><div class="flex gap-2"><span class="px-3 py-2.5 rounded-xl bg-slate-100 border text-xs font-bold">+62</span><input class="flex-1 px-3 py-2.5 rounded-xl text-sm border" id="waNumberVenus" oninput="saveWANumbers()" placeholder="812xxx" type="tel"/></div></div>
+</div>
+<div class="hidden space-y-2" id="waGrupInputs">
+<div class="p-2.5 rounded-xl text-[11px]" style="background:#fefce8; border:1px solid #fde68a; color:#92400e;">⚠️ WA tidak izinkan kirim auto ke grup dari web. Solusi: App buka WA dengan pesan jadi, kamu tinggal pilih grup <b>Hani &amp; Venus</b> → Send (1 tap). Auto-kirim akan buka WA otomatis.</div>
+<input class="w-full px-3 py-2.5 rounded-xl text-sm border" id="waGroupLink" oninput="saveWANumbers()" placeholder="Link Grup WA (opsional) https://chat.whatsapp.com/..." type="text"/>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2.5 rounded-xl text-[11px] font-bold" onclick="testWANotif('HANI')" style="background:#fce7f3; color:#db2777; border:1px solid #f9a8d4;">Test HANI</button>
+<button class="py-2.5 rounded-xl text-[11px] font-bold" onclick="testWANotif('VENUS')" style="background:#dbeafe; color:#2563eb; border:1px solid #93c5fd;">Test VENUS</button>
+<button class="py-2.5 rounded-xl text-[11px] font-bold" onclick="testWANotif('GRUP')" style="background:#dcfce7; color:#16a34a; border:1px solid #86efac;">Test GRUP</button>
+</div>
+</div>
+</div>
+<div class="glass-box rounded-[1.5rem] p-4 mt-4" id="pwaInstallBox">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#e0e7ff; color:#4f46e5;">
+<i class="fa-solid fa-mobile-screen"></i>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-sm">Install Aplikasi</h3>
+<p class="text-[11px] opacity-70">Pasang di HP biar kayak app beneran</p>
+</div>
+<button class="px-4 py-2 rounded-xl text-xs font-bold text-white hidden" id="pwaInstallBtn" onclick="installPWA()" style="background:#4f46e5;">
+<i class="fa-solid fa-download"></i> Install
+        </button>
+<button class="px-4 py-2 rounded-xl text-xs font-bold border" onclick="installPWA()" style="background:white; border-color:#e2e8f0;">
+          Cara Install
+        </button>
+</div>
+<div class="mt-3 p-2.5 rounded-xl text-[11px]" style="background:#f5f3ff; border:1px solid #ddd6fe; color:#5b21b6;">
+<b>Android:</b> Chrome → titik 3 → Add to Home screen<br/>
+<b>iPhone:</b> Safari → Share → Add to Home Screen<br/>
+        Nanti icon Tabungan Pernikahan muncul di HP, buka fullscreen tanpa bar browser!
+      </div>
+</div>
+
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
 <div class="space-y-3">
@@ -1765,6 +1838,10 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Transaksi berhasil disimpan &amp; tersinkronisasi ke Cloud Firestore.</p>
 <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer" onclick="closeSuccessModalAndReload()" style="background:#2563eb; box-shadow:0 8px 20px rgba(37,99,235,0.3); width:100%; color:white; font-weight:500; padding:12px 16px; border-radius:12px;">
                 Oke, Mengerti
+            </button>
+<div class="hidden mt-3 p-2.5 rounded-xl text-[11px] text-center" id="waNotifInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
+<button class="hidden w-full mt-2.5 py-3 px-4 rounded-xl text-white font-bold text-[13px] shadow-lg flex items-center justify-center gap-2" id="btnSendWA" style="background:#25D366;">
+<i class="fa-brands fa-whatsapp text-lg"></i> Kirim ke WhatsApp
             </button>
 </div>
 </div>
@@ -2961,6 +3038,8 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 
             setTimeout(() => {
                 db.collection("transactions").add(newItem).then(() => {
+                    try{ var waTx = {penabung: newItem.penabung, jenis: newItem.tipe, kategori: newItem.ket, nominal: newItem.jumlah}; if(typeof sendWhatsAppNotif==='function') sendWhatsAppNotif(waTx); }catch(e){}
+
                     document.getElementById('tipeTransaksi').value = '';
                     const btnTipe = document.getElementById('textTipeTransaksi');
                     btnTipe.innerText = '-- Pilih Tipe Transaksi --';
@@ -4135,5 +4214,252 @@ window.switchTab = switchTab;
 </div>
 </div>
 </div>
+<script>
+function loadWANumbers(){
+  try{
+    var hani = localStorage.getItem('waNumberHani') || '';
+    var venus = localStorage.getItem('waNumberVenus') || '';
+    var groupLink = localStorage.getItem('waGroupLink') || '';
+    var enabled = localStorage.getItem('waNotifEnabled') === 'true';
+    var autoEnabled = localStorage.getItem('waAutoEnabled') === 'true';
+    var mode = localStorage.getItem('waMode') || 'pasangan';
+    var haniInput = document.getElementById('waNumberHani');
+    var venusInput = document.getElementById('waNumberVenus');
+    var groupInput = document.getElementById('waGroupLink');
+    var toggle = document.getElementById('waNotifToggle');
+    var autoToggle = document.getElementById('waAutoToggle');
+    if(haniInput) haniInput.value = hani;
+    if(venusInput) venusInput.value = venus;
+    if(groupInput) groupInput.value = groupLink;
+    if(toggle) toggle.checked = enabled;
+    if(autoToggle) autoToggle.checked = autoEnabled;
+    setWAMode(mode, true);
+    var settings = document.getElementById('waNotifSettings');
+    if(settings){
+      settings.style.opacity = enabled ? '1' : '0.5';
+      settings.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+  }catch(e){}
+}
+function setWAMode(mode, isInit){
+  try{
+    localStorage.setItem('waMode', mode);
+    var btnPasangan = document.getElementById('waModePasangan');
+    var btnGrup = document.getElementById('waModeGrup');
+    var pasanganInputs = document.getElementById('waPasanganInputs');
+    var grupInputs = document.getElementById('waGrupInputs');
+    if(mode === 'grup'){
+      if(btnGrup){ btnGrup.style.background = '#dcfce7'; btnGrup.style.borderColor = '#16a34a'; btnGrup.style.color = '#16a34a'; }
+      if(btnPasangan){ btnPasangan.style.background = 'white'; btnPasangan.style.borderColor = '#e2e8f0'; btnPasangan.style.color = '#64748b'; }
+      if(pasanganInputs) pasanganInputs.classList.add('hidden');
+      if(grupInputs) grupInputs.classList.remove('hidden');
+    } else {
+      if(btnPasangan){ btnPasangan.style.background = '#dbeafe'; btnPasangan.style.borderColor = '#2563eb'; btnPasangan.style.color = '#2563eb'; }
+      if(btnGrup){ btnGrup.style.background = 'white'; btnGrup.style.borderColor = '#e2e8f0'; btnGrup.style.color = '#64748b'; }
+      if(grupInputs) grupInputs.classList.add('hidden');
+      if(pasanganInputs) pasanganInputs.classList.remove('hidden');
+    }
+    if(!isInit) saveWANumbers();
+  }catch(e){}
+}
+function toggleWANotif(enabled){
+  try{
+    localStorage.setItem('waNotifEnabled', enabled ? 'true' : 'false');
+    var settings = document.getElementById('waNotifSettings');
+    if(settings){
+      settings.style.opacity = enabled ? '1' : '0.5';
+      settings.style.pointerEvents = enabled ? 'auto' : 'none';
+    }
+    if(enabled && 'Notification' in window && Notification.permission === 'default'){
+      Notification.requestPermission();
+    }
+  }catch(e){}
+}
+function toggleWAAuto(enabled){
+  try{ localStorage.setItem('waAutoEnabled', enabled ? 'true' : 'false'); }catch(e){}
+}
+function saveWANumbers(){
+  try{
+    var haniEl = document.getElementById('waNumberHani');
+    var venusEl = document.getElementById('waNumberVenus');
+    var groupEl = document.getElementById('waGroupLink');
+    var hani = haniEl ? haniEl.value.trim().replace(/[^0-9]/g,'').replace(/^0+/, '') : '';
+    var venus = venusEl ? venusEl.value.trim().replace(/[^0-9]/g,'').replace(/^0+/, '') : '';
+    var groupLink = groupEl ? groupEl.value.trim() : '';
+    localStorage.setItem('waNumberHani', hani);
+    localStorage.setItem('waNumberVenus', venus);
+    localStorage.setItem('waGroupLink', groupLink);
+  }catch(e){}
+}
+function formatRupiah(num){
+  return 'Rp ' + (num||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+function sendWhatsAppNotif(transaction){
+  try{
+    var enabled = localStorage.getItem('waNotifEnabled') === 'true';
+    if(!enabled) return;
+    var mode = localStorage.getItem('waMode') || 'pasangan';
+    var haniNum = localStorage.getItem('waNumberHani') || '';
+    var venusNum = localStorage.getItem('waNumberVenus') || '';
+    var groupLink = localStorage.getItem('waGroupLink') || '';
+    var penabung = (transaction.penabung || 'HANI').toUpperCase();
+    var jenis = (transaction.jenis || transaction.tipe || 'pemasukan').toLowerCase();
+    var kategori = transaction.kategori || transaction.ket || '-';
+    var nominal = transaction.nominal || transaction.jumlah || 0;
+    var saldoEl = document.getElementById('totalSaldo');
+    var saldoText = saldoEl ? saldoEl.innerText : '';
+    var emoji = jenis === 'pemasukan' ? '💰' : (jenis === 'pengembalian' ? '↩️' : '💸');
+    var jenisText = jenis === 'pemasukan' ? 'PEMASUKAN' : (jenis === 'pengembalian' ? 'PENGEMBALIAN DANA' : 'PENGELUARAN');
+    var warnaEmoji = jenis === 'pemasukan' ? '🟢' : (jenis === 'pengembalian' ? '🔵' : '🔴');
+    var message = '*' + emoji + ' TABUNGAN PERNIKAHAN*\n';
+    message += '*' + warnaEmoji + ' ' + jenisText + ' BARU*\n\n';
+    message += '👤 *' + penabung + '* baru saja menambahkan:\n';
+    message += '📂 Kategori: ' + kategori + '\n';
+    message += '💵 Nominal: ' + formatRupiah(nominal) + '\n\n';
+    message += '💎 *Total Saldo:* ' + (saldoText || 'Lihat di aplikasi') + '\n';
+    message += '🎯 Target Nikah: 03 April 2027\n\n';
+    message += '_Dikirim otomatis dari aplikasi Tabungan Pernikahan Hani & Venus_\nCek: https://venusidwi.github.io/Tabungan-Hani-Venus/_';
+    window.lastWAMessage = message;
+    var targetNum = '';
+    var targetName = '';
+    var isGroup = false;
+    if(mode === 'grup'){
+      isGroup = true;
+      targetName = 'GRUP';
+    } else {
+      if(penabung === 'HANI'){ targetNum = venusNum; targetName = 'VENUS'; }
+      else { targetNum = haniNum; targetName = 'HANI'; }
+      if(!targetNum) targetNum = haniNum || venusNum;
+    }
+    window.lastWATarget = targetNum;
+    window.lastWATargetName = targetName;
+    var waBtn = document.getElementById('btnSendWA');
+    var waInfo = document.getElementById('waNotifInfo');
+    if(waBtn){
+      waBtn.classList.remove('hidden');
+      if(isGroup){
+        waBtn.innerHTML = '<i class="fa-brands fa-whatsapp text-lg"></i> Kirim ke Grup WhatsApp';
+        waBtn.onclick = function(){ openWhatsAppGroup(message, groupLink); };
+      } else {
+        waBtn.innerHTML = '<i class="fa-brands fa-whatsapp text-lg"></i> Kirim ke WhatsApp ' + targetName;
+        waBtn.onclick = function(){ openWhatsApp(targetNum, message); };
+      }
+    }
+    if(waInfo){
+      waInfo.classList.remove('hidden');
+      waInfo.innerText = isGroup ? 'Siap kirim ke Grup WhatsApp' : 'Akan dikirim ke ' + targetName;
+    }
+    // App notification
+    if(typeof showAppNotification === 'function'){
+      showAppNotification(jenisText + ' Baru dari ' + penabung, kategori + ' - ' + formatRupiah(nominal), 'success');
+    }
+    var autoEnabled = localStorage.getItem('waAutoEnabled') === 'true';
+    if(autoEnabled){
+      setTimeout(function(){
+        if(isGroup) openWhatsAppGroup(message, groupLink);
+        else if(targetNum) openWhatsApp(targetNum, message);
+        else openWhatsAppGroup(message, groupLink);
+      }, 1800);
+    }
+  }catch(e){ console.log('WA error', e); }
+}
+function openWhatsAppGroup(message, groupLink){
+  try{
+    var url = 'https://wa.me/?text=' + encodeURIComponent(message);
+    window.open(url, '_blank');
+  }catch(e){ alert('Gagal buka WA: ' + e.message); }
+}
+function openWhatsApp(number, message){
+  try{
+    if(!number){ openWhatsAppGroup(message, ''); return; }
+    var cleanNum = number.replace(/[^0-9]/g,'');
+    if(cleanNum.startsWith('0')) cleanNum = cleanNum.substring(1);
+    if(cleanNum.indexOf('62') !== 0) cleanNum = '62' + cleanNum;
+    var url = 'https://wa.me/' + cleanNum + '?text=' + encodeURIComponent(message);
+    window.open(url, '_blank');
+  }catch(e){ alert('Gagal buka WA: ' + e.message); }
+}
+function testWANotif(target){
+  var haniNum = localStorage.getItem('waNumberHani') || '';
+  var venusNum = localStorage.getItem('waNumberVenus') || '';
+  var groupLink = localStorage.getItem('waGroupLink') || '';
+  if(target === 'GRUP'){
+    var testMsgGrup = '*💚 TEST GRUP - TABUNGAN PERNIKAHAN*\n\nHalo Hani & Venus! 👋\nTest notifikasi grup berhasil! ✅\nSaldo cek di aplikasi.';
+    openWhatsAppGroup(testMsgGrup, groupLink);
+    return;
+  }
+  var num = target === 'HANI' ? haniNum : venusNum;
+  if(!num){ alert('Isi dulu nomor WA ' + target); return; }
+  var testMsg = '*💚 TEST - TABUNGAN PERNIKAHAN*\n\nHalo ' + target + '! 👋\nTest notifikasi berhasil! ✅';
+  openWhatsApp(num, testMsg);
+}
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadWANumbers, 800); });
+</script>
+
+<script>
+// PWA - Installable - MINIMAL, tidak sentuh fungsi lain
+(function(){
+  // Service Worker minimal - hanya cache shell, tidak ganggu Firebase
+  if('serviceWorker' in navigator){
+    // Create minimal SW as blob
+    var swCode = `
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => self.clients.claim());
+      // Jangan intercept Firebase / Firestore
+      self.addEventListener('fetch', e => {
+        if(e.request.url.includes('firestore') || e.request.url.includes('firebase') || e.request.url.includes('googleapis')){
+          return; // Biarkan lewat, jangan cache
+        }
+        // Untuk file lain, network first
+        e.respondWith(fetch(e.request).catch(()=> caches.match(e.request)));
+      });
+    `;
+    var blob = new Blob([swCode], {type: 'application/javascript'});
+    var swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).then(function(reg){
+      console.log('PWA SW registered', reg.scope);
+    }).catch(function(err){
+      console.log('PWA SW fail', err);
+    });
+  }
+
+  // Install prompt
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    // Show custom install button if exists
+    var installBtn = document.getElementById('pwaInstallBtn');
+    if(installBtn) installBtn.classList.remove('hidden');
+    console.log('PWA install prompt ready');
+  });
+
+  window.installPWA = function(){
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function(choice){
+        console.log('PWA install', choice.outcome);
+        deferredPrompt = null;
+      });
+    } else {
+      // iOS instruction
+      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if(isIOS){
+        alert('iPhone: Tap tombol Share (kotak panah atas) di Safari → Add to Home Screen → Add');
+      } else {
+        alert('Chrome: Tap titik 3 kanan atas → Add to Home screen / Install app');
+      }
+    }
+  };
+
+  // Detect if already installed
+  window.addEventListener('appinstalled', function(){
+    console.log('PWA installed');
+    if(typeof showAppNotification === 'function'){
+      showAppNotification('App Ter-install!', 'Tabungan Pernikahan sudah di Home Screen', 'success');
+    }
+  });
+})();
+</script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
