@@ -3013,29 +3013,38 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             try{
               if(!file){ resolve(""); return; }
               if(typeof firebase.storage === 'undefined'){
+                console.log('Storage not loaded, skip upload');
                 resolve(""); return;
               }
+              
+              // Timeout 15 detik - kalo lama, skip bukti
+              var timeoutId = setTimeout(function(){
+                console.log('Upload timeout, skip bukti');
+                resolve("");
+              }, 15000);
+              
               var storageRef = firebase.storage().ref();
               var fileName = 'bukti/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g,'_');
               var fileRef = storageRef.child(fileName);
-              var btnText = document.getElementById('btnSubmitText');
-              var orig = btnText ? btnText.innerText : '';
-              if(btnText) btnText.innerText = 'Upload bukti...';
+              
+              console.log('Uploading bukti:', fileName);
               
               fileRef.put(file).then(function(snapshot){
+                clearTimeout(timeoutId);
+                console.log('Upload success, getting URL...');
                 return snapshot.ref.getDownloadURL();
               }).then(function(url){
-                if(btnText) btnText.innerText = orig;
-                buktiFotoUrl = url;
                 console.log('Bukti uploaded:', url);
+                buktiFotoUrl = url;
                 resolve(url);
               }).catch(function(e){
-                console.log('Upload error', e);
-                if(btnText) btnText.innerText = orig;
+                clearTimeout(timeoutId);
+                console.log('Upload error, skip bukti:', e.code, e.message);
+                // Jangan block transaksi kalo upload gagal
                 resolve("");
               });
             }catch(e){
-              console.log('Upload error', e);
+              console.log('Upload error, skip:', e);
               resolve("");
             }
           });
@@ -3085,6 +3094,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             }
 
             function doSave(finalUrl){
+                console.log('Saving transaction with bukti:', finalUrl || 'no bukti');
                 var tgl = document.getElementById('tglTransaksi').value;
                 var jam = document.getElementById('jamTransaksi').value;
                 var newItem = {
@@ -3135,6 +3145,8 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
                         showAppNotification('Transaksi Berhasil', newItem.ket + ' - Rp ' + jumlah.toLocaleString('id-ID'), 'success');
                     }
                     
+                }).then(function(){
+                    console.log('Transaction saved successfully');
                 }).catch(function(error){
                     console.error("Error:", error);
                     alert('Gagal simpan: ' + error.message);
