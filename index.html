@@ -1239,161 +1239,47 @@ body.dark .glass-box{
   -webkit-backdrop-filter: blur(3px) saturate(1.05)!important;
 }
 
-/* ===== V27 FINAL FIX - TABS WORKING + PENGEMBALIAN BIRU + SPINNER ===== */
-:root{
-  --box-opacity:0.85;
-  --glass-blur:2px;
-  --glass-saturate:1.05;
-}
+/* ===== V30 FINAL - TABS WORKING FROM V21 + BIRU TEGAS + POPUP FIX ===== */
+#tabContents{ position:relative; }
+.tab-content{ display:none!important; opacity:1!important; transform:none!important; }
+.tab-content.active{ display:block!important; opacity:1!important; transform:none!important; }
 
-/* Tabs instant but working */
-#tabContents{
-  position:relative;
-}
-.tab-content{
-  display:none!important;
-  opacity:1!important;
-  transform:none!important;
-  position:relative!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-}
-.tab-content.active{
-  display:block!important;
-  opacity:1!important;
-  transform:none!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-  z-index:2;
-}
-
-/* Glass 2px */
-.glass-box{
-  background: rgba(255,255,255,var(--box-opacity))!important;
-  background-color: rgba(255,255,255,var(--box-opacity))!important;
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
-  border: 1px solid rgba(255,255,255,0.45)!important;
-  box-shadow: 0 2px 8px rgba(15,23,42,0.04)!important;
-}
-body.dark .glass-box{
-  background: rgba(15,23,42,var(--box-opacity))!important;
-  background-color: rgba(15,23,42,var(--box-opacity))!important;
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))!important;
-  border-color: rgba(51,65,85,0.28)!important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12)!important;
-}
-
-/* Top & Bottom */
-#topControlsBar > button,
-#topControlsBar > div{
-  background: rgba(255,255,255,var(--box-opacity))!important;
-  backdrop-filter: blur(2px) saturate(1.05)!important;
-  -webkit-backdrop-filter: blur(2px) saturate(1.05)!important;
-}
-body.dark #topControlsBar > button,
-body.dark #topControlsBar > div{
-  background: rgba(30,41,59,var(--box-opacity))!important;
-}
-.bottom-tab-bar{
-  background: rgba(255,255,255,0.98)!important;
-  backdrop-filter: blur(3px) saturate(1.05)!important;
-}
-body.dark .bottom-tab-bar{
-  background: rgba(15,23,42,0.98)!important;
-}
-
-/* Spinner fix */
-.fa-spin, .fa-spinner, .animate-spin, #btnSubmitSpinner i{
-  animation: spin 1s linear infinite!important;
-  -webkit-animation: spin 1s linear infinite!important;
-}
-@keyframes spin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-@-webkit-keyframes spin{ from{-webkit-transform:rotate(0deg);} to{-webkit-transform:rotate(360deg);} }
-
-/* Success modal on top */
-#successModal{ z-index: 90!important; }
-#successModalBox{ z-index: 91!important; }
-#tambahModal{ z-index: 60!important; }
-#customSelectModal{ z-index: 70!important; }
-
-/* Pengembalian biru */
+/* Pengembalian BIRU - !important tingkat tinggi */
+#transactionList .riwayat-item-presisi.pengembalian,
+#riwayatList .riwayat-item-presisi.pengembalian,
 .riwayat-item-presisi.pengembalian{
-  background: #dbeafe!important;
-  background-color: #dbeafe!important;
-  border: 1px solid #93c5fd!important;
+  background: #dbeafe !important;
+  background-color: #dbeafe !important;
+  border: 1px solid #93c5fd !important;
+  border-left: 5px solid #2563eb !important;
 }
-.riwayat-item-presisi.pengembalian .title{ color: #1d4ed8!important; }
-.riwayat-item-presisi.pengembalian .amount{ color: #2563eb!important; }
-.riwayat-item-presisi.pengembalian .date{ color: #3b82f6!important; }
-.badge-pengembalian{
-  background: #bfdbfe!important;
-  color: #1e3a8a!important;
-  border: 1px solid #60a5fa!important;
-  font-weight: 800!important;
+body.dark #transactionList .riwayat-item-presisi.pengembalian{
+  background: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+  border-color: #3b82f6 !important;
 }
-.badge-pemasukan{ background: #d1fae5!important; color: #065f46!important; border: 1px solid #a7f3d0!important; }
-.badge-pengeluaran{ background: #ffe4e6!important; color: #9f1239!important; border: 1px solid #fecdd3!important; }
-.card-pengembalian{ background: rgba(219,234,254,0.9)!important; border: 1px solid rgba(147,197,253,0.5)!important; }
-body.dark .card-pengembalian{ background: rgba(30,58,138,0.35)!important; border-color: rgba(59,130,246,0.4)!important; }
-
-/* ===== V29 FIX - TABS WORKING + PENGEMBALIAN BIRU TEGAS + POPUP LIGHT/DARK ===== */
-.riwayat-item-presisi.pengembalian,
-.riwayat-item-presisi[data-tipe="pengembalian"]{
-  background: #dbeafe!important;
-  background-color: #dbeafe!important;
-  border: 1px solid #93c5fd!important;
-  border-left: 5px solid #2563eb!important;
-}
-body.dark .riwayat-item-presisi.pengembalian{
-  background: #1e3a8a!important;
-  background-color: #1e3a8a!important;
-  border-color: #3b82f6!important;
-  border-left-color: #60a5fa!important;
-}
-.riwayat-item-presisi.pengembalian .title{ color: #1e40af!important; font-weight: 800!important; }
-body.dark .riwayat-item-presisi.pengembalian .title{ color: #bfdbfe!important; }
-.riwayat-item-presisi.pengembalian .amount{ color: #1d4ed8!important; font-weight: 800!important; }
-body.dark .riwayat-item-presisi.pengembalian .amount{ color: #93c5fd!important; }
-.riwayat-item-presisi.pengembalian .date{ color: #2563eb!important; }
-body.dark .riwayat-item-presisi.pengembalian .date{ color: #60a5fa!important; }
+.riwayat-item-presisi.pengembalian .title{ color: #1e40af !important; font-weight:800 !important; }
+.riwayat-item-presisi.pengembalian .amount{ color: #1d4ed8 !important; font-weight:800 !important; }
+.riwayat-item-presisi.pengembalian .date{ color: #2563eb !important; }
 
 .badge-pengembalian{
-  background: #2563eb!important;
-  background-color: #2563eb!important;
-  color: white!important;
-  border: 1px solid #1d4ed8!important;
-  font-weight: 900!important;
-  font-size: 10px!important;
-  letter-spacing: 0.5px!important;
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+  color: white !important;
+  border: 1px solid #1d4ed8 !important;
+  font-weight: 900 !important;
 }
-.badge-pemasukan{ background: #10b981!important; color: white!important; border: 1px solid #059669!important; }
-.badge-pengeluaran{ background: #f43f5e!important; color: white!important; border: 1px solid #e11d48!important; }
+.badge-pemasukan{ background: #10b981 !important; color: white !important; }
+.badge-pengeluaran{ background: #f43f5e !important; color: white !important; }
 
-/* Popup light/dark fix */
-#successModal{ z-index: 90!important; background: rgba(15,23,42,0.5)!important; backdrop-filter: blur(8px)!important; }
-#successModalBox{ z-index: 91!important; }
-#successModalBox{
-  background: white!important;
-  background-color: white!important;
-  border: 1px solid #e2e8f0!important;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2)!important;
-}
-body.dark #successModalBox{
-  background: #1e293b!important;
-  background-color: #1e293b!important;
-  border-color: #334155!important;
-}
-#successModalBox h3{ color: #0f172a!important; }
-body.dark #successModalBox h3{ color: white!important; }
-#successModalBox p{ color: #64748b!important; }
-body.dark #successModalBox p{ color: #94a3b8!important; }
-
-/* Ensure tabs work - override any display:none */
-.tab-content.active{ display:block!important; opacity:1!important; visibility:visible!important; pointer-events:auto!important; }
-.tab-content{ display:none!important; }
-.tab-content.active{ display:block!important; }
+/* Popup fix light/dark */
+#successModal{ z-index:90 !important; background: rgba(15,23,42,0.5) !important; backdrop-filter: blur(8px) !important; }
+#successModalBox{ z-index:91 !important; background:white !important; background-color:white !important; border:1px solid #e2e8f0 !important; }
+body.dark #successModalBox{ background:#1e293b !important; background-color:#1e293b !important; border-color:#334155 !important; }
+#successModalBox h3{ color:#0f172a !important; }
+body.dark #successModalBox h3{ color:white !important; }
+#successModalBox p{ color:#64748b !important; }
+body.dark #successModalBox p{ color:#94a3b8 !important; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3186,6 +3072,33 @@ document.addEventListener('DOMContentLoaded',function(){ applyDarkMode(); });
 
 
 
+function syncOpacitySliders(v){ var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue'); if(s1) s1.value=v; if(s2) s2.value=v; if(vd) vd.innerText=Math.round(v*100)+'%'; document.documentElement.style.setProperty('--box-opacity',v); try{localStorage.setItem('wedding_box_opacity',v);}catch(e){} }
+function syncLaporanFilter(){ var bL=document.getElementById('filterBulanLaporan').value, tL=document.getElementById('filterTahunLaporan').value, b=document.getElementById('filterBulan'), t=document.getElementById('filterTahun'); if(b) b.value=bL; if(t) t.value=tL; updateUI(); updateLaporanUI(); }
+function resetFilterLaporan(){ document.getElementById('filterBulanLaporan').value='all'; document.getElementById('filterTahunLaporan').value='all'; syncLaporanFilter(); }
+var financeChartInstance=null;
+function initFinanceChart(){ var ctx=document.getElementById('financeDonutChart'); if(!ctx) return; if(financeChartInstance){ try{financeChartInstance.destroy();}catch(e){} } financeChartInstance=new Chart(ctx,{type:'doughnut',data:{labels:['Masuk','Keluar'],datasets:[{data:[1,0.1],backgroundColor:['#0284c7','#fb7185'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,0.9)',padding:10,cornerRadius:10,callbacks:{label:function(c){ return c.label+': Rp '+new Intl.NumberFormat('id-ID').format(c.parsed); } } }},animation:{duration:600}}}); }
+function updateDashboardDiagram(){
+  if(typeof transactions==='undefined' || !transactions) return;
+  var m=0,k=0,h=0,v=0,b=0;
+  transactions.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') k-=it.jumlah; var p=(it.penabung||'').toUpperCase(); if(p.indexOf('HANI')>-1&&p.indexOf('BERSAMA')===-1) h+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('VENUS')>-1&&p.indexOf('BERSAMA')===-1) v+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('BERSAMA')>-1) b+=(it.tipe==='pemasukan'?it.jumlah:0); });
+  var s=m-k, up=m>0?Math.round(k/m*100):0;
+  if(financeChartInstance){ financeChartInstance.data.datasets[0].data=[m||1,k||0.1]; financeChartInstance.update(); }
+  function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
+  function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
+  el('diagramSaldo',fmt(s)); el('diagramMasuk',fmt(m)); el('diagramKeluar',fmt(k)); el('donutCenterSaldo',fmt(s)); el('donutCenterPercent',up+'% terpakai');
+  el('haniContrib',fmt(h)); el('venusContrib',fmt(v)); 
+  var tot=h+v+b||1; el('haniPercent',Math.round(h/tot*100)+'%'); el('venusPercent',Math.round(v/tot*100)+'%');
+  var hb=document.getElementById('haniBar'); if(hb) hb.style.width=(h/tot*100)+'%'; var vb=document.getElementById('venusBar'); if(vb) vb.style.width=(v/tot*100)+'%';
+  var ml=document.getElementById('dashboardMiniList');
+  if(ml){ ml.innerHTML=''; var last3=transactions.slice().reverse().slice(0,3); if(last3.length===0) ml.innerHTML='<p class="text-xs text-slate-500 text-center py-2">Belum ada transaksi</p>'; else last3.forEach(function(it){ var isM=it.tipe==='pemasukan'||it.tipe==='pengembalian'; var d=document.createElement('div'); d.className='flex justify-between items-center p-2.5 rounded-xl bg-white border text-xs'; d.innerHTML='<div><p class="font-bold '+(isM?'text-emerald-700':'text-rose-700')+'">'+(it.ket||it.tipe)+'</p><p class="text-[11px] text-slate-500">'+it.tgl+' • '+(it.penabung||'')+'</p></div><div class="font-num font-bold '+(isM?'text-emerald-600':'text-rose-600')+'">'+(isM?'+':'-')+'Rp '+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div>'; ml.appendChild(d); }); }
+  var cd=document.getElementById('cd-days'); 
+  if(cd){ 
+    var hr=document.getElementById('hariTersisa'); if(hr) hr.innerText=cd.innerText; 
+    var copy=document.getElementById('cd-days-copy'); if(copy) copy.innerText=cd.innerText;
+    var pr=document.getElementById('progressPercent'), br=document.getElementById('progressBar'); 
+    if(pr&&br){ var totD=700, rem=parseInt(cd.innerText)||0, prog=Math.max(5,Math.min(95,100-(rem/totD*100))); pr.innerText=Math.round(prog)+'%'; br.style.width=prog+'%'; } 
+  }
+}
 function updateLaporanUI(){
   if(typeof transactions==='undefined' || !transactions) return;
   var sbEl=document.getElementById('filterBulanLaporan'); var stEl=document.getElementById('filterTahunLaporan');
@@ -3216,62 +3129,596 @@ document.addEventListener('DOMContentLoaded',function(){
 
 var _origUpdateUI = window.updateUI;
 
-
-, 200);
-  }
-  if(typeof closeTambahModal==='function') closeTambahModal();
-  switchTab('riwayat');
-  var btnSubmit=document.getElementById('btnSubmit');
-  var btnText=document.getElementById('btnSubmitText');
-  var btnSpinner=document.getElementById('btnSubmitSpinner');
-  if(btnSubmit) btnSubmit.disabled=false;
-  if(btnText) btnText.classList.remove('hidden');
-  if(btnSpinner) btnSpinner.classList.add('hidden');
-}
-
-
-// Ensure DOM ready shows dashboard
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.tab-content').forEach(function(el){
-    if(el.id!=='tab-dashboard') el.style.display='none';
+window.updateUI = function() {
+  var totalMasuk = 0, totalKeluar = 0, totalKembali = 0;
+  var selBulanEl = document.getElementById('filterBulan');
+  var selTahunEl = document.getElementById('filterTahun');
+  if(!selBulanEl || !selTahunEl){ return; }
+  var selBulan = selBulanEl.value;
+  var selTahun = selTahunEl.value;
+  var listContainer = document.getElementById('transactionList');
+  if (!listContainer) { return; }
+  listContainer.innerHTML = '';
+  if(typeof transactions==='undefined' || !transactions){ listContainer.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Memuat data Firebase...</p>'; return; }
+  transactions.forEach(function(item){
+    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
+    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
+    if (item.tipe === 'pengembalian') totalKembali += item.jumlah;
   });
-  var dash=document.getElementById('tab-dashboard');
-  if(dash){ dash.style.display='block'; dash.classList.add('active'); }
+  var filtered = transactions.filter(function(item){
+    if (!item.tgl) return true;
+    var parts = item.tgl.split('-');
+    var y = parts[0], mo = parts[1];
+    return (selBulan==='all'||mo===selBulan)&&(selTahun==='all'||y===selTahun);
+  });
+  if (filtered.length === 0) {
+    listContainer.innerHTML = '<p class="text-sm text-slate-500 text-center py-6">Tidak ada transaksi pada periode ini.</p>';
+  } else {
+    filtered.slice().reverse().forEach(function(item){
+      var div = document.createElement('div');
+      var badgeClass, titleClass, amountClass, sign, badgeLabel, extra = '';
+      if(item.tipe === 'pengembalian'){
+        div.className = 'riwayat-item-presisi pengembalian';
+        div.setAttribute('data-tipe','pengembalian');
+        badgeClass = 'badge-pengembalian';
+        titleClass = 'text-blue-700';
+        amountClass = 'text-blue-600';
+        sign = '+ Rp ';
+        badgeLabel = 'KEMBALI';
+        extra = ' <span class="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded ml-1 font-bold">BIRU</span>';
+      } else if(item.tipe === 'pemasukan'){
+        div.className = 'riwayat-item-presisi bg-emerald-50/70 border-emerald-100';
+        badgeClass = 'badge-pemasukan';
+        titleClass = 'text-emerald-700';
+        amountClass = 'text-emerald-600';
+        sign = '+ Rp ';
+        badgeLabel = item.penabung || 'HANI';
+      } else {
+        div.className = 'riwayat-item-presisi bg-rose-50/70 border-rose-100';
+        badgeClass = 'badge-pengeluaran';
+        titleClass = 'text-rose-700';
+        amountClass = 'text-rose-600';
+        sign = '- Rp ';
+        badgeLabel = item.penabung || 'HANI';
+      }
+      div.onclick = function(){ if(typeof openEditModal==='function') openEditModal(item.id); };
+      var clip = item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
+      div.innerHTML = '<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+item.ket+extra+' '+clip+'</div><div class="date">'+item.tgl+' | '+item.jam+(item.tipe==='pengembalian'?' • Pinjam dibalikin':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(item.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
+      listContainer.appendChild(div);
+    });
+  }
+  var net = totalMasuk - totalKeluar + totalKembali;
+  var elSaldo = document.getElementById('totalSaldo');
+  if (elSaldo) elSaldo.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(net);
+  var elIn = document.getElementById('topTotalIn');
+  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk);
+  var elOut = document.getElementById('topTotalOut');
+  if (elOut) elOut.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalKeluar);
+  try { if(typeof updateDashboardDiagram==='function') updateDashboardDiagram(); } catch(e){}
+  try { if(typeof updateLaporanUI==='function') updateLaporanUI(); } catch(e){}
+};
+
+
+
+function simpanTargetTabungan(){
+  var inp=document.getElementById('targetTabunganInput');
+  if(!inp) return;
+  var val=inp.value.replace(/[^0-9]/g,'');
+  var num=parseInt(val)||0;
+  try{localStorage.setItem('targetTabungan',num);}catch(e){}
+  updateTargetDisplay();
+  alert('Target disimpan: Rp '+new Intl.NumberFormat('id-ID').format(num));
+}
+function updateTargetDisplay(){
+  try{
+    var t=parseInt(localStorage.getItem('targetTabungan')||'20000000');
+    var cur=document.getElementById('currentTargetDisplay');
+    if(cur) cur.innerText='Rp '+new Intl.NumberFormat('id-ID').format(t);
+    if(typeof transactions!=='undefined' && transactions){
+      var total=0; transactions.forEach(function(it){ if(it.tipe==='pemasukan') total+=it.jumlah; if(it.tipe==='pengeluaran') total-=it.jumlah; if(it.tipe==='pengembalian') total+=it.jumlah; });
+      var prog=t>0?Math.min(100,Math.round(total/t*100)):0;
+      var pd=document.getElementById('targetProgressDisplay'); if(pd) pd.innerText=prog+'%';
+      var pb=document.getElementById('targetProgressBar'); if(pb) pb.style.width=prog+'%';
+    }
+  }catch(e){}
+}
+function openGantiPinModal(){
+  var pin=prompt('Masukkan PIN baru (6 digit):');
+  if(!pin) return;
+  if(pin.length!==6 || isNaN(pin)){ alert('PIN harus 6 digit angka'); return; }
+  try{localStorage.setItem('customPin',pin);}catch(e){}
+  alert('PIN baru disimpan: '+pin);
+}
+function kunciAplikasi(){
+  var lock=document.getElementById('pinLockScreen');
+  if(lock){ lock.classList.remove('hidden'); }
+  else { location.reload(); }
+}
+function exportExcelCSV(){
+  if(typeof transactions==='undefined' || !transactions || transactions.length===0){ alert('Tidak ada data'); return; }
+  var csv='Tanggal,Jam,Tipe,Penabung,Jumlah,Keterangan\n';
+  transactions.forEach(function(it){
+    csv+= (it.tgl||'')+','+(it.jam||'')+','+(it.tipe||'')+','+(it.penabung||'')+','+(it.jumlah||0)+',"'+(it.ket||'').replace(/"/g,'""')+'"\n';
+  });
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='tabungan-hani-venus.csv'; a.click();
+}
+function backupData(){
+  if(typeof transactions==='undefined'){ alert('Tidak ada data'); return; }
+  var data=JSON.stringify(transactions,null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='backup-tabungan-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+}
+function confirmHapusSemua(){
+  if(confirm('Hapus SEMUA transaksi? Tidak bisa dikembalikan!')){
+    if(confirm('Yakin? Ketik OK untuk lanjut')){
+      // Firebase delete would need batch - for now clear local
+      if(typeof db!=='undefined' && typeof transactions!=='undefined'){
+        if(confirm('Hapus dari Firebase juga?')){
+          transactions.forEach(function(it){
+            try{ db.collection('transactions').doc(it.id).delete(); }catch(e){}
+          });
+        }
+      }
+      alert('Fitur hapus semua - hubungkan ke Firebase untuk hapus permanen');
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(updateTargetDisplay,1000); });
+
+
+// ===== V13 GLASS TRANSPARENCY 0-100% =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = (1 - opacity) * 24 + 4; // 0% -> 28px blur, 100% -> 4px blur
+  var saturate = (1 - opacity) * 0.5 + 1; // more glass when transparent
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', saturate);
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  syncOpacitySliders(opacity);
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  // Update blur preview
+  var blur = (1 - opacity) * 24 + 4;
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+}
+function loadSavedOpacity(){
+  var saved = localStorage.getItem('wedding_box_opacity');
+  var opacity = saved!==null ? parseFloat(saved) : 0.85;
+  changeBoxOpacity(opacity);
+}
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(loadSavedOpacity, 300);
 });
 
+// ===== GANTI PIN CUSTOM MODAL =====
+function openGantiPinModal(){
+  var m=document.getElementById('gantiPinModal');
+  if(!m) return;
+  m.classList.add('active');
+  document.body.style.overflow='hidden';
+  // Clear inputs
+  document.querySelectorAll('#oldPinInputs .pin-input').forEach(function(i){ i.value=''; });
+  document.querySelectorAll('#newPinInputs .pin-input').forEach(function(i){ i.value=''; });
+  document.getElementById('pinError').classList.add('hidden');
+  setTimeout(function(){ document.querySelector('#oldPinInputs .pin-input').focus(); }, 100);
+}
+function closeGantiPinModal(){
+  var m=document.getElementById('gantiPinModal');
+  if(m) m.classList.remove('active');
+  document.body.style.overflow='';
+}
+function handlePinInput(el, type){
+  var val=el.value.replace(/[^0-9]/g,'');
+  el.value=val;
+  if(val && el.dataset.index < 5){
+    var next = document.querySelector('#'+(type==='old'?'oldPinInputs':'newPinInputs')+' .pin-input[data-index="'+(parseInt(el.dataset.index)+1)+'"]');
+    if(next) next.focus();
+  }
+}
+function handlePinKeydown(e, type){
+  if(e.key==='Backspace' && !e.target.value && e.target.dataset.index > 0){
+    var prev = document.querySelector('#'+(type==='old'?'oldPinInputs':'newPinInputs')+' .pin-input[data-index="'+(parseInt(e.target.dataset.index)-1)+'"]');
+    if(prev){ prev.focus(); prev.value=''; }
+  }
+}
+function getPinValue(type){
+  var inputs = document.querySelectorAll('#'+(type==='old'?'oldPinInputs':'newPinInputs')+' .pin-input');
+  var pin='';
+  inputs.forEach(function(i){ pin+=i.value; });
+  return pin;
+}
+function simpanPinBaru(){
+  var oldPin=getPinValue('old');
+  var newPin=getPinValue('new');
+  var err=document.getElementById('pinError');
+  err.classList.add('hidden');
+  if(oldPin.length!==6){ err.innerText='PIN lama harus 6 digit'; err.classList.remove('hidden'); return; }
+  if(newPin.length!==6){ err.innerText='PIN baru harus 6 digit'; err.classList.remove('hidden'); return; }
+  var savedPin = localStorage.getItem('customPin') || '150522';
+  var defaultPin='150522';
+  var currentPin = localStorage.getItem('customPin') || defaultPin;
+  // Check old pin
+  if(oldPin!==currentPin && oldPin!==defaultPin){
+    err.innerText='PIN lama salah!'; err.classList.remove('hidden'); return;
+  }
+  if(oldPin===newPin){
+    err.innerText='PIN baru tidak boleh sama dengan lama'; err.classList.remove('hidden'); return;
+  }
+  try{localStorage.setItem('customPin', newPin);}catch(e){}
+  closeGantiPinModal();
+  // Show success
+  setTimeout(function(){ alert('PIN berhasil diganti ke: '+newPin); }, 300);
+}
 
-// ===== V29 FINAL CLEAN - TABS + BIRU + POPUP =====
-var currentActiveTab = 'dashboard';
+// Override old openGantiPinModal that used prompt
+window.openGantiPinModal = openGantiPinModal;
 
-function switchTab(tabName){
-  if(tabName==='tambah'){ if(typeof openTambahModal==='function') openTambahModal(); return; }
-  if(currentActiveTab===tabName){
+// ===== KUNCI APLIKASI CUSTOM 3 PILIHAN =====
+function openKunciModal(){
+  var m=document.getElementById('kunciAplikasiModal');
+  if(!m) return;
+  m.classList.add('active');
+  document.body.style.overflow='hidden';
+  var saved = parseInt(localStorage.getItem('autoLockTime')||'5');
+  updateLockOptionsUI(saved);
+}
+function closeKunciModal(){
+  var m=document.getElementById('kunciAplikasiModal');
+  if(m) m.classList.remove('active');
+  document.body.style.overflow='';
+}
+function updateLockOptionsUI(activeVal){
+  document.querySelectorAll('.lock-option').forEach(function(el){
+    el.classList.remove('active');
+    el.querySelector('.check-icon').classList.add('hidden');
+  });
+  var activeEl=document.getElementById('lockOpt'+activeVal);
+  if(activeEl){ activeEl.classList.add('active'); activeEl.querySelector('.check-icon').classList.remove('hidden'); }
+}
+function setKunciWaktu(minutes){
+  try{localStorage.setItem('autoLockTime', minutes);}catch(e){}
+  updateLockOptionsUI(minutes);
+  // Reset timer
+  resetAutoLockTimer();
+  var txt = minutes===0?'Tidak Dikunci':minutes+' Menit';
+  // Show toast
+  setTimeout(function(){ 
+    var toast=document.createElement('div');
+    toast.className='fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2 rounded-full text-xs font-bold z-[90] shadow-xl';
+    toast.innerText='Kunci otomatis: '+txt;
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.remove(); }, 2000);
+  }, 100);
+}
+function kunciSekarang(){
+  closeKunciModal();
+  setTimeout(function(){ kunciAplikasi(); }, 300);
+}
+function kunciAplikasi(){
+  var lock=document.getElementById('pinLockScreen');
+  if(lock){ lock.classList.remove('hidden'); }
+  else { location.reload(); }
+}
+window.kunciAplikasi = kunciAplikasi;
+window.openKunciModal = openKunciModal;
+
+// Override old Kunci Aplikasi button to open custom modal
+var oldKunciBtn = document.querySelector('button[onclick="kunciAplikasi()"]');
+if(oldKunciBtn){ oldKunciBtn.setAttribute('onclick','openKunciModal()'); }
+
+// Auto lock timer
+var autoLockTimer=null;
+var lastActivity=Date.now();
+function resetAutoLockTimer(){
+  if(autoLockTimer) clearTimeout(autoLockTimer);
+  var minutes = parseInt(localStorage.getItem('autoLockTime')||'5');
+  if(minutes===0) return; // never lock
+  autoLockTimer=setTimeout(function(){
+    var inactive = Date.now() - lastActivity;
+    if(inactive >= minutes*60*1000){
+      kunciAplikasi();
+    }
+  }, minutes*60*1000);
+}
+['click','keydown','mousemove','touchstart'].forEach(function(ev){
+  document.addEventListener(ev, function(){ lastActivity=Date.now(); resetAutoLockTimer(); }, {passive:true});
+});
+document.addEventListener('DOMContentLoaded', function(){ resetAutoLockTimer(); });
+
+// Close modals on backdrop click
+document.getElementById('gantiPinModal').addEventListener('click', function(e){ if(e.target===this) closeGantiPinModal(); });
+document.getElementById('kunciAplikasiModal').addEventListener('click', function(e){ if(e.target===this) closeKunciModal(); });
+
+
+// ===== V15 60FPS SMOOTH + TEXT READABLE =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = (1 - opacity) * 28 + 4; // 0% = 32px blur, 100% = 4px
+  var saturate = (1 - opacity) * 0.6 + 1.1;
+  // Use requestAnimationFrame for 60fps
+  requestAnimationFrame(function(){
+    document.documentElement.style.setProperty('--box-opacity', opacity);
+    document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+    document.documentElement.style.setProperty('--glass-saturate', saturate);
+  });
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  syncOpacitySliders(opacity);
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  var blur = (1 - opacity) * 28 + 4;
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+}
+// Instant tab switch no delay
+var originalSwitchTab = window.switchTab;
+window.switchTab = function(tabName){
+  if(tabName==='tambah'){ openTambahModal(); return; }
+  var oldTab = currentActiveTab;
+  if(tabName===oldTab){ window.scrollTo({top:0,behavior:'smooth'}); return; }
+  // Instant switch for 60fps
+  var oldEl=document.getElementById('tab-'+oldTab);
+  var newEl=document.getElementById('tab-'+tabName);
+  if(oldEl){ 
+    oldEl.classList.remove('active'); 
+    oldEl.style.opacity='0';
+    oldEl.style.transform='translate3d(0,-8px,0) scale(0.98)';
+  }
+  if(newEl){ 
+    // Force reflow for instant
+    void newEl.offsetWidth;
+    newEl.classList.add('active'); 
+    newEl.style.opacity='1';
+    newEl.style.transform='translate3d(0,0,0) scale(1)';
+  }
+  currentActiveTab=tabName;
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){ b.classList.remove('active'); if(b.dataset.tab===tabName) b.classList.add('active'); });
+  window.scrollTo({top:0,behavior:'instant'});
+  document.documentElement.scrollTop=0;
+  if(tabName==='laporan') setTimeout(function(){ updateLaporanUI(); }, 10);
+  if(tabName==='dashboard') setTimeout(function(){ updateDashboardDiagram(); }, 10);
+  if(tabName==='setelan'){ var cd=document.getElementById('cd-days'), sc=document.getElementById('setelanCountdown'); if(cd&&sc){ var t=new Date("2027-04-03T00:00:00").getTime(), n=new Date().getTime(), d=t-n; if(d>0){ var days=Math.floor(d/(1000*60*60*24)), h=Math.floor((d%(1000*60*60*24))/(1000*60*60)); sc.innerText=days+' hari, '+h+' jam lagi'; } } }
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+};
+
+
+// ===== V17 BLUR -50% + INSTANT NO DELAY =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = (1 - opacity) * 14 + 2; // -50% : 0% = 16px, 100% = 2px
+  var saturate = (1 - opacity) * 0.3 + 1.1;
+  // Instant update no rAF delay
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', saturate);
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  syncOpacitySliders(opacity);
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  var blur = (1 - opacity) * 14 + 2;
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+}
+// INSTANT TAB SWITCH - NO DELAY AT ALL
+window.switchTab = function(tabName){
+  if(tabName==='tambah'){ openTambahModal(); return; }
+  var oldTab = window.currentActiveTab;
+  if(tabName===oldTab){ window.scrollTo({top:0,behavior:'smooth'}); return; }
+  var oldEl=document.getElementById('tab-'+oldTab);
+  var newEl=document.getElementById('tab-'+tabName);
+  // INSTANT - no animation queue
+  if(oldEl){ 
+    oldEl.classList.remove('active'); 
+    oldEl.style.display='none';
+  }
+  if(newEl){ 
+    newEl.style.display='block';
+    newEl.classList.add('active'); 
+    newEl.style.opacity='1';
+    newEl.style.transform='translate3d(0,0,0)';
+  }
+  window.currentActiveTab=tabName;
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){ b.classList.remove('active'); if(b.dataset.tab===tabName) b.classList.add('active'); });
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  // Restore display after instant switch
+  setTimeout(function(){
+    if(oldEl) oldEl.style.display='';
+    if(newEl) newEl.style.display='';
+  },10);
+  if(tabName==='laporan') updateLaporanUI();
+  if(tabName==='dashboard') updateDashboardDiagram();
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+};
+
+
+// ===== V18 TUNTAS INSTANT - NO DELAY AT ALL =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = (1 - opacity) * 12 + 2; // blur -50%
+  var saturate = 1.15;
+  // Direct sync set - no rAF, no delay
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', saturate);
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  // Sync sliders instantly
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+}
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  var blur = (1 - opacity) * 12 + 2;
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+}
+// INSTANT TAB SWITCH - 0ms delay, tuntas
+window.switchTab = function(tabName){
+  if(tabName==='tambah'){ openTambahModal(); return; }
+  if(window.currentActiveTab===tabName){
     window.scrollTo(0,0);
     document.documentElement.scrollTop=0;
     return;
   }
+  // Hide all instantly
   document.querySelectorAll('.tab-content').forEach(function(el){
     el.classList.remove('active');
     el.style.display='none';
   });
+  // Show target instantly
   var target=document.getElementById('tab-'+tabName);
   if(target){
     target.style.display='block';
     target.classList.add('active');
   }
-  currentActiveTab=tabName;
+  window.currentActiveTab=tabName;
+  // Update bottom tab
   document.querySelectorAll('.bottom-tab-item').forEach(function(b){
     b.classList.remove('active');
     if(b.dataset.tab===tabName) b.classList.add('active');
   });
+  // Scroll top instant
   window.scrollTo(0,0);
   document.documentElement.scrollTop=0;
   document.body.scrollTop=0;
-  if(tabName==='laporan'){ setTimeout(function(){ if(typeof updateLaporanUI==='function') updateLaporanUI(); }, 50); }
-  if(tabName==='dashboard'){ setTimeout(function(){ if(typeof updateDashboardDiagram==='function') updateDashboardDiagram(); }, 50); }
+  var tc=document.getElementById('tabContents');
+  if(tc) tc.scrollTop=0;
+  if(tabName==='laporan') updateLaporanUI();
+  if(tabName==='dashboard') updateDashboardDiagram();
   try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+};
+window.currentActiveTab = window.currentActiveTab || 'dashboard';
+
+
+// ===== V19 INSTANT NO GHOST - 0ms =====
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  // No blur for instant - blur causes delay
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', '0px');
+  document.documentElement.style.setProperty('--glass-saturate', '1');
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
 }
-window.switchTab = switchTab;
+function syncOpacitySliders(v){
+  var opacity = parseFloat(v);
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+  document.documentElement.style.setProperty('--glass-blur', '0px');
+}
+// TRUE INSTANT - hide old, force reflow, show new - NO OVERLAP
+window.switchTab = function(tabName){
+  if(tabName==='tambah'){ openTambahModal(); return; }
+  if(window.currentActiveTab===tabName){
+    window.scrollTo(0,0);
+    return;
+  }
+  var oldTabName = window.currentActiveTab;
+  var oldEl = document.getElementById('tab-'+oldTabName);
+  var newEl = document.getElementById('tab-'+tabName);
+  
+  // 1. Hide old instantly, no animation
+  if(oldEl){
+    oldEl.classList.remove('active');
+    oldEl.style.display='none';
+    oldEl.style.visibility='hidden';
+  }
+  // 2. Force reflow to ensure old is gone before new appears - prevents ghosting
+  if(oldEl) void oldEl.offsetHeight;
+  
+  // 3. Show new instantly
+  if(newEl){
+    newEl.style.display='block';
+    newEl.style.visibility='visible';
+    newEl.classList.add('active');
+  }
+  window.currentActiveTab=tabName;
+  
+  // 4. Update bottom tabs
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){
+    b.classList.remove('active');
+    if(b.dataset.tab===tabName) b.classList.add('active');
+  });
+  
+  // 5. Scroll top instant
+  window.scrollTo(0,0);
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  
+  if(tabName==='laporan') updateLaporanUI();
+  if(tabName==='dashboard') updateDashboardDiagram();
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
+};
+window.currentActiveTab = window.currentActiveTab || 'dashboard';
+
+// Ensure initial state is clean
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.tab-content').forEach(function(el){
+    if(!el.classList.contains('active')){
+      el.style.display='none';
+      el.style.visibility='hidden';
+    }
+  });
+  var active=document.querySelector('.tab-content.active');
+  if(active){
+    active.style.display='block';
+    active.style.visibility='visible';
+  }
+});
+
+
+function changeBoxOpacity(val){
+  var opacity = parseFloat(val);
+  if(isNaN(opacity)) opacity = 0.85;
+  opacity = Math.max(0, Math.min(1, opacity));
+  var blur = 4; // fixed tipis 4px, gak naik turun biar gak delay
+  document.documentElement.style.setProperty('--box-opacity', opacity);
+  document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+  document.documentElement.style.setProperty('--glass-saturate', '1.1');
+  try{localStorage.setItem('wedding_box_opacity', opacity);}catch(e){}
+  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
+  if(s1) s1.value=opacity;
+  if(s2) s2.value=opacity;
+  if(vd) vd.innerText=Math.round(opacity*100)+'%';
+}
+
 
 function changeBoxOpacity(val){
   var opacity = parseFloat(val);
@@ -3286,112 +3733,33 @@ function changeBoxOpacity(val){
   if(s2) s2.value=opacity;
   if(vd) vd.innerText=Math.round(opacity*100)+'%';
 }
-function syncOpacitySliders(v){
-  var opacity = parseFloat(v);
-  var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue');
-  if(s1) s1.value=opacity;
-  if(s2) s2.value=opacity;
-  if(vd) vd.innerText=Math.round(opacity*100)+'%';
-  document.documentElement.style.setProperty('--glass-blur', '2px');
-}
 
-function getTipeStyle(tipe){
-  if(tipe==='pengembalian'){
-    return { bg: 'pengembalian', badgeClass: 'badge-pengembalian', titleClass: 'text-blue-700', amountClass: 'text-blue-600', sign: '+ Rp ', label: 'PENGEMBALIAN', icon: 'fa-rotate-left', color: '#2563eb' };
-  } else if(tipe==='pengeluaran'){
-    return { bg: 'bg-rose-50/70 border-rose-100', badgeClass: 'badge-pengeluaran', titleClass: 'text-rose-700', amountClass: 'text-rose-600', sign: '- Rp ', label: 'PENGELUARAN', icon: 'fa-arrow-down', color: '#f43f5e' };
-  } else {
-    return { bg: 'bg-emerald-50/70 border-emerald-100', badgeClass: 'badge-pemasukan', titleClass: 'text-emerald-700', amountClass: 'text-emerald-600', sign: '+ Rp ', label: 'PEMASUKAN', icon: 'fa-arrow-up', color: '#10b981' };
-  }
-}
 
-window.updateUI = function(){
-  if(typeof transactions==='undefined') return;
-  var sb=document.getElementById('filterBulan'), st=document.getElementById('filterTahun');
-  var b=sb?sb.value:'all', t=st?st.value:'all';
-  var listEl=document.getElementById('transactionList');
-  if(!listEl) listEl=document.getElementById('riwayatList');
-  if(!listEl) return;
-  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (b==='all'||p[1]===b)&&(t==='all'||p[0]===t); });
-  listEl.innerHTML='';
-  if(filt.length===0){
-    listEl.innerHTML='<p class="text-sm text-slate-500 text-center py-8">Belum ada transaksi</p>';
-  } else {
-    filt.slice().reverse().forEach(function(it){
-      var div=document.createElement('div');
-      var badgeClass, titleClass, amountClass, sign, badgeLabel, extra='';
-      if(it.tipe==='pengembalian'){
-        div.className='riwayat-item-presisi pengembalian';
-        div.setAttribute('data-tipe','pengembalian');
-        badgeClass='badge-pengembalian';
-        titleClass='text-blue-700';
-        amountClass='text-blue-600';
-        sign='+ Rp ';
-        badgeLabel='KEMBALI';
-        extra=' <span class="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded ml-1 font-bold">BIRU</span>';
-      } else if(it.tipe==='pemasukan'){
-        div.className='riwayat-item-presisi bg-emerald-50/70 border-emerald-100';
-        badgeClass='badge-pemasukan';
-        titleClass='text-emerald-700';
-        amountClass='text-emerald-600';
-        sign='+ Rp ';
-        badgeLabel=it.penabung||'HANI';
-      } else {
-        div.className='riwayat-item-presisi bg-rose-50/70 border-rose-100';
-        badgeClass='badge-pengeluaran';
-        titleClass='text-rose-700';
-        amountClass='text-rose-600';
-        sign='- Rp ';
-        badgeLabel=it.penabung||'HANI';
-      }
-      div.onclick=function(){ if(typeof openEditModal==='function') openEditModal(it.id); };
-      var clip = it.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
-      div.innerHTML='<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+it.ket+extra+' '+clip+'</div><div class="date">'+it.tgl+' | '+it.jam+(it.tipe==='pengembalian'?' • Pinjam dibalikin (BIRU)':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
-      listEl.appendChild(div);
-    });
+var currentActiveTab = 'dashboard';
+function switchTab(tabName){
+  if(tabName==='tambah'){ if(typeof openTambahModal==='function'){ openTambahModal(); } return; }
+  if(typeof currentActiveTab!=='undefined' && tabName===currentActiveTab){
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
   }
-  var totalMasuk=0, totalKeluar=0, totalKembali=0;
-  transactions.forEach(function(item){
-    if (item.tipe === 'pemasukan') totalMasuk += item.jumlah;
-    if (item.tipe === 'pengeluaran') totalKeluar += item.jumlah;
-    if (item.tipe === 'pengembalian') totalKembali += item.jumlah;
+  var oldTab = typeof currentActiveTab!=='undefined' ? currentActiveTab : 'dashboard';
+  var oldEl = document.getElementById('tab-'+oldTab);
+  var newEl = document.getElementById('tab-'+tabName);
+  if(oldEl){ oldEl.classList.remove('active'); oldEl.style.display='none'; }
+  if(newEl){ newEl.classList.add('active'); newEl.style.display='block'; }
+  currentActiveTab = tabName;
+  document.querySelectorAll('.bottom-tab-item').forEach(function(b){
+    b.classList.remove('active');
+    if(b.dataset.tab===tabName) b.classList.add('active');
   });
-  var net = totalMasuk - totalKeluar + totalKembali;
-  var elSaldo = document.getElementById('totalSaldo');
-  if (elSaldo) elSaldo.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(net);
-  var elIn = document.getElementById('topTotalIn');
-  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk);
-  var elOut = document.getElementById('topTotalOut');
-  if (elOut) elOut.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalKeluar);
-  try { if(typeof updateDashboardDiagram==='function') updateDashboardDiagram(); } catch(e){}
-  try { if(typeof updateLaporanUI==='function') updateLaporanUI(); } catch(e){}
-};
-
-function closeSuccessModalAndReload(){
-  var sm=document.getElementById('successModal');
-  if(sm){
-    sm.classList.add('opacity-0','pointer-events-none');
-    setTimeout(function(){ sm.classList.add('hidden'); }, 200);
-  }
-  if(typeof closeTambahModal==='function') closeTambahModal();
-  switchTab('riwayat');
-  var btnSubmit=document.getElementById('btnSubmit');
-  var btnText=document.getElementById('btnSubmitText');
-  var btnSpinner=document.getElementById('btnSubmitSpinner');
-  if(btnSubmit) btnSubmit.disabled=false;
-  if(btnText) btnText.classList.remove('hidden');
-  if(btnSpinner) btnSpinner.classList.add('hidden');
+  window.scrollTo({top:0,behavior:'instant'});
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  if(tabName==='laporan' && typeof updateLaporanUI==='function'){ setTimeout(updateLaporanUI, 50); }
+  if(tabName==='dashboard' && typeof updateDashboardDiagram==='function'){ setTimeout(updateDashboardDiagram, 50); }
+  try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
 }
-window.closeSuccessModalAndReload = closeSuccessModalAndReload;
-
-// Ensure dashboard visible on load
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.tab-content').forEach(function(el){
-    if(el.id!=='tab-dashboard') el.style.display='none';
-  });
-  var dash=document.getElementById('tab-dashboard');
-  if(dash){ dash.style.display='block'; dash.classList.add('active'); }
-});
+window.switchTab = switchTab;
 </script>
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
