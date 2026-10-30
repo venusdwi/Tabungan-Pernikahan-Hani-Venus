@@ -1717,25 +1717,6 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
   color: white !important;
 }
 </style>
-
-<style id="filePreviewFixV80">
-/* V80 - File preview */
-#buktiPreviewContainer.hidden,
-#fileName.hidden,
-#buktiFileName.hidden {
-  display: none !important;
-}
-
-#buktiPreviewContainer:not(.hidden),
-#fileName:not(.hidden) {
-  display: block !important;
-}
-
-/* Reset button */
-button[type="reset"] {
-  display: none !important;
-}
-</style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
@@ -5489,177 +5470,132 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <script>
-// V80 TUNTAS - Reset otomatis 5 kolom setelah transaksi berhasil
-// Kolom: TIPE TRANSAKSI, NAMA PENABUNG, JUMLAH, KETERANGAN/CATATAN, LAMPIRAN BUKTI
+// V82 FIX TUNTAS - Tanpa error SyntaxError 'else' dan addEventListener null
+// Reset 5 kolom: TIPE, NAMA PENABUNG, JUMLAH, KETERANGAN, LAMPIRAN
 
 function resetTambahTransaksiForm(){
   try{
-    console.log('=== RESET TAMBAH TRANSAKSI - 5 KOLOM ===');
+    console.log('=== V82 RESET 5 KOLOM ===');
     
     // 1. TIPE TRANSAKSI
-    var tipe = document.getElementById('tipeTransaksi');
-    if(tipe){
-      tipe.value = '';
-      tipe.selectedIndex = 0;
-      console.log('✓ Tipe Transaksi reset');
+    var tipeHidden = document.getElementById('tipeTransaksi');
+    var tipeText = document.getElementById('textTipeTransaksi');
+    if(tipeHidden){
+      tipeHidden.value = '';
+      console.log('✓ Tipe hidden reset');
+    }
+    if(tipeText){
+      tipeText.innerText = '-- Pilih Tipe Transaksi --';
+      tipeText.textContent = '-- Pilih Tipe Transaksi --';
+      tipeText.classList.remove('text-slate-800');
+      tipeText.classList.add('text-slate-400');
     }
     
     // 2. NAMA PENABUNG
-    var penabung = document.getElementById('namaPenabung');
-    if(penabung){
-      penabung.value = '';
-      penabung.selectedIndex = 0;
-      console.log('✓ Nama Penabung reset');
+    var penabungHidden = document.getElementById('namaPenabung');
+    var penabungText = document.getElementById('textNamaPenabung');
+    if(penabungHidden){
+      penabungHidden.value = '';
+      console.log('✓ Penabung hidden reset');
     }
-    
-    // Also try other possible ids
-    var penabung2 = document.getElementById('penabung');
-    if(penabung2){
-      penabung2.value = '';
-      penabung2.selectedIndex = 0;
+    if(penabungText){
+      penabungText.innerText = '-- Pilih Nama Penabung --';
+      penabungText.textContent = '-- Pilih Nama Penabung --';
+      penabungText.classList.remove('text-slate-800');
+      penabungText.classList.add('text-slate-400');
     }
     
     // 3. JUMLAH (RP)
-    var jumlahIds = ['jumlahRupiah', 'jumlahNominal', 'jumlah', 'nominal'];
-    jumlahIds.forEach(function(id){
-      var el = document.getElementById(id);
-      if(el){
-        el.value = '';
-        if(el.type !== 'hidden'){
-          el.placeholder = 'Rp 0';
-        }
-        console.log('✓ Jumlah', id, 'reset');
-      }
-    });
-    
-    // Clear all inputs with placeholder Rp or jumlah
-    var allInputs = document.querySelectorAll('input');
-    allInputs.forEach(function(inp){
-      var ph = (inp.placeholder || '').toLowerCase();
-      var id = (inp.id || '').toLowerCase();
-      if((ph.includes('rp') || id.includes('jumlah') || id.includes('nominal')) && !id.includes('filter') && !id.includes('bulan') && !id.includes('tahun')){
-        if(inp.type !== 'file' && inp.type !== 'date' && inp.type !== 'time'){
-          inp.value = '';
-        }
-      }
-    });
+    var jumlah = document.getElementById('jumlahRupiah');
+    if(jumlah){
+      jumlah.value = '';
+      jumlah.placeholder = '0';
+      console.log('✓ Jumlah reset');
+    }
     
     // 4. KETERANGAN / CATATAN
-    var ketIds = ['keteranganTransaksi', 'ketTransaksi', 'keterangan', 'catatan'];
-    ketIds.forEach(function(id){
-      var el = document.getElementById(id);
-      if(el){
-        el.value = '';
-        console.log('✓ Keterangan', id, 'reset');
-      }
-    });
-    
-    // Clear all textareas
-    var textareas = document.querySelectorAll('textarea');
-    textareas.forEach(function(ta){
-      var id = (ta.id || '').toLowerCase();
-      if(id.includes('keterangan') || id.includes('ket') || id.includes('catatan') || !id.includes('filter')){
-        // Only clear if in tambah page
-        var tambahPage = document.getElementById('tambahPage') || document.querySelector('#transactionForm');
-        if(tambahPage && tambahPage.contains(ta)){
-          ta.value = '';
-        }
-      }
-    });
+    var ket = document.getElementById('keteranganTransaksi');
+    if(ket){
+      ket.value = '';
+      console.log('✓ Keterangan reset');
+    }
     
     // 5. LAMPIRAN BUKTI TRANSFER
-    var fileIds = ['buktiTransfer', 'bukti', 'fileBukti', 'lampiran'];
-    fileIds.forEach(function(id){
-      var el = document.getElementById(id);
-      if(el && el.type === 'file'){
-        el.value = '';
-        try{
-          var clone = el.cloneNode(true);
-          clone.value = '';
-          el.parentNode.replaceChild(clone, el);
-          console.log('✓ File', id, 'reset via clone');
-        }catch(e){
-          el.value = '';
-        }
-      }
-    });
-    
-    // Clear file preview
-    var previewIds = ['buktiPreviewContainer', 'buktiPreview', 'buktiFileName', 'fileName', 'previewContainer', 'filePreview'];
-    previewIds.forEach(function(pid){
-      var el = document.getElementById(pid);
-      if(el){
-        if(el.tagName === 'IMG'){
-          el.src = '';
-          el.removeAttribute('src');
-        } else {
-          el.innerText = '';
-          el.textContent = '';
-          el.innerHTML = '';
-        }
-        el.classList.add('hidden');
-        el.style.display = 'none';
-        console.log('✓ Preview', pid, 'reset');
-      }
-    });
-    
-    // Clear any div showing file name like 100140211.jpg
-    var allDivs = document.querySelectorAll('div, span, p');
-    allDivs.forEach(function(div){
-      var text = div.innerText || '';
-      if(text.includes('100140211.jpg') || (text.includes('.jpg') && text.length < 50)){
-        // Check if it's in tambah form
-        var form = document.getElementById('transactionForm');
-        if(form && form.contains(div) && !div.querySelector('input[type="file"]')){
-          if(text.trim().endsWith('.jpg') || text.trim().endsWith('.png') || text.trim().endsWith('.jpeg')){
-            div.innerText = '';
-            div.textContent = '';
-            console.log('✓ Cleared file name display:', text);
-          }
-        }
-      }
-    });
-    
-    // Clear global vars
-    window.tempBuktiBase64 = "";
-    window.buktiBase64 = "";
-    window.selectedFile = null;
-    window.buktiFile = null;
-    window.lastFile = null;
-    
-    // Reset tanggal to real-time 31/10/2026
-    if(typeof setNowDateTimeAndFilter === 'function'){
-      setTimeout(function(){
-        setNowDateTimeAndFilter();
-        console.log('✓ Tanggal reset to real-time 31/10/2026');
-      }, 50);
-    }
-    
-    // Reset form itself
-    var form = document.getElementById('transactionForm');
-    if(form){
+    var fileInput = document.getElementById('buktiTransfer');
+    if(fileInput){
       try{
-        form.reset();
-        console.log('✓ Form reset() called');
-      }catch(e){}
+        fileInput.value = '';
+        var clone = fileInput.cloneNode(true);
+        clone.value = '';
+        fileInput.parentNode.replaceChild(clone, fileInput);
+        // Re-attach listener safely
+        if(clone){
+          clone.addEventListener('change', function(e){
+            var file = e.target.files[0];
+            if(file){
+              var nameEl = document.getElementById('buktiFileName');
+              if(nameEl){
+                nameEl.innerText = file.name;
+                nameEl.classList.remove('hidden');
+              }
+              var cont = document.getElementById('buktiPreviewContainer');
+              if(cont){
+                cont.classList.remove('hidden');
+              }
+            }
+          });
+        }
+        console.log('✓ File reset via clone');
+      }catch(err){
+        console.log('File reset error', err);
+        try{ fileInput.value = ''; }catch(e){}
+      }
     }
     
-    console.log('=== RESET DONE - 5 KOLOM KOSONG ===');
+    // Preview
+    var buktiPreviewContainer = document.getElementById('buktiPreviewContainer');
+    if(buktiPreviewContainer){
+      buktiPreviewContainer.classList.add('hidden');
+      buktiPreviewContainer.style.display = 'none';
+    }
+    var buktiPreview = document.getElementById('buktiPreview');
+    if(buktiPreview){
+      buktiPreview.src = '';
+      buktiPreview.removeAttribute('src');
+    }
+    var buktiFileName = document.getElementById('buktiFileName');
+    if(buktiFileName){
+      buktiFileName.innerText = '';
+      buktiFileName.textContent = '';
+      buktiFileName.classList.add('hidden');
+    }
     
-  }catch(e){
-    console.error('Reset error:', e);
+    // Global vars
     try{
-      var f = document.getElementById('transactionForm');
-      if(f) f.reset();
-    }catch(e2){}
+      window.tempBuktiBase64 = '';
+      window.buktiBase64 = '';
+      window.selectedFile = null;
+      window.buktiFile = null;
+    }catch(e){}
+    
+    // Tanggal real-time
+    try{
+      if(typeof setNowDateTimeAndFilter === 'function'){
+        setNowDateTimeAndFilter();
+        console.log('✓ Tanggal real-time');
+      }
+    }catch(e){}
+    
+    console.log('=== V82 RESET DONE ===');
+  }catch(e){
+    console.error('V82 reset error:', e);
   }
 }
 window.resetTambahTransaksiForm = resetTambahTransaksiForm;
 
-// Override closeSuccessModal to call reset
+// Override closeSuccessModal tanpa else nyasar
 window.closeSuccessModal = function(){
-  console.log('=== OKE MENGERTI CLICKED - RESETTING ===');
-  
+  console.log('Oke Mengerti clicked V82');
   var modal = document.getElementById('successModal');
   var box = document.getElementById('successModalBox');
   if(modal){
@@ -5670,90 +5606,48 @@ window.closeSuccessModal = function(){
       box.classList.remove('scale-100');
     }
   }
-  
-  // Reset 5 kolom
   resetTambahTransaksiForm();
-  
-  // Flag for when entering Tambah again
-  localStorage.setItem('shouldResetTambah', 'true');
-  
-  // Go to Riwayat
+  try{ localStorage.setItem('shouldResetTambah', 'true'); }catch(e){}
   setTimeout(function(){
-    console.log('Going to Riwayat');
-    if(typeof switchTab === 'function'){
-      switchTab('riwayat');
-    }
+    try{
+      if(typeof switchTab === 'function'){
+        switchTab('riwayat');
+      }
+    }catch(e){ console.log('switchTab error', e); }
   }, 100);
 };
-function closeSuccessModal(){ window.closeSuccessModal(); }
 
-// Also reset when entering Tambah tab
-var originalSwitchTab = window.switchTab;
-window.switchTab = function(tab){
-  console.log('switchTab called:', tab);
-  
-  // Call original if exists
-  if(typeof originalSwitchTab === 'function'){
-    originalSwitchTab(tab);
-  } else {
-    // Fallback - try find original implementation
-    var tabs = document.querySelectorAll('[data-tab], .tab-page, [id*="Page"]');
-    // Simple fallback
-    if(tab === 'tambah'){
-      var tambahPage = document.getElementById('tambahPage');
-      if(tambahPage){
-        document.querySelectorAll('.tab-page, [id*="Page"]').forEach(function(p){
-          p.classList.add('hidden');
-        });
-        tambahPage.classList.remove('hidden');
-      }
+function closeSuccessModal(){
+  window.closeSuccessModal();
+}
+
+// Hook switchTab dengan aman tanpa else dobel
+setTimeout(function(){
+  try{
+    var orig = window.switchTab;
+    if(orig && !window._switchTabHookedV82){
+      window._switchTabHookedV82 = true;
+      window.switchTab = function(tab){
+        try{ orig(tab); }catch(e){ console.log('orig switchTab error', e); }
+        if(tab === 'tambah'){
+          try{
+            var should = localStorage.getItem('shouldResetTambah');
+            if(should === 'true'){
+              console.log('Tambah entered - reset');
+              setTimeout(function(){
+                resetTambahTransaksiForm();
+                localStorage.removeItem('shouldResetTambah');
+              }, 50);
+            }
+          }catch(e){ console.log('Tambah hook error', e); }
+        }
+      };
+      console.log('switchTab hooked V82 OK');
     }
-  }
-  
-  // If entering Tambah and should reset
-  if(tab === 'tambah' || tab === 'Tambah'){
-    try{
-      var shouldReset = localStorage.getItem('shouldResetTambah') === 'true';
-      if(shouldReset){
-        console.log('Entering Tambah - should reset, resetting...');
-        setTimeout(function(){
-          resetTambahTransaksiForm();
-          localStorage.removeItem('shouldResetTambah');
-        }, 100);
-      }
-    }catch(e){ console.log('Tambah entry reset error', e); }
-  }
-};
+  }catch(e){ console.log('Hook error', e); }
+}, 1200);
 
-// Also hook into DOMContentLoaded for initial setup
-document.addEventListener('DOMContentLoaded', function(){
-  console.log('V80 reset system ready');
-  
-  // Ensure reset function is global
-  window.resetTambahTransaksiForm = resetTambahTransaksiForm;
-  
-  // Fix file input change to show file name
-  var fileInput = document.getElementById('buktiTransfer');
-  if(fileInput){
-    fileInput.addEventListener('change', function(e){
-      var file = e.target.files[0];
-      if(file){
-        console.log('File selected:', file.name);
-        var fileNameEl = document.getElementById('buktiFileName') || document.getElementById('fileName');
-        if(fileNameEl){
-          fileNameEl.innerText = file.name;
-          fileNameEl.classList.remove('hidden');
-          fileNameEl.style.display = 'block';
-        }
-        var previewCont = document.getElementById('buktiPreviewContainer');
-        if(previewCont){
-          previewCont.classList.remove('hidden');
-          previewCont.style.display = 'block';
-        }
-      }
-    });
-  }
-});
+console.log('V82 reset system loaded - no SyntaxError');
 </script>
 </body>
 </html>
