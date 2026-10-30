@@ -1376,7 +1376,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW skip'); });
 }
 </script>
-
 <style id="customDropdownTheme">
 /* V71 Custom dropdown sesuai tema aplikasi */
 select {
@@ -1419,7 +1418,6 @@ select:focus {
   transform: scale(0.95) !important;
 }
 </style>
-
 <style id="pinThemeFixV72">
 /* V72 - PIN putih bersih tanpa glass/blur di mode terang, dark seperti sebelumnya */
 #pinScreen, #pin-screen, .pin-screen {
@@ -1522,7 +1520,6 @@ select:focus {
   color: white !important;
 }
 </style>
-
 <style id="deviceBlueFix">
 /* V72 Device owner biru untuk yang dipilih */
 #deviceHani, #deviceVenus {
@@ -1546,6 +1543,70 @@ select:focus {
   border: 1px solid #93c5fd !important;
   color: #1e40af !important;
   font-weight: 700 !important;
+}
+</style>
+
+<style id="pinWhiteFixV73">
+/* V73 SUPER STRONG - PIN putih bersih mode terang */
+#pinScreen {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+#pinScreen > div,
+#pinScreen .bg-slate-900\/70,
+#pinScreen [class*="bg-slate"],
+#pinScreen [class*="backdrop-blur"],
+#pinScreen .rounded-\[2rem\] {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+
+/* Teks kontras */
+#pinScreen h2,
+#pinScreen h1,
+#pinScreen .text-white,
+#pinScreen [class*="text-white"] {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+#pinScreen p,
+#pinScreen .text-slate-400,
+#pinScreen .text-slate-300,
+#pinScreen [class*="text-slate"] {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+/* Dark mode - balik seperti sebelumnya */
+.dark-mode #pinScreen,
+#pinScreen.dark-mode,
+body.dark-mode #pinScreen {
+  background: #0f172a !important;
+  background-color: #0f172a !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.dark-mode #pinScreen > div,
+.dark-mode #pinScreen .rounded-\[2rem\] {
+  background: rgba(15,23,42,0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(51,65,85,0.5) !important;
+}
+
+.dark-mode #pinScreen h2 {
+  color: white !important;
+}
+
+.dark-mode #pinScreen p {
+  color: #94a3b8 !important;
 }
 </style>
 </head>
@@ -4646,7 +4707,68 @@ function loadDeviceOwner(){
     if(info){ info.classList.remove('hidden'); info.innerText='✅ Perangkat: '+o; }
   }catch(e){}
 }
-function setDeviceOwner(o){ localStorage.setItem('myDeviceOwner', o); loadDeviceOwner(); }
+function setDeviceOwner(owner){
+  try{
+    console.log('setDeviceOwner CALLED:', owner);
+    localStorage.setItem('myDeviceOwner', owner);
+    
+    var haniBtn = document.getElementById('deviceHani');
+    var venusBtn = document.getElementById('deviceVenus');
+    var info = document.getElementById('deviceOwnerInfo');
+    
+    if(haniBtn && venusBtn){
+      if(owner==='HANI'){
+        haniBtn.style.background='#2563eb';
+        haniBtn.style.backgroundColor='#2563eb';
+        haniBtn.style.borderColor='#2563eb';
+        haniBtn.style.color='white';
+        haniBtn.style.boxShadow='0 4px 12px rgba(37,99,235,0.4)';
+        haniBtn.innerHTML='✅ Saya HANI';
+        haniBtn.classList.add('selected');
+        
+        venusBtn.style.background='white';
+        venusBtn.style.backgroundColor='white';
+        venusBtn.style.borderColor='#e2e8f0';
+        venusBtn.style.color='#64748b';
+        venusBtn.style.boxShadow='none';
+        venusBtn.innerHTML='Saya VENUS';
+        venusBtn.classList.remove('selected');
+      } else {
+        venusBtn.style.background='#2563eb';
+        venusBtn.style.backgroundColor='#2563eb';
+        venusBtn.style.borderColor='#2563eb';
+        venusBtn.style.color='white';
+        venusBtn.style.boxShadow='0 4px 12px rgba(37,99,235,0.4)';
+        venusBtn.innerHTML='✅ Saya VENUS';
+        venusBtn.classList.add('selected');
+        
+        haniBtn.style.background='white';
+        haniBtn.style.backgroundColor='white';
+        haniBtn.style.borderColor='#e2e8f0';
+        haniBtn.style.color='#64748b';
+        haniBtn.style.boxShadow='none';
+        haniBtn.innerHTML='Saya HANI';
+        haniBtn.classList.remove('selected');
+      }
+    }
+    
+    if(info){
+      info.classList.remove('hidden');
+      info.style.display='block';
+      info.style.background='#dbeafe';
+      info.style.border='1px solid #93c5fd';
+      info.style.color='#1e40af';
+      info.innerText='✅ Perangkat: '+owner+' - Notif pasangan akan muncul di HP ini';
+    }
+    
+    if(typeof showAppNotification === 'function'){
+      showAppNotification('✅ Perangkat Diset', 'Ini HP '+owner, 'success');
+    }
+    
+  }catch(e){ console.log('setDeviceOwner ERROR', e); }
+}
+window.setDeviceOwner = setDeviceOwner;
+
 
 function formatRupiah(n){ return 'Rp ' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
@@ -5047,7 +5169,6 @@ function createCustomDropdown(selectId, options){
   select.style.display = 'none';
 }
 </script>
-
 <script>
 // V72 Device owner biru fix
 document.addEventListener('DOMContentLoaded', function(){
@@ -5080,6 +5201,89 @@ document.addEventListener('DOMContentLoaded', function(){
       observer.observe(venusBtn, {attributes: true, attributeFilter: ['style']});
     }
   }, 1000);
+});
+</script>
+
+<script>
+// V73 Force PIN white clean in light mode
+function forcePinWhite(){
+  try{
+    var body = document.body;
+    var isDark = body.classList.contains('dark-mode') || localStorage.getItem('theme') === 'dark';
+    var pinScreen = document.getElementById('pinScreen');
+    if(!pinScreen) return;
+    
+    if(!isDark){
+      pinScreen.style.setProperty('background', '#ffffff', 'important');
+      pinScreen.style.setProperty('background-color', '#ffffff', 'important');
+      pinScreen.style.setProperty('backdrop-filter', 'none', 'important');
+      
+      var inner = pinScreen.querySelector('div.rounded-\[2rem\], div[class*="rounded"]');
+      if(inner){
+        inner.style.setProperty('background', '#ffffff', 'important');
+        inner.style.setProperty('background-color', '#ffffff', 'important');
+        inner.style.setProperty('backdrop-filter', 'none', 'important');
+        inner.style.setProperty('border', '1px solid #e2e8f0', 'important');
+      }
+      
+      var h2 = pinScreen.querySelector('h2, h1');
+      if(h2){
+        h2.style.setProperty('color', '#0f172a', 'important');
+      }
+      var p = pinScreen.querySelector('p');
+      if(p){
+        p.style.setProperty('color', '#475569', 'important');
+      }
+    }
+  }catch(e){ console.log('forcePinWhite error', e); }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(forcePinWhite, 100);
+  setTimeout(forcePinWhite, 500);
+  setTimeout(forcePinWhite, 1000);
+});
+</script>
+
+<script>
+// V73 Device owner fix
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    var haniBtn = document.getElementById('deviceHani');
+    var venusBtn = document.getElementById('deviceVenus');
+    
+    if(haniBtn){
+      haniBtn.style.pointerEvents = 'auto';
+      haniBtn.style.cursor = 'pointer';
+      haniBtn.style.zIndex = '10';
+      haniBtn.onclick = function(e){
+        e.preventDefault();
+        console.log('HANI clicked');
+        window.setDeviceOwner('HANI');
+      };
+    }
+    
+    if(venusBtn){
+      venusBtn.style.pointerEvents = 'auto';
+      venusBtn.style.cursor = 'pointer';
+      venusBtn.style.zIndex = '10';
+      venusBtn.onclick = function(e){
+        e.preventDefault();
+        console.log('VENUS clicked');
+        window.setDeviceOwner('VENUS');
+      };
+    }
+    
+    var saved = localStorage.getItem('myDeviceOwner');
+    if(saved && window.setDeviceOwner){
+      window.setDeviceOwner(saved);
+    }
+    
+    if(typeof forcePinWhite === 'function'){
+      forcePinWhite();
+    }
+    
+  }, 800);
 });
 </script>
 </body>
