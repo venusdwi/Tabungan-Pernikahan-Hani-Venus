@@ -2275,17 +2275,116 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
         let activePopupTarget = 'main'; 
         let activePopupType = 'tipe'; 
 
-        function setNowDateTimeAndFilter() {
-            const now = new Date();
-            const yearStr = String(now.getFullYear());
-            const monthStr = String(now.getMonth() + 1).padStart(2, '0');
+        
+function setNowDateTimeAndFilter(){
+  try{
+    var now = new Date();
+    // WIB = UTC+7
+    var wibOffset = 7 * 60;
+    var localOffset = now.getTimezoneOffset();
+    var wibTime = new Date(now.getTime() + (wibOffset + localOffset) * 60000);
+    
+    var day = String(wibTime.getDate()).padStart(2,'0');
+    var month = String(wibTime.getMonth()+1).padStart(2,'0');
+    var year = wibTime.getFullYear();
+    var hours = String(wibTime.getHours()).padStart(2,'0');
+    var minutes = String(wibTime.getMinutes()).padStart(2,'0');
+    
+    var dateStr = day + '/' + month + '/' + year;
+    var dateISO = year + '-' + month + '-' + day;
+    var timeStr = hours + ':' + minutes;
+    
+    console.log('Real-time WIB:', dateStr, timeStr, ' - ', wibTime);
+    
+    var tglInput = document.getElementById('tglTransaksi');
+    var jamInput = document.getElementById('jamTransaksi');
+    var dateDisplay = document.getElementById('tanggalDisplay');
+    
+    if(tglInput){
+      // Try both formats - date input needs YYYY-MM-DD, display needs DD/MM/YYYY
+      if(tglInput.type === 'date'){
+        tglInput.value = dateISO;
+      } else {
+        tglInput.value = dateStr;
+      }
+      console.log('Date set to:', dateStr);
+    }
+    
+    if(jamInput){
+      jamInput.value = timeStr;
+      console.log('Time set to:', timeStr);
+    }
+    
+    if(dateDisplay){
+      dateDisplay.value = dateStr;
+      dateDisplay.innerText = dateStr;
+    }
+    
+    // Also set any date fields with different ids
+    var allDateInputs = document.querySelectorAll('input[type="date"], input[id*="tgl"], input[id*="tanggal"]');
+    allDateInputs.forEach(function(inp){
+      if(inp.id.includes('filter') || inp.id.includes('Bulan') || inp.id.includes('Tahun')) return; // Skip filter
+      if(inp.type === 'date'){
+        inp.value = dateISO;
+      }
+    });
+    
+  }catch(e){ console.log('setNowDateTime error', e); }
+}
+window.setNowDateTimeAndFilter = setNowDateTimeAndFilter;
 
-            document.getElementById('tglTransaksi').value = now.toISOString().split('T')[0];
-            document.getElementById('jamTransaksi').value = now.toTimeString().split(' ')[0].substring(0, 5);
+// Auto update date at 00:00 WIB
+function setupDateAutoUpdate(){
+  try{
+    var now = new Date();
+    var wibOffset = 7 * 60;
+    var localOffset = now.getTimezoneOffset();
+    var wibTime = new Date(now.getTime() + (wibOffset + localOffset) * 60000);
+    
+    var nextMidnight = new Date(wibTime);
+    nextMidnight.setHours(24,0,0,0); // Next 00:00
+    
+    var msUntilMidnight = nextMidnight - wibTime;
+    
+    console.log('Next date update in', msUntilMidnight/1000/60, 'minutes (at 00:00 WIB)');
+    
+    setTimeout(function(){
+      console.log('00:00 WIB - updating date real-time');
+      setNowDateTimeAndFilter();
+      // Setup next day
+      setupDateAutoUpdate();
+      
+      // Also update filter to new date if needed
+      if(typeof filterTransaksi === 'function'){
+        // Keep filter as is
+      }
+      
+    }, msUntilMidnight);
+  }catch(e){ console.log('setupDateAutoUpdate error', e); }
+}
 
-            document.getElementById('filterBulan').value = 'all';
-            document.getElementById('filterTahun').value = 'all';
-        }
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    setNowDateTimeAndFilter();
+    setupDateAutoUpdate();
+  }, 800);
+  
+  // Update every minute to keep time real-time
+  setInterval(function(){
+    var jamInput = document.getElementById('jamTransaksi');
+    if(jamInput && document.activeElement !== jamInput){
+      var now = new Date();
+      var wibOffset = 7 * 60;
+      var localOffset = now.getTimezoneOffset();
+      var wibTime = new Date(now.getTime() + (wibOffset + localOffset) * 60000);
+      var hours = String(wibTime.getHours()).padStart(2,'0');
+      var minutes = String(wibTime.getMinutes()).padStart(2,'0');
+      // Only update time, not date, unless at midnight
+      // jamInput.value = hours + ':' + minutes;
+    }
+  }, 60000);
+});
+
 
         document.addEventListener('DOMContentLoaded', () => {
             setNowDateTimeAndFilter();
@@ -3426,8 +3525,8 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
         }
         
         // Close modal ONLY via Oke button - goes to Riwayat
-                window.closeSuccessModal = function(){
-            console.log('closeSuccessModal - Oke clicked, going to Riwayat DIRECT');
+                        window.closeSuccessModal = function(){
+            console.log('=== closeSuccessModal - RESETTING ALL FIELDS ===');
             var modal = document.getElementById('successModal');
             var box = document.getElementById('successModalBox');
             if(modal){
@@ -3439,146 +3538,115 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
                 }
             }
             
-            // V77 - Reset SEMUA kolom Tambah Transaksi setelah berhasil
-            try{
-                console.log('Resetting all Tambah Transaksi fields...');
-                
-                // Reset form
-                var form = document.getElementById('transactionForm');
-                if(form){
-                    form.reset();
-                    console.log('Form reset');
-                }
-                
-                // Reset tipe transaksi ke default
-                var tipeSelect = document.getElementById('tipeTransaksi');
-                if(tipeSelect) tipeSelect.value = '';
-                
-                // Reset nama penabung ke default
-                var penabungSelect = document.getElementById('namaPenabung');
-                if(penabungSelect) penabungSelect.value = '';
-                
-                // Reset tanggal & jam ke now
-                if(typeof setNowDateTimeAndFilter === 'function'){
-                    setNowDateTimeAndFilter();
-                    console.log('DateTime reset to now');
-                } else {
-                    var tglInput = document.getElementById('tglTransaksi');
-                    var jamInput = document.getElementById('jamTransaksi');
-                    if(tglInput){
-                        var now = new Date();
-                        tglInput.value = now.toISOString().split('T')[0];
-                    }
-                    if(jamInput){
-                        var now = new Date();
-                        jamInput.value = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-                    }
-                }
-                
-                // Reset jumlah Rp ke 0 / kosong
-                var jumlahRupiah = document.getElementById('jumlahRupiah');
-                var jumlahNominal = document.getElementById('jumlahNominal');
-                var jumlahDisplay = document.getElementById('jumlahDisplay');
-                if(jumlahRupiah){
-                    jumlahRupiah.value = '';
-                    jumlahRupiah.innerText = '';
-                }
-                if(jumlahNominal){
-                    jumlahNominal.value = '0';
-                }
-                if(jumlahDisplay){
-                    jumlahDisplay.value = '';
-                    jumlahDisplay.innerText = 'Rp 0';
-                }
-                // Also reset any Rp input
-                var rpInputs = document.querySelectorAll('input[type="text"][id*="jumlah"], input[placeholder*="Rp"]');
-                rpInputs.forEach(function(inp){
-                    if(inp.id !== 'filterBulan' && inp.id !== 'filterTahun'){
-                        inp.value = '';
-                    }
-                });
-                
-                // Reset keterangan / catatan
-                var ketInput = document.getElementById('keteranganTransaksi');
-                var ketInput2 = document.getElementById('ketTransaksi');
-                if(ketInput){
-                    ketInput.value = '';
-                    ketInput.innerText = '';
-                }
-                if(ketInput2){
-                    ketInput2.value = '';
-                }
-                // All textarea
-                var textareas = document.querySelectorAll('textarea');
-                textareas.forEach(function(ta){
-                    if(ta.id.includes('keterangan') || ta.id.includes('ket')){
-                        ta.value = '';
-                    }
-                });
-                
-                // Reset lampiran bukti transfer - FILE INPUT
-                var fileInput = document.getElementById('buktiTransfer');
-                if(fileInput){
-                    fileInput.value = '';
-                    // Clone to fully reset
-                    var newFileInput = fileInput.cloneNode(true);
-                    fileInput.parentNode.replaceChild(newFileInput, fileInput);
-                    console.log('File input reset');
-                }
-                
-                // Reset preview container
-                var previewCont = document.getElementById('buktiPreviewContainer');
-                var previewImg = document.getElementById('buktiPreview');
-                var previewName = document.getElementById('buktiFileName');
-                if(previewCont){
-                    previewCont.classList.add('hidden');
-                    previewCont.style.display = 'none';
-                }
-                if(previewImg){
-                    previewImg.src = '';
-                }
-                if(previewName){
-                    previewName.innerText = '';
-                }
-                
-                // Reset temp bukti
-                window.tempBuktiBase64 = "";
-                window.buktiBase64 = "";
-                if(window.selectedFile) window.selectedFile = null;
-                
-                console.log('All fields reset - form kosong lagi');
-                
-            }catch(e){ 
-                console.log('Reset error', e); 
-                // Fallback simple reset
-                try{
-                    document.getElementById('transactionForm').reset();
-                }catch(e2){}
-            }
-            
-            // Langsung ke Riwayat tanpa dihalangi Tambah - delay sedikit biar modal nutup dulu
+            // V78 - Reset SEMUA kolom Tambah Transaksi - SUPER ROBUST
             setTimeout(function(){
-                console.log('Switching to Riwayat tab - direct');
+                try{
+                    console.log('Starting full reset...');
+                    
+                    // 1. Reset form
+                    var form = document.getElementById('transactionForm');
+                    if(form){
+                        form.reset();
+                        console.log('Form reset() called');
+                    }
+                    
+                    // 2. Reset specific fields by ID - force empty
+                    var fieldsToReset = [
+                        'tipeTransaksi', 'namaPenabung', 'jumlahRupiah', 'jumlahNominal',
+                        'jumlahDisplay', 'keteranganTransaksi', 'ketTransaksi',
+                        'buktiTransfer', 'buktiFileName'
+                    ];
+                    
+                    fieldsToReset.forEach(function(id){
+                        var el = document.getElementById(id);
+                        if(el){
+                            if(el.type === 'file'){
+                                el.value = '';
+                                // Clone to fully clear
+                                try{
+                                    var clone = el.cloneNode(true);
+                                    el.parentNode.replaceChild(clone, el);
+                                }catch(e){}
+                            } else if(el.tagName === 'SELECT'){
+                                el.selectedIndex = 0;
+                                el.value = '';
+                            } else {
+                                el.value = '';
+                                if(el.innerText !== undefined) el.innerText = '';
+                            }
+                            console.log('Reset', id);
+                        }
+                    });
+                    
+                    // 3. Reset all text inputs in Tambah tab (except filters)
+                    var tambahTab = document.getElementById('tambahPage') || document.querySelector('[data-page="tambah"]') || document.getElementById('transactionForm')?.parentElement;
+                    if(tambahTab){
+                        var inputs = tambahTab.querySelectorAll('input[type="text"], input[type="number"], textarea');
+                        inputs.forEach(function(inp){
+                            if(inp.id && (inp.id.includes('filter') || inp.id.includes('Bulan') || inp.id.includes('Tahun') || inp.id.includes('search'))) return;
+                            if(inp.type === 'file') return;
+                            inp.value = '';
+                        });
+                    }
+                    
+                    // 4. Reset preview
+                    var previewCont = document.getElementById('buktiPreviewContainer');
+                    var previewImg = document.getElementById('buktiPreview');
+                    var previewName = document.getElementById('buktiFileName');
+                    var fileNameDisplay = document.querySelector('.file-name, #fileName');
+                    
+                    if(previewCont){
+                        previewCont.classList.add('hidden');
+                        previewCont.style.display = 'none';
+                        previewCont.innerHTML = '';
+                    }
+                    if(previewImg) previewImg.src = '';
+                    if(previewName) previewName.innerText = '';
+                    if(fileNameDisplay) fileNameDisplay.innerText = '';
+                    
+                    // 5. Reset global vars
+                    window.tempBuktiBase64 = "";
+                    window.buktiBase64 = "";
+                    window.selectedFile = null;
+                    window.buktiFile = null;
+                    
+                    // 6. Reset date to real-time 31/10/2026 (now)
+                    if(typeof setNowDateTimeAndFilter === 'function'){
+                        setTimeout(function(){
+                            setNowDateTimeAndFilter();
+                            console.log('Date reset to real-time 31/10/2026');
+                        }, 100);
+                    }
+                    
+                    // 7. Reset amount display
+                    var jumlahRupiah = document.getElementById('jumlahRupiah');
+                    if(jumlahRupiah){
+                        jumlahRupiah.value = '';
+                        jumlahRupiah.placeholder = 'Rp 0';
+                    }
+                    
+                    console.log('=== ALL FIELDS RESET - FORM KOSONG ===');
+                    
+                }catch(e){ 
+                    console.log('Reset error', e);
+                    try{
+                        var f = document.getElementById('transactionForm');
+                        if(f) f.reset();
+                    }catch(e2){}
+                }
+            }, 50);
+            
+            // Go to Riwayat
+            setTimeout(function(){
+                console.log('Switching to Riwayat');
                 if(typeof switchTab === 'function'){
                     switchTab('riwayat');
-                } else {
-                    // Fallback: click nav button
-                    var navBtns = document.querySelectorAll('[data-tab="riwayat"], button[onclick*="riwayat"], #nav-riwayat');
-                    for(var i=0; i<navBtns.length; i++){
-                        try{ navBtns[i].click(); break; }catch(e){}
-                    }
-                    // Also try bottom nav
-                    var bottomNav = document.querySelectorAll('.bottom-nav button, nav button');
-                    for(var j=0; j<bottomNav.length; j++){
-                        if(bottomNav[j].innerText.toLowerCase().includes('riwayat')){
-                            bottomNav[j].click();
-                            break;
-                        }
-                    }
                 }
-            }, 150);
+            }, 200);
         };
         function closeSuccessModal(){ window.closeSuccessModal(); }
+
+function closeSuccessModal(){ window.closeSuccessModal(); }
 
 function closeSuccessModal(){ window.closeSuccessModal(); }
 
