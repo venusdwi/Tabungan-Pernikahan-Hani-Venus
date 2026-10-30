@@ -1997,6 +1997,42 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             document.getElementById('filterTahun').value = 'all';
         }
 
+        function listenToFirestore() {
+            db.collection("transactions").onSnapshot((snapshot) => {
+                let newTransactions = [];
+                snapshot.forEach((doc) => {
+                    newTransactions.push({
+                        docId: doc.id,
+                        ...doc.data()
+                    });
+                });
+                newTransactions.sort((a, b) => a.id - b.id);
+
+                if (!isInitialLoad && newTransactions.length > transactions.length) {
+                    const latestItem = newTransactions[newTransactions.length - 1];
+                    const formatNum = new Intl.NumberFormat('id-ID').format(latestItem.jumlah);
+                    const msg = `${latestItem.penabung} baru saja menambah ${latestItem.tipe} sebesar Rp ${formatNum} (${latestItem.ket})`;
+
+                    playNotificationSound();
+
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        navigator.serviceWorker.ready.then(registration => {
+                            registration.showNotification("Tabungan Pernikahan HV 💍", {
+                                body: msg,
+                                icon: "logo.png",
+                                badge: "logo.png",
+                                tag: "wedding-saving-notif"
+                            });
+                        });
+                    }
+                }
+
+                transactions = newTransactions;
+                isInitialLoad = false;
+                updateUI();
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             setNowDateTimeAndFilter();
             loadSavedOpacity();
