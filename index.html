@@ -1647,6 +1647,23 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 </div>
 </div>
+<div class="glass-box rounded-[1.5rem] p-4 mt-4" id="deviceOwnerBox">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#f3e8ff; color:#9333ea;">
+<i class="fa-solid fa-mobile-screen-button"></i>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-sm">Perangkat Ini Milik Siapa?</h3>
+<p class="text-[11px] opacity-70">Biar notif pasangan muncul</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-3 rounded-xl text-xs font-bold border-2" id="deviceHani" onclick="setDeviceOwner('HANI')" style="background:white; border-color:#e2e8f0;">Saya HANI</button>
+<button class="py-3 rounded-xl text-xs font-bold border-2" id="deviceVenus" onclick="setDeviceOwner('VENUS')" style="background:white; border-color:#e2e8f0;">Saya VENUS</button>
+</div>
+<div class="hidden mt-2 p-2 rounded-xl text-[11px] text-center font-bold" id="deviceOwnerInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
+</div>
+
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
 <div class="space-y-3">
@@ -1906,17 +1923,1021 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
         let journeyPhotos = [];
         const DEFAULT_PIN = "150522";
         let currentPin = ""; 
-        
-        let buktiFotoUrl = "";
         let tempBuktiBase64 = "";
+        let isInitialLoad = true;
+        let isDarkMode = true; // Status Dark / White mode
+
+        let slideshowInterval = null;
+        let songTimeout = null;
+        let currentSlideIndex = 0;
+        let currentLightboxIndex = 0;
+
+        let activePopupTarget = 'main'; 
+        let activePopupType = 'tipe'; 
+
+        function setNowDateTimeAndFilter() {
+            const now = new Date();
+            const yearStr = String(now.getFullYear());
+            const monthStr = String(now.getMonth() + 1).padStart(2, '0');
+
+            document.getElementById('tglTransaksi').value = now.toISOString().split('T')[0];
+            document.getElementById('jamTransaksi').value = now.toTimeString().split(' ')[0].substring(0, 5);
+
+            document.getElementById('filterBulan').value = 'all';
+            document.getElementById('filterTahun').value = 'all';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setNowDateTimeAndFilter();
+            loadSavedOpacity();
+            loadSavedLocalBg();
+            
+            updateKeteranganValidation();
+
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+
+            const isUnlocked = sessionStorage.getItem('wedding_app_unlocked');
+            if (isUnlocked === 'true') {
+                unlockAppInstant();
+            }
+
+            listenToFirestore();
+            listenToJourneyPhotos();
+            listenToSharedBackground();
+            startCountdown();
+        });
+
+        // ------------------------------------------------------------------
+        // LOGIKA DARK MODE & WHITE MODE MENYELURUH (NOMOR FOTO & IKON HITAM DI WHITE MODE)
+        // ------------------------------------------------------------------
+        function toggleThemeMode() {
+            isDarkMode = !isDarkMode;
+            const body = document.getElementById('appBody');
+            const icon = document.getElementById('themeToggleIcon');
+            const journeyHeader = document.getElementById('journeyHeader');
+            const journeyBody = document.getElementById('journeyBody');
+            const journeyDesc = document.getElementById('journeyDesc');
+            const lightboxModal = document.getElementById('lightboxModal');
+            const lightboxCounter = document.getElementById('lightboxCounter');
+            const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+            const lightboxPrevBtn = document.getElementById('lightboxPrevBtn');
+            const lightboxNextBtn = document.getElementById('lightboxNextBtn');
+
+            if (isDarkMode) {
+                // Mode Gelap (Dark Mode)
+                body.style.backgroundColor = "#090d16";
+                body.classList.remove('bg-slate-100');
+                body.classList.add('bg-slate-950');
+                icon.className = "fa-solid fa-sun";
+
+                if (journeyHeader) {
+                    journeyHeader.style.backgroundColor = "rgba(15, 23, 42, 0.85)";
+                    journeyHeader.style.color = "#ffffff";
+                }
+                if (journeyBody) {
+                    journeyBody.style.backgroundColor = "rgba(9, 13, 22, 0.95)";
+                    journeyBody.style.color = "#f8fafc";
+                }
+                if (journeyDesc) {
+                    journeyDesc.className = "text-slate-300 text-sm max-w-md mx-auto mb-4 transition-colors duration-300";
+                }
+                if (lightboxModal) {
+                    lightboxModal.style.backgroundColor = "rgba(9, 13, 22, 0.95)";
+                }
+                if (lightboxCounter) {
+                    lightboxCounter.className = "text-white text-sm font-bold bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/10 transition-colors duration-300";
+                }
+                if (lightboxCloseBtn) {
+                    lightboxCloseBtn.className = "w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center text-xl transition shadow-lg cursor-pointer";
+                }
+                if (lightboxPrevBtn) {
+                    lightboxPrevBtn.className = "absolute left-2 sm:left-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer";
+                }
+                if (lightboxNextBtn) {
+                    lightboxNextBtn.className = "absolute right-2 sm:right-6 z-20 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 shadow-lg transition cursor-pointer";
+                }
+            } else {
+                // Mode Terang (White Mode) - Tanda Silang, Nomor Foto & Tombol Jadi Hitam
+                body.style.backgroundColor = "#f1f5f9";
+                body.classList.remove('bg-slate-950');
+                body.classList.add('bg-slate-100');
+                icon.className = "fa-solid fa-moon";
+
+                if (journeyHeader) {
+                    journeyHeader.style.backgroundColor = "rgba(241, 245, 249, 0.95)";
+                    journeyHeader.style.color = "#0f172a";
+                }
+                if (journeyBody) {
+                    journeyBody.style.backgroundColor = "rgba(255, 255, 255, 0.98)";
+                    journeyBody.style.color = "#0f172a";
+                }
+                if (journeyDesc) {
+                    journeyDesc.className = "text-slate-600 text-sm max-w-md mx-auto mb-4 transition-colors duration-300";
+                }
+                if (lightboxModal) {
+                    lightboxModal.style.backgroundColor = "rgba(241, 245, 249, 0.95)";
+                }
+                if (lightboxCounter) {
+                    lightboxCounter.className = "text-slate-900 text-sm font-bold bg-slate-200 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-slate-300 transition-colors duration-300";
+                }
+                if (lightboxCloseBtn) {
+                    lightboxCloseBtn.className = "w-11 h-11 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-full flex items-center justify-center text-xl transition shadow-lg border border-slate-300 cursor-pointer";
+                }
+                if (lightboxPrevBtn) {
+                    lightboxPrevBtn.className = "absolute left-2 sm:left-6 z-20 w-12 h-12 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-full flex items-center justify-center backdrop-blur-md border border-slate-300 shadow-lg transition cursor-pointer";
+                }
+                if (lightboxNextBtn) {
+                    lightboxNextBtn.className = "absolute right-2 sm:right-6 z-20 w-12 h-12 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-full flex items-center justify-center backdrop-blur-md border border-slate-300 shadow-lg transition cursor-pointer";
+                }
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // MODAL OUR JOURNEY TO HALAL
+        // ------------------------------------------------------------------
+        function openJourneyModal() {
+            const modal = document.getElementById('journeyModal');
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeJourneyModal() {
+            const modal = document.getElementById('journeyModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
+        }
+
+        // UPLOAD FOTO 100% ORIGINAL TANPA KOMPRESI
+        function uploadJourneyPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const originalBase64 = e.target.result; // Data asli murni tanpa kompresi
+                    
+                    const newPhotoObj = {
+                        id: Date.now(),
+                        url: originalBase64
+                    };
+
+                    db.collection("journeyGallery").add(newPhotoObj).catch(err => {
+                        alert("Gagal mengunggah foto ke cloud.");
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function listenToJourneyPhotos() {
+            db.collection("journeyGallery").onSnapshot((snapshot) => {
+                let photos = [];
+                snapshot.forEach((doc) => {
+                    photos.push({
+                        docId: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                // Mengurutkan dari yang terbaru (ID terbesar) agar muncul di atas sebelah kiri
+                photos.sort((a, b) => b.id - a.id);
+
+                journeyPhotos = photos;
+                updateJourneyGalleryUI();
+            });
+        }
+
+        function updateJourneyGalleryUI() {
+            const container = document.getElementById('journeyGalleryGrid');
+            container.innerHTML = '';
+
+            if (journeyPhotos.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-center col-span-full py-8 text-sm">Belum ada foto galeri kenangan. Yuk tambah foto pertama kalian!</p>`;
+                return;
+            }
+
+            journeyPhotos.forEach((photo, index) => {
+                const div = document.createElement('div');
+                div.className = "relative aspect-square rounded-2xl overflow-hidden border border-white/20 group shadow-md bg-slate-950";
+                div.innerHTML = `
+                    <img src="${photo.url}" alt="Kenangan" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition duration-300" onclick="openLightbox(${index})">
+                    <button onclick="deleteJourneyPhoto('${photo.docId}')" class="absolute top-2 right-2 w-8 h-8 bg-rose-600/80 hover:bg-rose-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-md cursor-pointer">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteJourneyPhoto(docId) {
+            if (confirm("Hapus foto kenangan ini dari galeri?")) {
+                db.collection("journeyGallery").doc(docId).delete().catch(err => {
+                    alert("Gagal menghapus foto.");
+                });
+            }
+        }
+
+        // ------------------------------------------------------------------
+        // LOGIKA LIGHTBOX FOTO & DOWNLOAD FILE ORIGINAL
+        // ------------------------------------------------------------------
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            const modal = document.getElementById('lightboxModal');
+            updateLightboxContent();
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightboxModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
+        }
+
+        function updateLightboxContent() {
+            if (journeyPhotos.length === 0) {
+                closeLightbox();
+                return;
+            }
+            if (currentLightboxIndex >= journeyPhotos.length) {
+                currentLightboxIndex = journeyPhotos.length - 1;
+            }
+            const photo = journeyPhotos[currentLightboxIndex];
+            document.getElementById('lightboxImageSrc').src = photo.url;
+            document.getElementById('lightboxCounter').innerText = `${currentLightboxIndex + 1} / ${journeyPhotos.length}`;
+        }
+
+        function nextLightboxImage() {
+            currentLightboxIndex++;
+            if (currentLightboxIndex >= journeyPhotos.length) {
+                currentLightboxIndex = 0;
+            }
+            updateLightboxContent();
+        }
+
+        function prevLightboxImage() {
+            currentLightboxIndex--;
+            if (currentLightboxIndex < 0) {
+                currentLightboxIndex = journeyPhotos.length - 1;
+            }
+            updateLightboxContent();
+        }
+
+        function deleteCurrentLightboxPhoto() {
+            if (journeyPhotos.length === 0) return;
+            const photo = journeyPhotos[currentLightboxIndex];
+            if (confirm("Hapus foto kenangan ini dari galeri?")) {
+                db.collection("journeyGallery").doc(photo.docId).delete().then(() => {
+                    if (journeyPhotos.length <= 1) {
+                        closeLightbox();
+                    } else {
+                        if (currentLightboxIndex >= journeyPhotos.length - 1) {
+                            currentLightboxIndex = journeyPhotos.length - 2;
+                        }
+                        updateLightboxContent();
+                    }
+                }).catch(err => {
+                    alert("Gagal menghapus foto.");
+                });
+            }
+        }
+
+        // Fungsi Download Foto Original
+        function downloadCurrentLightboxPhoto() {
+            if (journeyPhotos.length === 0) return;
+            const photo = journeyPhotos[currentLightboxIndex];
+            const link = document.createElement('a');
+            link.href = photo.url;
+            link.download = `Hani_Venus_Kenangan_${currentLightboxIndex + 1}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ------------------------------------------------------------------
+        // LOGIKA SLIDE SHOW & LAGU OVERNIGHT ASLI
+        // ------------------------------------------------------------------
+        const effectClasses = ['effect-fade', 'effect-zoom', 'effect-slide', 'effect-rotate'];
+
+        function startSlideShow() {
+            if (journeyPhotos.length === 0) {
+                alert("Tambahkan minimal 1 foto ke galeri terlebih dahulu untuk memulai Slide Show!");
+                return;
+            }
+
+            closeJourneyModal();
+            
+            const audio = document.getElementById('overnightAudio');
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio autoplay prevented:", e));
+
+            const modal = document.getElementById('slideshowModal');
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+
+            currentSlideIndex = 0;
+            showSlide(currentSlideIndex);
+
+            slideshowInterval = setInterval(() => {
+                currentSlideIndex++;
+                if (currentSlideIndex >= journeyPhotos.length) {
+                    currentSlideIndex = 0;
+                }
+                showSlide(currentSlideIndex);
+            }, 3000);
+
+            songTimeout = setTimeout(() => {
+                stopSlideShowAndReturnToJourney();
+            }, 150000);
+        }
+
+        function showSlide(index) {
+            const img = document.getElementById('slideshowImage');
+            const counter = document.getElementById('slideshowCounter');
+            
+            effectClasses.forEach(cls => img.classList.remove(cls));
+            img.src = journeyPhotos[index].url;
+            counter.innerText = `Slide ${index + 1} / ${journeyPhotos.length}`;
+
+            const chosenEffect = effectClasses[index % effectClasses.length];
+            void img.offsetWidth;
+            img.classList.add(chosenEffect);
+        }
+
+        function stopSlideShow() {
+            clearInterval(slideshowInterval);
+            clearTimeout(songTimeout);
+            
+            const audio = document.getElementById('overnightAudio');
+            audio.pause();
+            audio.currentTime = 0;
+
+            const modal = document.getElementById('slideshowModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
+        }
+
+        function stopSlideShowAndReturnToJourney() {
+            stopSlideShow();
+            openJourneyModal();
+        }
+
+        // LOGIKA DOWNLOAD CETAK PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const selBulan = document.getElementById('filterBulan').value;
+            const selTahun = document.getElementById('filterTahun').value;
+
+            const dropdownBulan = document.getElementById('filterBulan');
+            const namaBulan = selBulan === 'all' ? 'Semua Bulan' : dropdownBulan.options[dropdownBulan.selectedIndex].text;
+            const namaTahun = selTahun === 'all' ? 'Semua Tahun' : selTahun;
+
+            let totalMasukPDF = 0;
+            let totalKeluarPDF = 0;
+
+            const filteredTransactions = transactions.filter(item => {
+                if (!item.tgl) return true;
+                const parts = item.tgl.split('-');
+                const itemYear = parts[0];
+                const itemMonth = parts[1];
+
+                const matchMonth = (selBulan === 'all' || itemMonth === selBulan);
+                const matchYear = (selTahun === 'all' || itemYear === selTahun);
+
+                return matchMonth && matchYear;
+            });
+
+            if (filteredTransactions.length === 0) {
+                alert("Tidak ada transaksi pada periode ini untuk dicetak.");
+                return;
+            }
+
+            doc.setFontSize(16);
+            doc.text("Rekap Tabungan Pernikahan Hani & Venus", 14, 20);
+            
+            doc.setFontSize(11);
+            doc.text(`Periode  : ${namaBulan} ${namaTahun}`, 14, 28);
+            
+            const now = new Date();
+            const dateCetak = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            doc.setFontSize(9);
+            doc.text(`Dicetak  : ${dateCetak}`, 14, 33);
+
+            const tableColumn = ["Tanggal & Waktu", "Penabung", "Tipe", "Keterangan", "Jumlah (Rp)"];
+            const tableRows = [];
+
+            filteredTransactions.forEach(item => {
+                if (item.tipe === 'pemasukan') totalMasukPDF += item.jumlah;
+                if (item.tipe === 'pengeluaran') totalKeluarPDF += item.jumlah;
+                if (item.tipe === 'pengembalian') totalKeluarPDF -= item.jumlah;
+
+                const isMasuk = item.tipe === 'pemasukan' || item.tipe === 'pengembalian';
+                const sign = isMasuk ? "+" : "-";
+                
+                const cleanPenabung = (item.penabung || '').replace(/[^\x20-\x7E]/g, '').trim();
+                const cleanKet = (item.ket || '').replace(/[^\x20-\x7E]/g, '').trim();
+
+                const rowData = [
+                    `${item.tgl} ${item.jam}`,
+                    cleanPenabung,
+                    item.tipe.toUpperCase(),
+                    cleanKet,
+                    `${sign} Rp ${new Intl.NumberFormat('id-ID').format(item.jumlah)}`
+                ];
+                tableRows.push(rowData);
+            });
+
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 40,
+                theme: 'grid',
+                styles: { fontSize: 9 },
+                headStyles: { fillColor: [2, 132, 199] } 
+            });
+
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(11);
+            doc.text(`Total Pemasukan     : Rp ${new Intl.NumberFormat('id-ID').format(totalMasukPDF)}`, 14, finalY);
+            doc.text(`Total Pengeluaran   : Rp ${new Intl.NumberFormat('id-ID').format(totalKeluarPDF)}`, 14, finalY + 6);
+            
+            doc.setFont(undefined, 'bold');
+            const netBalancePDF = totalMasukPDF - totalKeluarPDF;
+            doc.text(`Total Saldo Periode Ini : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 14);
+
+            doc.save(`Rekap_Tabungan_${namaBulan}_${namaTahun}.pdf`);
+        }
+
+        // LOGIKA POP-UP DROPDOWN
+        const optionDataTipe = [
+            { val: 'pemasukan', label: 'Pemasukan (+)', icon: 'fa-plus', color: 'emerald' },
+            { val: 'pengeluaran', label: 'Pengeluaran (-)', icon: 'fa-minus', color: 'rose' },
+            { val: 'pengembalian', label: 'Pengembalian Dana (+)', icon: 'fa-rotate-left', color: 'blue' }
+        ];
+
+        const optionDataPenabung = [
+            { val: 'HANI', label: 'HANI', icon: 'fa-user-astronaut', color: 'indigo' },
+            { val: 'VENUS', label: 'VENUS', icon: 'fa-user-ninja', color: 'violet' },
+            { val: 'BERSAMA👩‍❤️‍💋‍👨', label: 'BERSAMA 👩‍❤️‍💋‍‍👨', icon: 'fa-users', color: 'pink' }
+        ];
+
+        function openPopup(type, target) {
+            activePopupType = type;
+            activePopupTarget = target;
+            
+            const modal = document.getElementById('customSelectModal');
+            const titleEl = document.getElementById('popupTitle');
+            const container = document.getElementById('popupOptionsContainer');
+            
+            container.innerHTML = ''; 
+            let activeValue = '';
+
+            if (type === 'tipe') {
+                titleEl.innerText = 'Pilih Tipe Transaksi';
+                activeValue = (target === 'main') ? document.getElementById('tipeTransaksi').value : document.getElementById('editTipe').value;
+                
+                optionDataTipe.forEach(opt => {
+                    const isSelected = activeValue === opt.val;
+                    container.innerHTML += createOptionHTML(opt, isSelected);
+                });
+            } else {
+                titleEl.innerText = 'Pilih Nama Penabung';
+                activeValue = (target === 'main') ? document.getElementById('namaPenabung').value : document.getElementById('editPenabung').value;
+                
+                optionDataPenabung.forEach(opt => {
+                    const isSelected = activeValue === opt.val;
+                    container.innerHTML += createOptionHTML(opt, isSelected);
+                });
+            }
+
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('customSelectContent').classList.remove('translate-y-full', 'sm:scale-95');
+            }, 10);
+        }
+
+        function createOptionHTML(opt, isSelected) {
+            const borderClass = isSelected ? `border-${opt.color}-500 bg-${opt.color}-50` : 'border-slate-200 hover:border-blue-400 hover:bg-slate-50';
+            const iconBgClass = isSelected ? `bg-${opt.color}-500 text-white shadow-md` : `bg-${opt.color}-100 text-${opt.color}-600`;
+            const checkIcon = isSelected ? `<i class="fa-solid fa-circle-check text-${opt.color}-500 text-xl ml-auto"></i>` : '';
+
+            return `
+                <button type="button" onclick="selectOption('${opt.val}', '${opt.label}')" class="w-full flex items-center p-4 rounded-xl border ${borderClass} transition text-left shadow-sm cursor-pointer">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center mr-4 transition ${iconBgClass}">
+                        <i class="fa-solid ${opt.icon}"></i>
+                    </div>
+                    <span class="font-bold text-slate-800 text-base sm:text-lg">${opt.label}</span>
+                    ${checkIcon}
+                </button>
+            `;
+        }
+
+        function selectOption(val, textLabel) {
+            if (activePopupType === 'tipe') {
+                if (activePopupTarget === 'main') {
+                    document.getElementById('tipeTransaksi').value = val;
+                    const btnSpan = document.getElementById('textTipeTransaksi');
+                    btnSpan.innerText = textLabel;
+                    btnSpan.classList.remove('text-slate-400');
+                    btnSpan.classList.add('text-slate-800');
+                    updateKeteranganValidation();
+                } else {
+                    document.getElementById('editTipe').value = val;
+                    document.getElementById('textEditTipeTransaksi').innerText = textLabel;
+                }
+            } else {
+                if (activePopupTarget === 'main') {
+                    document.getElementById('namaPenabung').value = val;
+                    const btnSpan = document.getElementById('textNamaPenabung');
+                    btnSpan.innerText = textLabel;
+                    btnSpan.classList.remove('text-slate-400');
+                    btnSpan.classList.add('text-slate-800');
+                } else {
+                    document.getElementById('editPenabung').value = val;
+                    document.getElementById('textEditNamaPenabung').innerText = textLabel;
+                }
+            }
+            closePopup();
+        }
+
+        function closePopup() {
+            const modal = document.getElementById('customSelectModal');
+            document.getElementById('customSelectContent').classList.add('translate-y-full', 'sm:scale-95');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
+        }
+
+        function appendPin(num) {
+            if (currentPin.length < 6) {
+                currentPin += num;
+                updatePinDisplay();
+                if (currentPin.length === 6) {
+                    setTimeout(() => verifyPin(currentPin), 100);
+                }
+            }
+        }
+
+        function deletePin() {
+            if (currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updatePinDisplay();
+            }
+        }
         
+        function clearAllPin() {
+            currentPin = "";
+            updatePinDisplay();
+        }
+
+        function updatePinDisplay() {
+            document.getElementById('pinErrMsg').classList.add('hidden');
+
+            for (let i = 0; i < 6; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < currentPin.length) {
+                    dot.innerText = '•';
+                    dot.classList.add('bg-sky-500', 'border-sky-400', 'shadow-[0_0_10px_rgba(14,165,233,0.5)]');
+                    dot.classList.remove('bg-slate-800/60', 'border-slate-600/50');
+                } else {
+                    dot.innerText = '';
+                    dot.classList.remove('bg-sky-500', 'border-sky-400', 'shadow-[0_0_10px_rgba(14,165,233,0.5)]');
+                    dot.classList.add('bg-slate-800/60', 'border-slate-600/50');
+                }
+            }
+        }
+
+        function playRingClink() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const freqs = [3520, 4186]; 
+                freqs.forEach((freq) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                    
+                    gain.gain.setValueAtTime(0, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.8);
+                });
+            } catch(e) {}
+        }
+
+        function verifyPin(enteredPin) {
+            document.getElementById('pinErrMsg').classList.add('hidden');
+
+            if (enteredPin === DEFAULT_PIN) {
+                sessionStorage.setItem('wedding_app_unlocked', 'true');
+                
+                document.getElementById('pinInputContent').classList.add('opacity-0');
+                
+                setTimeout(() => {
+                    document.getElementById('pinInputContent').classList.add('hidden');
+                    
+                    const ringContainer = document.getElementById('ringAnimationContainer');
+                    ringContainer.classList.remove('hidden');
+                    ringContainer.classList.add('flex');
+                    
+                    setTimeout(() => {
+                        ringContainer.classList.remove('opacity-0');
+                        
+                        const rMale = document.getElementById('ringMale');
+                        const rFemale = document.getElementById('ringFemale');
+                        
+                        rMale.classList.remove('-translate-x-16');
+                        rMale.classList.add('-translate-x-2');
+                        
+                        rFemale.classList.remove('translate-x-16');
+                        rFemale.classList.add('translate-x-2');
+                        
+                        document.getElementById('welcomeText').classList.remove('opacity-0');
+                    }, 50);
+
+                    setTimeout(() => {
+                        playRingClink();
+                        
+                        document.getElementById('ringMale').classList.add('shadow-[0_0_25px_rgba(251,191,36,0.9)]', 'border-amber-300');
+                        document.getElementById('ringFemale').classList.add('shadow-[0_0_25px_rgba(251,191,36,0.9)]', 'border-amber-300');
+                    }, 700);
+
+                    setTimeout(() => {
+                        unlockApp();
+                    }, 1500);
+                    
+                }, 300);
+
+            } else {
+                document.getElementById('btnPinSubmit').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('btnPinSubmit').classList.add('hidden');
+                    document.getElementById('pinErrMsg').classList.remove('hidden');
+                    currentPin = ""; 
+                    updatePinDisplay();
+                }, 400);
+            }
+        }
+
+        function unlockApp() {
+            const screen = document.getElementById('pinLockScreen');
+            if (screen) {
+                screen.classList.add('opacity-0', 'pointer-events-none', 'scale-105');
+                setTimeout(() => {
+                    screen.style.display = 'none';
+                    screen.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }, 700);
+            }
+        }
+
+        function unlockAppInstant() {
+            const screen = document.getElementById('pinLockScreen');
+            if (screen) {
+                screen.style.display = 'none';
+                screen.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        // FUNGSI EFEK SUARA SUKSES KUSTOM (WEB AUDIO API)
+        
+        function playSuccessSound() {
+            try {
+                var AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                var audioCtx = new AudioContext();
+                var gainNode = audioCtx.createGain();
+                gainNode.gain.setValueAtTime(0.6, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                gainNode.connect(audioCtx.destination);
+                var osc1 = audioCtx.createOscillator();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc1.connect(gainNode);
+                osc1.start();
+                osc1.stop(audioCtx.currentTime + 0.3);
+                setTimeout(function(){
+                    try{
+                        var gain2 = audioCtx.createGain();
+                        gain2.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                        gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                        gain2.connect(audioCtx.destination);
+                        var osc2 = audioCtx.createOscillator();
+                        osc2.type = 'sine';
+                        osc2.frequency.setValueAtTime(880, audioCtx.currentTime);
+                        osc2.connect(gain2);
+                        osc2.start();
+                        osc2.stop(audioCtx.currentTime + 0.4);
+                    }catch(e){}
+                }, 80);
+                setTimeout(function(){
+                    try{
+                        var gain3 = audioCtx.createGain();
+                        gain3.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                        gain3.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                        gain3.connect(audioCtx.destination);
+                        var osc3 = audioCtx.createOscillator();
+                        osc3.type = 'sine';
+                        osc3.frequency.setValueAtTime(1318.51, audioCtx.currentTime);
+                        osc3.connect(gain3);
+                        osc3.start();
+                        osc3.stop(audioCtx.currentTime + 0.5);
+                    }catch(e){}
+                }, 180);
+            } catch (e) { }
+        }
+
+
+        // FUNGSI MUNCULKAN MODAL SUKSES KUSTOM + SOUND
+        function showSuccessModal() {
+            playSuccessSound();
+            const modal = document.getElementById('successModal');
+            const box = document.getElementById('successModalBox');
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('scale-95');
+                box.classList.add('scale-100');
+            }, 10);
+        }
+
+        
+        function closeSuccessModalAndReload(){
+            var sm=document.getElementById('successModal');
+            var sb=document.getElementById('successModalBox');
+            if(sm && sb){
+                sb.classList.remove('scale-100');
+                sb.classList.add('scale-95');
+                sb.style.transform='scale(0.9) translateY(10px)';
+                sb.style.opacity='0';
+                sm.classList.add('opacity-0');
+            }
+            setTimeout(function(){
+                if(sm){ sm.classList.add('hidden','pointer-events-none'); }
+                if(typeof closeTambahModal==='function'){ try{ closeTambahModal(); }catch(e){} }
+                if(typeof switchTab==='function'){ switchTab('riwayat'); }
+                var riwayatTab = document.getElementById('tab-riwayat');
+                if(riwayatTab){
+                    setTimeout(function(){
+                        riwayatTab.style.transition='opacity 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+                        riwayatTab.style.opacity='1';
+                        riwayatTab.style.transform='translateY(0)';
+                    }, 50);
+                }
+                window.scrollTo({top:0, behavior:'smooth'});
+                var btnSubmit=document.getElementById('btnSubmit');
+                var btnText=document.getElementById('btnSubmitText');
+                var btnSpinner=document.getElementById('btnSubmitSpinner');
+                if(btnSubmit) btnSubmit.disabled=false;
+                if(btnText){ btnText.classList.remove('hidden'); btnText.innerText='Simpan Transaksi'; }
+                if(btnSpinner){ btnSpinner.classList.add('hidden'); }
+            }, 300);
+        }
+
+
+        function playNotificationSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const notes = [523.25, 659.25, 783.99]; 
+                notes.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + (index * 0.08));
+
+                    gain.gain.setValueAtTime(0.001, ctx.currentTime + (index * 0.08));
+                    gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + (index * 0.08) + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (index * 0.08) + 0.5);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + (index * 0.08));
+                    osc.stop(ctx.currentTime + (index * 0.08) + 0.5);
+                });
+            } catch (e) {}
+        }
+
+        function listenToFirestore() {
+            db.collection("transactions").onSnapshot((snapshot) => {
+                let newTransactions = [];
+                snapshot.forEach((doc) => {
+                    newTransactions.push({
+                        docId: doc.id,
+                        ...doc.data()
+                    });
+                });
+                newTransactions.sort((a, b) => a.id - b.id);
+
+                if (!isInitialLoad && newTransactions.length > transactions.length) {
+                    const latestItem = newTransactions[newTransactions.length - 1];
+                    const formatNum = new Intl.NumberFormat('id-ID').format(latestItem.jumlah);
+                    const msg = `${latestItem.penabung} baru saja menambah ${latestItem.tipe} sebesar Rp ${formatNum} (${latestItem.ket})`;
+
+                    playNotificationSound();
+
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        navigator.serviceWorker.ready.then(registration => {
+                            registration.showNotification("Tabungan Pernikahan HV 💍", {
+                                body: msg,
+                                icon: "logo.png",
+                                badge: "logo.png",
+                                tag: "wedding-saving-notif"
+                            });
+                        });
+                    }
+                }
+
+                transactions = newTransactions;
+                isInitialLoad = false;
+                updateUI();
+            });
+        }
+
+        function listenToSharedBackground() {
+            db.collection("settings").doc("appSettings").onSnapshot((doc) => {
+                if (doc.exists && doc.data().bgImage) {
+                    applyBackgroundStyle(doc.data().bgImage);
+                    document.getElementById('btnResetBg').classList.remove('hidden');
+                }
+            });
+        }
+
+        function openImageModal(src) {
+            if (!src) return;
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('imageModalSrc');
+            img.src = src;
+            modal.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden', 'pointer-events-none');
+            }, 300);
+        }
+
+        function openBgPicker() {
+            const fileInput = document.getElementById('bgImageInput');
+            fileInput.value = '';
+            fileInput.click();
+        }
+
+        function uploadBgImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height && width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.4);
+                        
+                        applyBackgroundStyle(compressedUrl);
+                        try {
+                            localStorage.setItem('wedding_bg_local', compressedUrl);
+                        } catch (e) {}
+                        document.getElementById('btnResetBg').classList.remove('hidden');
+
+                        db.collection("settings").doc("appSettings").set({
+                            bgImage: compressedUrl
+                        }).catch(err => {
+                            console.warn("Latar belakang disimpan lokal:", err);
+                        });
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function applyBackgroundStyle(url) {
+            const bgLayer = document.getElementById('bgImageLayer');
+            bgLayer.style.backgroundImage = `url('${url}')`;
+            document.getElementById('bgOverlay').classList.add('opacity-40');
+        }
+
+        function loadSavedLocalBg() {
+            const localBg = localStorage.getItem('wedding_bg_local');
+            if (localBg) {
+                applyBackgroundStyle(localBg);
+                document.getElementById('btnResetBg').classList.remove('hidden');
+            }
+        }
+
+        function resetBgStyleUI() {
+            const bgLayer = document.getElementById('bgImageLayer');
+            bgLayer.style.backgroundImage = '';
+            document.getElementById('bgOverlay').classList.remove('opacity-40');
+            document.getElementById('btnResetBg').classList.add('hidden');
+            document.getElementById('bgImageInput').value = '';
+            localStorage.removeItem('wedding_bg_local');
+        }
+
+        function resetBgImage() {
+            resetBgStyleUI();
+            db.collection("settings").doc("appSettings").delete().catch(e => {});
+        }
+
+        function changeBoxOpacity(val) {
+            document.documentElement.style.setProperty('--box-opacity', val);
+            localStorage.setItem('wedding_box_opacity', val);
+        }
+
+        function loadSavedOpacity() {
+            const savedOpacity = localStorage.getItem('wedding_box_opacity') || '0.75';
+            document.documentElement.style.setProperty('--box-opacity', savedOpacity);
+            document.getElementById('opacitySlider').value = savedOpacity;
+        }
+
+        function updateKeteranganValidation() {
+            const tipe = document.getElementById('tipeTransaksi').value;
+            const ketInput = document.getElementById('keteranganTransaksi');
+            const reqMark = document.getElementById('ketRequiredMark');
+            const optMark = document.getElementById('ketOptionalMark');
+
+            if (tipe === 'pengeluaran') {
+                ketInput.required = true;
+                reqMark.classList.remove('hidden');
+                optMark.classList.add('hidden');
+            } else {
+                ketInput.required = false;
+                reqMark.classList.add('hidden');
+                optMark.classList.remove('hidden');
+            }
+        }
+
+        function startCountdown() {
+            const targetDate = new Date("2027-04-03T00:00:00").getTime();
+            function update() {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+                if (diff > 0) {
+                    document.getElementById('cd-days').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                    document.getElementById('cd-hours').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                    document.getElementById('cd-minutes').innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                    document.getElementById('cd-seconds').innerText = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+                }
+            }
+            update();
+            setInterval(update, 1000);
+        }
+
+        function formatRupiahInput(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            input.value = value ? new Intl.NumberFormat('id-ID').format(value) : '';
+        }
+
         function previewMainBukti(event){
           try{
             var file = event.target.files[0];
             if(!file) return;
             var reader = new FileReader();
             reader.onload = function(e){
-              // Compress for preview only, NOT for saving
               var img = new Image();
               img.onload = function(){
                 var canvas = document.createElement('canvas');
@@ -1927,6 +2948,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
                 var ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 tempBuktiBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                window.tempBuktiBase64 = tempBuktiBase64;
                 var container = document.getElementById('buktiPreviewContainer');
                 var previewImg = document.getElementById('buktiPreviewImg');
                 if(container && previewImg){
@@ -1939,38 +2961,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             reader.readAsDataURL(file);
           }catch(e){ console.log('preview error', e); }
         }
-        
-        function uploadBuktiToStorage(file){
-          return new Promise(function(resolve){
-            if(!file){ resolve(""); return; }
-            if(typeof firebase.storage === 'undefined'){ resolve(""); return; }
-            
-            var timeout = setTimeout(function(){
-              console.log('Upload timeout, skip');
-              resolve("");
-            }, 12000);
-            
-            try{
-              var ref = firebase.storage().ref().child('bukti/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]/gi,'_'));
-              ref.put(file).then(function(snap){
-                clearTimeout(timeout);
-                return snap.ref.getDownloadURL();
-              }).then(function(url){
-                buktiFotoUrl = url;
-                console.log('Uploaded:', url);
-                resolve(url);
-              }).catch(function(err){
-                clearTimeout(timeout);
-                console.log('Upload fail:', err.code);
-                resolve("");
-              });
-            }catch(err){
-              clearTimeout(timeout);
-              resolve("");
-            }
-          });
-        }
-        
+
         function handleFormSubmit(e) {
             e.preventDefault();
             var tipe = document.getElementById('tipeTransaksi').value;
@@ -1996,24 +2987,23 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             var btn = document.getElementById('btnSubmit');
             var btnText = document.getElementById('btnSubmitText');
             var btnSpin = document.getElementById('btnSubmitSpinner');
-            if(btn){ btn.disabled = true; }
-            if(btnText){ btnText.classList.add('hidden'); }
-            if(btnSpin){ btnSpin.classList.remove('hidden'); }
+            if(btn) btn.disabled = true;
+            if(btnText) btnText.classList.add('hidden');
+            if(btnSpin) btnSpin.classList.remove('hidden');
 
             var manualLink = document.getElementById('buktiFoto');
             if(manualLink && manualLink.value.trim().startsWith('http')){
-                buktiFotoUrl = manualLink.value.trim();
+                window.buktiFotoUrl = manualLink.value.trim();
             }
 
             var fileInput = document.getElementById('buktiTransfer');
             var file = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
 
-            function finalSave(buktiLink){
+            function doFinalSave(finalBuktiUrl){
                 var tgl = document.getElementById('tglTransaksi').value;
                 var jam = document.getElementById('jamTransaksi').value;
-                var finalBukti = buktiLink || buktiFotoUrl || "";
+                var finalUrl = finalBuktiUrl || window.buktiFotoUrl || "";
                 
-                // PENTING: Jangan simpan base64 di Firestore! Hanya URL!
                 var newItem = {
                     id: Date.now(),
                     tipe: tipe,
@@ -2022,83 +3012,92 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
                     jam: jam,
                     jumlah: jumlah,
                     ket: ketInput || (tipe === 'pemasukan' ? 'Pemasukan' : (tipe === 'pengembalian' ? 'Pengembalian' : 'Pengeluaran')),
-                    bukti: finalBukti,
-                    buktiUrl: finalBukti,
-                    buktiFoto: finalBukti
+                    bukti: finalUrl,
+                    buktiUrl: finalUrl,
+                    buktiFoto: finalUrl
                 };
-                
-                console.log('Saving to Firestore:', newItem);
 
                 db.collection("transactions").add(newItem).then(function(docRef){
                     console.log('Saved:', docRef.id);
                     
-                    // Reset form
                     try{
                         document.getElementById('transactionForm').reset();
                         if(typeof setNowDateTimeAndFilter === 'function') setNowDateTimeAndFilter();
                     }catch(err){}
                     
-                    tempBuktiBase64 = "";
-                    buktiFotoUrl = "";
+                    window.tempBuktiBase64 = "";
+                    window.buktiFotoUrl = "";
                     var cont = document.getElementById('buktiPreviewContainer');
                     if(cont) cont.classList.add('hidden');
                     var linkIn = document.getElementById('buktiFoto');
                     if(linkIn) linkIn.value = "";
                     
-                    // Re-enable button
                     if(btn){ btn.disabled = false; }
                     if(btnText){ btnText.classList.remove('hidden'); btnText.innerText = 'Simpan Transaksi'; }
                     if(btnSpin){ btnSpin.classList.add('hidden'); }
                     
-                    // Sound
                     if(typeof playSuccessSound === 'function'){
                         try{ playSuccessSound(); }catch(e){}
                     }
                     
-                    // Show success modal - BLUE for success
                     var successModal = document.getElementById('successModal');
                     if(successModal){
                         successModal.classList.remove('hidden');
                         successModal.classList.add('flex');
-                        // Auto hide after 2.5s and switch to riwayat
                         setTimeout(function(){
                             successModal.classList.add('hidden');
                             successModal.classList.remove('flex');
                             if(typeof switchTab === 'function') switchTab('riwayat');
                         }, 2500);
                     } else {
-                        // Fallback alert
                         if(typeof showAppNotification === 'function'){
-                            showAppNotification('Berhasil!', 'Transaksi ' + newItem.ket + ' Rp ' + jumlah.toLocaleString('id-ID') + ' berhasil', 'success');
+                            showAppNotification('Berhasil!', 'Transaksi berhasil', 'success');
                         }
                         if(typeof switchTab === 'function') switchTab('riwayat');
                     }
                     
-                    // WA Notification with bukti link
                     if(typeof sendWhatsAppNotif === 'function'){
-                        try{
-                            sendWhatsAppNotif(newItem);
-                        }catch(err){ console.log('WA error', err); }
+                        try{ sendWhatsAppNotif(newItem); }catch(err){ console.log(err); }
                     }
                     
                 }).catch(function(err){
                     console.error('Firestore error:', err);
                     alert('Gagal simpan: ' + err.message);
                     if(btn){ btn.disabled = false; }
-                    if(btnText){ btnText.classList.remove('hidden'); btnText.innerText = 'Simpan Transaksi'; }
+                    if(btnText){ btnText.classList.remove('hidden'); }
                     if(btnSpin){ btnSpin.classList.add('hidden'); }
                 });
             }
 
-            if(file && !buktiFotoUrl){
-                uploadBuktiToStorage(file).then(function(url){
-                    finalSave(url);
-                });
+            if(file && !window.buktiFotoUrl){
+                // Upload with timeout
+                var uploadTimeout = setTimeout(function(){
+                    console.log('Upload timeout, save without bukti');
+                    doFinalSave("");
+                }, 12000);
+                
+                try{
+                    var storageRef = firebase.storage().ref().child('bukti/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]/gi,'_'));
+                    storageRef.put(file).then(function(snap){
+                        clearTimeout(uploadTimeout);
+                        return snap.ref.getDownloadURL();
+                    }).then(function(url){
+                        window.buktiFotoUrl = url;
+                        console.log('Uploaded:', url);
+                        doFinalSave(url);
+                    }).catch(function(err){
+                        clearTimeout(uploadTimeout);
+                        console.log('Upload fail:', err.code);
+                        doFinalSave("");
+                    });
+                }catch(err){
+                    clearTimeout(uploadTimeout);
+                    doFinalSave("");
+                }
             } else {
-                finalSave(buktiFotoUrl);
+                doFinalSave(window.buktiFotoUrl || "");
             }
         }
-
 
         function getTipeLabel(val) {
             const found = optionDataTipe.find(x => x.val === val);
@@ -3428,7 +4427,6 @@ document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadWANumbe
 </script>
 
 <script>
-// Device owner + WA with bukti link - V58
 function loadDeviceOwner(){
   try{
     var o = localStorage.getItem('myDeviceOwner') || '';
@@ -3444,11 +4442,9 @@ function loadDeviceOwner(){
   }catch(e){}
 }
 function setDeviceOwner(o){ localStorage.setItem('myDeviceOwner', o); loadDeviceOwner(); }
-
-function formatRupiahV58(n){ return 'Rp ' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+function formatRupiahV59(n){ return 'Rp ' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
 setTimeout(function(){
-  var origWA = window.sendWhatsAppNotif;
   window.sendWhatsAppNotif = function(trx){
     try{
       var enabled = localStorage.getItem('waNotifEnabled') === 'true';
@@ -3456,55 +4452,27 @@ setTimeout(function(){
       var mode = localStorage.getItem('waMode') || 'pasangan';
       var haniNum = localStorage.getItem('waNumberHani') || '';
       var venusNum = localStorage.getItem('waNumberVenus') || '';
-      
       var penabung = (trx.penabung||'HANI').toUpperCase();
-      var jenis = (trx.tipe||trx.jenis||'pemasukan').toLowerCase();
-      var kategori = trx.kategori||trx.ket||'-';
-      var nominal = trx.jumlah||trx.nominal||0;
-      var catatan = trx.ket||trx.catatan||'';
+      var jenis = (trx.tipe||'pemasukan').toLowerCase();
+      var kategori = trx.ket||'-';
+      var nominal = trx.jumlah||0;
+      var catatan = trx.ket||'';
       var bukti = trx.buktiUrl||trx.buktiFoto||trx.bukti||'';
-      
       var saldoEl = document.getElementById('totalSaldo');
       var saldo = saldoEl ? saldoEl.innerText : 'Lihat di aplikasi';
-      
       var emoji = jenis==='pemasukan' ? '💰' : (jenis==='pengembalian' ? '↩️' : '💸');
       var jenisText = jenis==='pemasukan' ? 'PEMASUKAN' : (jenis==='pengembalian' ? 'PENGEMBALIAN DANA' : 'PENGELUARAN');
       var warna = jenis==='pemasukan' ? '🟢' : (jenis==='pengembalian' ? '🔵' : '🔴');
-      
-      var msg = '*' + emoji + ' TABUNGAN PERNIKAHAN*\n';
-      msg += '*' + warna + ' ' + jenisText + ' BARU*\n\n';
-      msg += '👤 *' + penabung + '* menambahkan:\n';
-      msg += '📂 Kategori: ' + kategori + '\n';
-      msg += '💵 Nominal: ' + formatRupiahV58(nominal) + '\n';
-      if(catatan && catatan!==kategori) msg += '📝 Catatan: ' + catatan + '\n';
+      var msg = '*' + emoji + ' TABUNGAN PERNIKAHAN*\n*'+warna+' '+jenisText+' BARU*\n\n👤 *'+penabung+'* menambahkan:\n📂 Kategori: '+kategori+'\n💵 Nominal: '+formatRupiahV59(nominal)+'\n';
+      if(catatan && catatan!==kategori) msg += '📝 Catatan: '+catatan+'\n';
       msg += '\n';
-      if(bukti && bukti.length>10 && bukti.startsWith('http')){
-        msg += '📸 *Bukti Foto:*\n' + bukti + '\n\n';
-      }
-      msg += '💎 *Total Saldo:* ' + saldo + '\n';
-      msg += '🎯 Target: 03 April 2027\n\n';
-      msg += '_Dari Tabungan Pernikahan Hani & Venus_';
-      
+      if(bukti && bukti.length>10 && bukti.startsWith('http')) msg += '📸 *Bukti Foto:*\n'+bukti+'\n\n';
+      msg += '💎 *Total Saldo:* '+saldo+'\n🎯 Target: 03 April 2027\n\n_Dari Tabungan Pernikahan Hani & Venus_';
       window.lastWAMessage = msg;
-      
-      var targetNum = '';
-      var targetName = '';
-      var isGroup = (mode==='grup');
-      
-      if(isGroup){
-        targetName='GRUP';
-      } else {
-        if(penabung==='HANI'){ targetNum=venusNum; targetName='VENUS'; }
-        else { targetNum=haniNum; targetName='HANI'; }
-        if(!targetNum) targetNum = haniNum||venusNum;
-      }
-      
-      window.lastWATarget = targetNum;
-      window.lastWATargetName = targetName;
-      
-      // Show WA button if exists
-      var waBtn = document.getElementById('btnSendWA');
-      var waInfo = document.getElementById('waNotifInfo');
+      var targetNum=''; var targetName=''; var isGroup=(mode==='grup');
+      if(isGroup){ targetName='GRUP'; } else { if(penabung==='HANI'){ targetNum=venusNum; targetName='VENUS'; } else { targetNum=haniNum; targetName='HANI'; } if(!targetNum) targetNum=haniNum||venusNum; }
+      window.lastWATarget=targetNum; window.lastWATargetName=targetName;
+      var waBtn=document.getElementById('btnSendWA'); var waInfo=document.getElementById('waNotifInfo');
       if(waBtn){
         waBtn.classList.remove('hidden');
         if(isGroup){
@@ -3513,50 +4481,36 @@ setTimeout(function(){
         } else {
           waBtn.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim ke '+targetName;
           waBtn.onclick=function(){ 
-            var clean = targetNum.replace(/[^0-9]/g,'');
-            if(clean.startsWith('0')) clean=clean.substring(1);
-            if(!clean.startsWith('62')) clean='62'+clean;
+            var clean=targetNum.replace(/[^0-9]/g,''); if(clean.startsWith('0')) clean=clean.substring(1); if(!clean.startsWith('62')) clean='62'+clean;
             window.open('https://wa.me/'+clean+'?text='+encodeURIComponent(msg), '_blank'); 
           };
         }
       }
       if(waInfo){
         waInfo.classList.remove('hidden');
-        var html = isGroup ? 'Siap kirim ke Grup' : 'Ke '+targetName;
+        var html=isGroup ? 'Siap kirim ke Grup' : 'Ke '+targetName;
         if(catatan) html+='<br>📝 '+catatan.substring(0,40);
         if(bukti) html+='<br>📸 Ada bukti';
         waInfo.innerHTML=html;
       }
-      
       if(typeof showAppNotification==='function'){
-        var body = kategori+' • '+formatRupiahV58(nominal);
+        var body=kategori+' • '+formatRupiahV59(nominal);
         if(catatan) body+=' - '+catatan.substring(0,50);
         showAppNotification(emoji+' '+jenisText+' Baru - '+penabung, body, 'success');
       }
-      
-      try{
-        localStorage.setItem('lastTransaction', JSON.stringify({
-          penabung:penabung, kategori:kategori, jumlah:nominal, catatan:catatan, bukti:bukti, timestamp:Date.now()
-        }));
-      }catch(e){}
-      
-      var auto = localStorage.getItem('waAutoEnabled')==='true';
+      var auto=localStorage.getItem('waAutoEnabled')==='true';
       if(auto){
         setTimeout(function(){
           if(isGroup) window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
           else if(targetNum){
-            var c = targetNum.replace(/[^0-9]/g,'');
-            if(c.startsWith('0')) c=c.substring(1);
-            if(!c.startsWith('62')) c='62'+c;
+            var c=targetNum.replace(/[^0-9]/g,''); if(c.startsWith('0')) c=c.substring(1); if(!c.startsWith('62')) c='62'+c;
             window.open('https://wa.me/'+c+'?text='+encodeURIComponent(msg), '_blank');
           }
         }, 1800);
       }
-      
     }catch(e){ console.log('WA error', e); }
   };
 }, 1000);
-
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadDeviceOwner, 800); });
 </script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
