@@ -1663,6 +1663,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <div class="hidden mt-2 p-2 rounded-xl text-[11px] text-center font-bold" id="deviceOwnerInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
 </div>
+
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
 <div class="space-y-3">
@@ -1820,7 +1821,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <h3 class="font-serif text-2xl font-bold text-slate-900 dark:text-white mb-1">Berhasil!</h3>
 <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Transaksi berhasil disimpan &amp; tersinkronisasi ke Cloud Firestore.</p>
-<button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer" onclick="closeSuccessModal()" style="background:#2563eb; box-shadow:0 8px 20px rgba(37,99,235,0.3); width:100%; color:white; font-weight:500; padding:12px 16px; border-radius:12px;">
+<button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer" onclick="closeSuccessModalAndReload()" style="background:#2563eb; box-shadow:0 8px 20px rgba(37,99,235,0.3); width:100%; color:white; font-weight:500; padding:12px 16px; border-radius:12px;">
                 Oke, Mengerti
             </button>
 <div class="hidden mt-3 p-2.5 rounded-xl text-[11px] text-center" id="waNotifInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
@@ -2975,6 +2976,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 
         function handleFormSubmit(e) {
             e.preventDefault();
+            console.log('handleFormSubmit started');
             var tipe = document.getElementById('tipeTransaksi').value;
             var penabung = document.getElementById('namaPenabung').value;
             var ketInput = document.getElementById('keteranganTransaksi').value.trim();
@@ -2983,19 +2985,24 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             var rawJumlah = document.getElementById('jumlahRupiah').value.replace(/\./g, '');
             var jumlah = parseFloat(rawJumlah) || 0;
             if (jumlah <= 0) { alert('Jumlah tidak valid!'); return; }
+            
             var btn = document.getElementById('btnSubmit');
             var btnText = document.getElementById('btnSubmitText');
             var btnSpin = document.getElementById('btnSubmitSpinner');
             if(btn) btn.disabled = true;
             if(btnText) btnText.classList.add('hidden');
             if(btnSpin) btnSpin.classList.remove('hidden');
+            
             var manualLink = document.getElementById('buktiFoto');
             var buktiUrlManual = "";
             if(manualLink && manualLink.value.trim().startsWith('http')){ buktiUrlManual = manualLink.value.trim(); }
+            
             var fileInput = document.getElementById('buktiTransfer');
             var file = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
+            
             var tgl = document.getElementById('tglTransaksi').value;
             var jam = document.getElementById('jamTransaksi').value;
+            
             var newItem = {
                 id: Date.now(),
                 tipe: tipe,
@@ -3008,72 +3015,112 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
                 buktiUrl: buktiUrlManual,
                 buktiFoto: buktiUrlManual
             };
+            
+            var saveStart = Date.now();
+            console.log('Saving to Firestore...');
+            
             db.collection("transactions").add(newItem).then(function(docRef){
-                var savedDocId = docRef.id;
-                try{ document.getElementById('transactionForm').reset(); if(typeof setNowDateTimeAndFilter === 'function') setNowDateTimeAndFilter(); }catch(err){}
-                window.tempBuktiBase64 = "";
-                var cont = document.getElementById('buktiPreviewContainer');
-                if(cont) cont.classList.add('hidden');
-                var linkIn = document.getElementById('buktiFoto');
-                if(linkIn) linkIn.value = "";
-                if(btn){ btn.disabled = false; console.log('Button re-enabled in <3s'); }
-                if(btnText){ btnText.classList.remove('hidden'); btnText.innerText = 'Simpan Transaksi'; }
-                if(btnSpin){ btnSpin.classList.add('hidden'); }
-                if(typeof playSuccessSound === 'function'){ try{ playSuccessSound(); }catch(e){} }
-                var successModal = document.getElementById('successModal');
-                var successBox = document.getElementById('successModalBox');
-                if(successModal){
-                    // Show instantly - NO auto close!
-                    successModal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-                    successModal.classList.add('flex', 'opacity-100');
-                    if(successBox){
-                        successBox.classList.remove('scale-95');
-                        successBox.classList.add('scale-100');
+                var elapsed = Date.now() - saveStart;
+                var minLoad = 3000; // 3 detik minimal loading
+                var wait = Math.max(0, minLoad - elapsed);
+                
+                console.log('Saved in', elapsed, 'ms, waiting', wait, 'ms to make 3s total');
+                
+                setTimeout(function(){
+                    // Re-enable button
+                    if(btn){ btn.disabled = false; }
+                    if(btnText){ btnText.classList.remove('hidden'); btnText.innerText = 'Simpan Transaksi'; }
+                    if(btnSpin){ btnSpin.classList.add('hidden'); }
+                    
+                    if(typeof playSuccessSound === 'function'){ try{ playSuccessSound(); }catch(e){} }
+                    
+                    // Show success modal - ONLY Oke button closes, X disabled
+                    var successModal = document.getElementById('successModal');
+                    var successBox = document.getElementById('successModalBox');
+                    if(successModal){
+                        successModal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+                        successModal.classList.add('flex', 'opacity-100');
+                        if(successBox){
+                            successBox.classList.remove('scale-95');
+                            successBox.classList.add('scale-100');
+                        }
+                        console.log('Success modal shown after 3s');
                     }
-                    console.log('Success modal shown - stays until X clicked');
-                    // JANGAN auto close! Biar user klik X atau Oke Mengerti baru hilang
-                    // No setTimeout here!
-                } else {
-                    console.log('successModal not found');
-                    if(typeof showAppNotification === 'function'){
-                        showAppNotification('Berhasil!', 'Transaksi berhasil - klik Riwayat', 'success');
+                    
+                    // Send WA with correct link that opens PWA
+                    if(typeof sendWhatsAppNotif === 'function'){
+                        try{ sendWhatsAppNotif(newItem); }catch(e){ console.log('WA error', e); }
                     }
-                }
-                if(typeof sendWhatsAppNotif === 'function'){ 
-                    try{ 
-                        console.log('Calling sendWhatsAppNotif');
-                        sendWhatsAppNotif(newItem); 
-                        // Force show WA box even if disabled setting, for debugging
-                        var waBox = document.getElementById('whatsappNotifBox');
-                        if(waBox) waBox.classList.remove('hidden');
-                    }catch(err){ console.log('WA error', err); } 
-                }
-                if(file){
-                    try{
-                        var storageRef = firebase.storage().ref().child('bukti/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]/gi,'_'));
-                        storageRef.put(file).then(function(snap){
-                            return snap.ref.getDownloadURL();
-                        }).then(function(url){
-                            db.collection("transactions").doc(savedDocId).update({
-                                bukti: url,
-                                buktiUrl: url,
-                                buktiFoto: url
-                            }).then(function(){
+                    
+                    // Upload foto in background after popup shown
+                    if(file){
+                        console.log('Background upload foto...');
+                        try{
+                            var storageRef = firebase.storage().ref().child('bukti/' + docRef.id + '_' + file.name.replace(/[^a-z0-9.]/gi,'_'));
+                            storageRef.put(file).then(function(snap){
+                                return snap.ref.getDownloadURL();
+                            }).then(function(url){
+                                console.log('Foto uploaded:', url);
+                                db.collection("transactions").doc(docRef.id).update({
+                                    bukti: url,
+                                    buktiUrl: url,
+                                    buktiFoto: url
+                                });
                                 newItem.bukti = url;
                                 newItem.buktiUrl = url;
                                 newItem.buktiFoto = url;
-                                if(typeof sendWhatsAppNotif === 'function'){ try{ sendWhatsAppNotif(newItem); }catch(e){} }
-                            });
-                        }).catch(function(err){ console.log('Upload fail', err); });
-                    }catch(err){ console.log(err); }
-                }
+                                if(typeof sendWhatsAppNotif === 'function'){
+                                    try{ sendWhatsAppNotif(newItem); }catch(e){}
+                                }
+                            }).catch(function(err){ console.log('Upload fail', err); });
+                        }catch(err){ console.log('Upload error', err); }
+                    }
+                    
+                }, wait);
+                
             }).catch(function(err){
+                console.error('Firestore error:', err);
                 alert('Gagal simpan: ' + err.message);
-                if(btn){ btn.disabled = false; console.log('Button re-enabled in <3s'); }
+                if(btn){ btn.disabled = false; }
                 if(btnText){ btnText.classList.remove('hidden'); }
                 if(btnSpin){ btnSpin.classList.add('hidden'); }
             });
         }
+        
+        // Close modal ONLY via Oke button - goes to Riwayat
+        window.closeSuccessModal = function(){
+            console.log('closeSuccessModal - Oke clicked, going to Riwayat');
+            var modal = document.getElementById('successModal');
+            var box = document.getElementById('successModalBox');
+            if(modal){
+                modal.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+                modal.classList.remove('flex', 'opacity-100');
+                if(box){
+                    box.classList.add('scale-95');
+                    box.classList.remove('scale-100');
+                }
+                // Reset form
+                try{
+                    document.getElementById('transactionForm').reset();
+                    if(typeof setNowDateTimeAndFilter === 'function') setNowDateTimeAndFilter();
+                }catch(e){}
+                var cont = document.getElementById('buktiPreviewContainer');
+                if(cont) cont.classList.add('hidden');
+                var linkIn = document.getElementById('buktiFoto');
+                if(linkIn) linkIn.value = "";
+                window.tempBuktiBase64 = "";
+                
+                // Go to Riwayat - NOT Tambah!
+                if(typeof switchTab === 'function'){
+                    setTimeout(function(){ 
+                        console.log('Switching to Riwayat tab');
+                        switchTab('riwayat'); 
+                    }, 100);
+                }
+            }
+        };
+        function closeSuccessModal(){ window.closeSuccessModal(); }
+
 
         function getTipeLabel(val) {
             const found = optionDataTipe.find(x => x.val === val);
@@ -3231,22 +3278,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
             document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
         }
-    
-        // Prevent closing modal by clicking backdrop - only Oke button
-        document.addEventListener('DOMContentLoaded', function(){
-            var modal = document.getElementById('successModal');
-            if(modal){
-                modal.addEventListener('click', function(e){
-                    if(e.target === modal){
-                        e.stopPropagation();
-                        e.preventDefault();
-                        console.log('Backdrop click prevented - only Oke button closes');
-                        return false;
-                    }
-                });
-            }
-        });
-        </script>
+    </script>
 <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-[60] hidden opacity-0 transition-all duration-200 flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none" id="tambahModal">
 <div class="bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-hidden shadow-2xl transform translate-y-full sm:translate-y-4 sm:scale-95 transition-all duration-200 flex flex-col" id="tambahModalBox">
 <div class="flex items-center justify-between p-4 border-b bg-white dark:bg-slate-900"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center"><i class="fa-solid fa-plus text-sm"></i></div><div><h3 class="font-bold text-sm">Tambah Transaksi</h3><p class="text-[11px] text-slate-500">Masuk Firebase otomatis</p></div></div><button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center" onclick="closeTambahModal()"><i class="fa-solid fa-xmark text-xs"></i></button></div>
@@ -3262,6 +3294,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <p class="text-sm text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
 </div>
 </div>
+
 <div>
 <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
 <i class="fa-solid fa-link mr-1"></i> Atau Link Foto Bukti (Opsional)
@@ -4415,6 +4448,7 @@ function testWANotif(target){
 }
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadWANumbers, 800); });
 </script>
+
 <script>
 function loadDeviceOwner(){
   try{
@@ -4431,85 +4465,142 @@ function loadDeviceOwner(){
   }catch(e){}
 }
 function setDeviceOwner(o){ localStorage.setItem('myDeviceOwner', o); loadDeviceOwner(); }
-document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadDeviceOwner, 800); console.log('V62 PIN FIX - PIN should work, currentPin:', typeof currentPin, 'appendPin:', typeof appendPin); });
-</script>
-<script>
-// V65 Fix - Ensure Oke button works + loading <3s + no auto close
-document.addEventListener('DOMContentLoaded', function(){
-    setTimeout(function(){
-        var okeBtns = document.querySelectorAll('#successModal button');
-        console.log('Found', okeBtns.length, 'buttons in successModal');
-        okeBtns.forEach(function(btn){
-            var text = btn.innerText || '';
-            if(text.includes('Oke') || text.includes('Mengerti')){
-                console.log('Binding Oke button:', text);
-                btn.addEventListener('click', function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Oke button clicked!');
-                    if(window.closeSuccessModal) window.closeSuccessModal();
-                    else {
-                        var modal = document.getElementById('successModal');
-                        if(modal){
-                            modal.classList.add('hidden');
-                            modal.classList.remove('flex');
-                            if(typeof switchTab === 'function') switchTab('riwayat');
-                        }
-                    }
-                });
-                // Also set onclick as fallback
-                btn.onclick = function(e){
-                    e.preventDefault();
-                    if(window.closeSuccessModal) window.closeSuccessModal();
+
+function formatRupiah(n){ return 'Rp ' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+
+function getAppLink(){
+    // Use current URL so it opens same app that is installed (PWA)
+    try{
+        var origin = window.location.origin;
+        var path = window.location.pathname;
+        // Ensure path ends with /
+        if(!path.endsWith('/')) path = path.substring(0, path.lastIndexOf('/')+1);
+        var full = origin + path;
+        // Fallback to known URL if origin is file:// or empty
+        if(full.includes('file://') || full.length < 10){
+            full = 'https://venusdwi.github.io/Tabungan-Hani-Venus/';
+        }
+        return full;
+    }catch(e){
+        return 'https://venusdwi.github.io/Tabungan-Hani-Venus/';
+    }
+}
+
+window.sendWhatsAppNotif = function(trx, isUpdate){
+    try{
+        var enabled = localStorage.getItem('waNotifEnabled') === 'true';
+        if(!enabled && !isUpdate) {
+            console.log('WA not enabled, skip');
+            return;
+        }
+        var mode = localStorage.getItem('waMode') || 'pasangan';
+        var haniNum = localStorage.getItem('waNumberHani') || '';
+        var venusNum = localStorage.getItem('waNumberVenus') || '';
+        var penabung = (trx.penabung||'HANI').toUpperCase();
+        var jenis = (trx.tipe||'pemasukan').toLowerCase();
+        var kategori = trx.ket||'-';
+        var nominal = trx.jumlah||0;
+        var catatan = trx.ket||'';
+        var bukti = trx.buktiUrl||trx.buktiFoto||trx.bukti||'';
+        
+        var saldoEl = document.getElementById('totalSaldo');
+        var saldo = saldoEl ? saldoEl.innerText : 'Lihat di aplikasi';
+        
+        var emoji = jenis==='pemasukan' ? '💰' : (jenis==='pengembalian' ? '↩️' : '💸');
+        var jenisText = jenis==='pemasukan' ? 'PEMASUKAN' : (jenis==='pengembalian' ? 'PENGEMBALIAN DANA' : 'PENGELUARAN');
+        var warna = jenis==='pemasukan' ? '🟢' : (jenis==='pengembalian' ? '🔵' : '🔴');
+        
+        var appLink = getAppLink();
+        
+        var msg = '*' + emoji + ' TABUNGAN PERNIKAHAN*\n';
+        msg += '*' + warna + ' ' + jenisText + ' BARU*\n\n';
+        msg += '👤 *' + penabung + '* menambahkan:\n';
+        msg += '📂 Kategori: ' + kategori + '\n';
+        msg += '💵 Nominal: ' + formatRupiah(nominal) + '\n';
+        if(catatan && catatan!==kategori) msg += '📝 Catatan: ' + catatan + '\n';
+        msg += '\n';
+        if(bukti && bukti.length>10 && bukti.startsWith('http')){
+            msg += '📸 *Bukti Foto:*\n' + bukti + '\n\n';
+        }
+        msg += '💎 *Total Saldo:* ' + saldo + '\n';
+        msg += '🎯 Target: 03 April 2027\n\n';
+        msg += '📲 *Buka Aplikasi Tabungan:*\n' + appLink + '\n';
+        msg += '_Dikirim otomatis dari aplikasi_';
+        
+        window.lastWAMessage = msg;
+        
+        var targetNum=''; var targetName=''; var isGroup=(mode==='grup');
+        if(isGroup){ targetName='GRUP'; } else { if(penabung==='HANI'){ targetNum=venusNum; targetName='VENUS'; } else { targetNum=haniNum; targetName='HANI'; } if(!targetNum) targetNum=haniNum||venusNum; }
+        window.lastWATarget=targetNum; window.lastWATargetName=targetName;
+        
+        var waBtn=document.getElementById('btnSendWA'); 
+        var waInfo=document.getElementById('waNotifInfo');
+        if(waBtn){
+            waBtn.classList.remove('hidden');
+            if(isGroup){
+                waBtn.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim ke Grup WA';
+                waBtn.onclick=function(){ window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank'); };
+            } else {
+                waBtn.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim ke '+targetName;
+                waBtn.onclick=function(){ 
+                    var clean=targetNum.replace(/[^0-9]/g,''); if(clean.startsWith('0')) clean=clean.substring(1); if(!clean.startsWith('62')) clean='62'+clean;
+                    window.open('https://wa.me/'+clean+'?text='+encodeURIComponent(msg), '_blank'); 
                 };
             }
-        });
+        }
+        if(waInfo){
+            waInfo.classList.remove('hidden');
+            var html=isGroup ? 'Siap kirim ke Grup' : 'Ke '+targetName;
+            if(bukti) html+='<br>📸 Ada bukti: <a href="'+bukti+'" target="_blank" class="underline text-blue-600">Lihat</a>';
+            html+='<br>📲 Link: <a href="'+appLink+'" target="_blank" class="underline">'+appLink+'</a>';
+            waInfo.innerHTML=html;
+        }
         
-        // Also bind X button (top right)
+        var auto=localStorage.getItem('waAutoEnabled')==='true';
+        if(auto && !isUpdate){
+            setTimeout(function(){
+                if(isGroup) window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+                else if(targetNum){
+                    var c=targetNum.replace(/[^0-9]/g,''); if(c.startsWith('0')) c=c.substring(1); if(!c.startsWith('62')) c='62'+c;
+                    window.open('https://wa.me/'+c+'?text='+encodeURIComponent(msg), '_blank');
+                }
+            }, 1000);
+        }
+        
+    }catch(e){ console.log('WA error', e); }
+};
+
+document.addEventListener('DOMContentLoaded', function(){ 
+    setTimeout(loadDeviceOwner, 800);
+    // Disable X button, only Oke closes
+    setTimeout(function(){
         var modal = document.getElementById('successModal');
         if(modal){
-            var xBtn = modal.querySelector('button.absolute, .absolute button, [class*="top-2"]');
-            if(xBtn){
-                xBtn.addEventListener('click', function(){
-                    if(window.closeSuccessModal) window.closeSuccessModal();
-                });
-            }
+            var btns = modal.querySelectorAll('button');
+            btns.forEach(function(b){
+                var txt = b.innerText.trim();
+                // Hide X button
+                if(txt === '×' || txt === 'x' || txt === 'X' || (txt.length <=2 && b.className.includes('absolute'))){
+                    b.style.display = 'none';
+                    b.onclick = function(e){ e.preventDefault(); return false; };
+                }
+                // Oke button
+                if(txt.includes('Oke')){
+                    b.onclick = function(){ window.closeSuccessModal(); };
+                    b.addEventListener('click', function(){ window.closeSuccessModal(); });
+                }
+            });
+            // Prevent backdrop close
+            modal.addEventListener('click', function(e){
+                if(e.target === modal){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
         }
     }, 1000);
 });
-
-// Also fix handleFormSubmit to ensure loading <3s and popup appears instantly
-setTimeout(function(){
-    var origHandle = window.handleFormSubmit;
-    if(origHandle){
-        console.log('V65 handleFormSubmit override with <3s fix');
-    }
-}, 1500);
-
-        // V66 - X button disabled, only Oke button closes popup
-        setTimeout(function(){
-            var modal = document.getElementById('successModal');
-            if(modal){
-                var allBtns = modal.querySelectorAll('button');
-                allBtns.forEach(function(b){
-                    var t = (b.innerText||'').trim();
-                    // Hide/disable X button
-                    if(t === '×' || t === 'x' || t === 'X' || (t.length < 3 && (t.includes('×') || t === ''))){
-                        if(b.className && (b.className.includes('absolute') || b.className.includes('top-') || b.className.includes('right-'))){
-                            b.style.display = 'none';
-                            b.onclick = null;
-                        }
-                    }
-                    // Ensure Oke button works
-                    if(t.includes('Oke') && t.includes('Mengerti')){
-                        b.style.display = 'block';
-                        b.disabled = false;
-                        b.style.pointerEvents = 'auto';
-                        b.style.opacity = '1';
-                    }
-                });
-            }
-        }, 500);
-        </script>
+</script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
