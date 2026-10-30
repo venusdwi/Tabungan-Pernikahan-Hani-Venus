@@ -1663,7 +1663,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <div class="hidden mt-2 p-2 rounded-xl text-[11px] text-center font-bold" id="deviceOwnerInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
 </div>
-
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
 <div class="space-y-3">
@@ -2981,15 +2980,29 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
           try{
             var file = event.target.files[0];
             if(!file) return;
+            
+            // Compress preview - max 800px width
             var reader = new FileReader();
             reader.onload = function(e){
-              tempBuktiBase64 = e.target.result;
-              var container = document.getElementById('buktiPreviewContainer');
-              var img = document.getElementById('buktiPreviewImg');
-              if(container && img){
-                img.src = tempBuktiBase64;
-                container.classList.remove('hidden');
-              }
+              var img = new Image();
+              img.onload = function(){
+                var canvas = document.createElement('canvas');
+                var maxWidth = 800;
+                var ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+                canvas.width = img.width * ratio;
+                canvas.height = img.height * ratio;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                tempBuktiBase64 = canvas.toDataURL('image/jpeg', 0.7); // Compress 70%
+                
+                var container = document.getElementById('buktiPreviewContainer');
+                var previewImg = document.getElementById('buktiPreviewImg');
+                if(container && previewImg){
+                  previewImg.src = tempBuktiBase64;
+                  container.classList.remove('hidden');
+                }
+              };
+              img.src = e.target.result;
             };
             reader.readAsDataURL(file);
           }catch(e){ console.log('preview error', e); }
@@ -3082,7 +3095,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
                     jam: jam,
                     jumlah: jumlah,
                     ket: ketInput,
-                    bukti: tempBuktiBase64,
+                    bukti: finalUrl || buktiFotoUrl || "",
                     buktiUrl: finalUrl || buktiFotoUrl || "",
                     buktiFoto: finalUrl || buktiFotoUrl || ""
                 };
@@ -4460,7 +4473,6 @@ function testWANotif(target){
 }
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadWANumbers, 800); });
 </script>
-
 <script>
 function loadDeviceOwner(){
   try{
