@@ -3525,8 +3525,10 @@ document.addEventListener('DOMContentLoaded', function(){
         }
         
         // Close modal ONLY via Oke button - goes to Riwayat
-                        window.closeSuccessModal = function(){
-            console.log('=== closeSuccessModal - RESETTING ALL FIELDS ===');
+                                window.closeSuccessModal = function(){
+            console.log('=== CLOSE SUCCESS - RESET ALL FIELDS V79 ===');
+            
+            // Hide modal first
             var modal = document.getElementById('successModal');
             var box = document.getElementById('successModalBox');
             if(modal){
@@ -3538,113 +3540,155 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
             }
             
-            // V78 - Reset SEMUA kolom Tambah Transaksi - SUPER ROBUST
-            setTimeout(function(){
-                try{
-                    console.log('Starting full reset...');
-                    
-                    // 1. Reset form
-                    var form = document.getElementById('transactionForm');
-                    if(form){
-                        form.reset();
-                        console.log('Form reset() called');
+            // IMMEDIATE RESET - not delayed
+            try{
+                console.log('Resetting Tambah Transaksi...');
+                
+                // 1. Form reset
+                var form = document.getElementById('transactionForm');
+                if(form){
+                    form.reset();
+                    console.log('Form reset');
+                }
+                
+                // 2. Force clear all known fields
+                var clearIds = ['tipeTransaksi', 'namaPenabung', 'jumlahRupiah', 'jumlahNominal', 'keteranganTransaksi', 'ketTransaksi', 'buktiTransfer', 'tglTransaksi', 'jamTransaksi'];
+                clearIds.forEach(function(id){
+                    var el = document.getElementById(id);
+                    if(el){
+                        if(el.type === 'file'){
+                            el.value = '';
+                            try{
+                                var clone = el.cloneNode(true);
+                                clone.value = '';
+                                el.parentNode.replaceChild(clone, el);
+                            }catch(e){}
+                        } else if(el.tagName === 'SELECT'){
+                            el.selectedIndex = 0;
+                            el.value = '';
+                        } else {
+                            el.value = '';
+                        }
+                        console.log('Cleared', id);
                     }
-                    
-                    // 2. Reset specific fields by ID - force empty
-                    var fieldsToReset = [
-                        'tipeTransaksi', 'namaPenabung', 'jumlahRupiah', 'jumlahNominal',
-                        'jumlahDisplay', 'keteranganTransaksi', 'ketTransaksi',
-                        'buktiTransfer', 'buktiFileName'
-                    ];
-                    
-                    fieldsToReset.forEach(function(id){
-                        var el = document.getElementById(id);
-                        if(el){
-                            if(el.type === 'file'){
-                                el.value = '';
-                                // Clone to fully clear
-                                try{
-                                    var clone = el.cloneNode(true);
-                                    el.parentNode.replaceChild(clone, el);
-                                }catch(e){}
-                            } else if(el.tagName === 'SELECT'){
-                                el.selectedIndex = 0;
-                                el.value = '';
-                            } else {
-                                el.value = '';
-                                if(el.innerText !== undefined) el.innerText = '';
+                });
+                
+                // 3. Clear ALL inputs in tambah page (except filters)
+                var tambahPage = document.getElementById('tambahPage');
+                if(!tambahPage){
+                    // Try find by other means
+                    var allPages = document.querySelectorAll('[id*="tambah"], [data-page="tambah"]');
+                    if(allPages.length > 0) tambahPage = allPages[0];
+                }
+                if(tambahPage){
+                    var inputs = tambahPage.querySelectorAll('input, textarea, select');
+                    inputs.forEach(function(inp){
+                        var id = inp.id || '';
+                        if(id.includes('filter') || id.includes('Bulan') || id.includes('Tahun')) return;
+                        if(inp.type === 'file'){
+                            inp.value = '';
+                        } else if(inp.tagName === 'SELECT'){
+                            // Keep penabung and tipe empty for new entry
+                            if(id.includes('Penabung') || id.includes('tipe') || id.includes('Transaksi')){
+                                inp.selectedIndex = 0;
+                                inp.value = '';
                             }
-                            console.log('Reset', id);
+                        } else if(inp.type === 'text' || inp.type === 'number' || inp.tagName === 'TEXTAREA'){
+                            // Clear jumlah and keterangan
+                            if(id.includes('jumlah') || id.includes('keterangan') || id.includes('ket') || inp.placeholder && inp.placeholder.toLowerCase().includes('rp')){
+                                inp.value = '';
+                            }
                         }
                     });
-                    
-                    // 3. Reset all text inputs in Tambah tab (except filters)
-                    var tambahTab = document.getElementById('tambahPage') || document.querySelector('[data-page="tambah"]') || document.getElementById('transactionForm')?.parentElement;
-                    if(tambahTab){
-                        var inputs = tambahTab.querySelectorAll('input[type="text"], input[type="number"], textarea');
-                        inputs.forEach(function(inp){
-                            if(inp.id && (inp.id.includes('filter') || inp.id.includes('Bulan') || inp.id.includes('Tahun') || inp.id.includes('search'))) return;
-                            if(inp.type === 'file') return;
-                            inp.value = '';
-                        });
-                    }
-                    
-                    // 4. Reset preview
-                    var previewCont = document.getElementById('buktiPreviewContainer');
-                    var previewImg = document.getElementById('buktiPreview');
-                    var previewName = document.getElementById('buktiFileName');
-                    var fileNameDisplay = document.querySelector('.file-name, #fileName');
-                    
-                    if(previewCont){
-                        previewCont.classList.add('hidden');
-                        previewCont.style.display = 'none';
-                        previewCont.innerHTML = '';
-                    }
-                    if(previewImg) previewImg.src = '';
-                    if(previewName) previewName.innerText = '';
-                    if(fileNameDisplay) fileNameDisplay.innerText = '';
-                    
-                    // 5. Reset global vars
-                    window.tempBuktiBase64 = "";
-                    window.buktiBase64 = "";
-                    window.selectedFile = null;
-                    window.buktiFile = null;
-                    
-                    // 6. Reset date to real-time 31/10/2026 (now)
-                    if(typeof setNowDateTimeAndFilter === 'function'){
-                        setTimeout(function(){
-                            setNowDateTimeAndFilter();
-                            console.log('Date reset to real-time 31/10/2026');
-                        }, 100);
-                    }
-                    
-                    // 7. Reset amount display
-                    var jumlahRupiah = document.getElementById('jumlahRupiah');
-                    if(jumlahRupiah){
-                        jumlahRupiah.value = '';
-                        jumlahRupiah.placeholder = 'Rp 0';
-                    }
-                    
-                    console.log('=== ALL FIELDS RESET - FORM KOSONG ===');
-                    
-                }catch(e){ 
-                    console.log('Reset error', e);
-                    try{
-                        var f = document.getElementById('transactionForm');
-                        if(f) f.reset();
-                    }catch(e2){}
                 }
-            }, 50);
+                
+                // 4. Clear file preview - SUPER IMPORTANT
+                var previewIds = ['buktiPreviewContainer', 'buktiPreview', 'buktiFileName', 'fileName', 'previewContainer'];
+                previewIds.forEach(function(pid){
+                    var el = document.getElementById(pid);
+                    if(el){
+                        if(el.tagName === 'IMG'){
+                            el.src = '';
+                        } else {
+                            el.innerText = '';
+                            el.textContent = '';
+                        }
+                        el.classList.add('hidden');
+                        el.style.display = 'none';
+                        console.log('Cleared preview', pid);
+                    }
+                });
+                
+                // Clear file display divs
+                var fileDisplays = document.querySelectorAll('.file-name, [class*="file"], [id*="file"]');
+                fileDisplays.forEach(function(fd){
+                    if(fd.id && (fd.id.includes('filter') || fd.id.includes('Bulan'))) return;
+                    if(fd.tagName === 'INPUT' && fd.type === 'file') return;
+                    if(fd.querySelector('input[type="file"]')) return;
+                    // Clear text that looks like file name
+                    if(fd.innerText && fd.innerText.includes('.jpg')){
+                        fd.innerText = '';
+                    }
+                });
+                
+                // 5. Clear global vars
+                window.tempBuktiBase64 = "";
+                window.buktiBase64 = "";
+                window.selectedFile = null;
+                window.buktiFile = null;
+                window.lastFile = null;
+                
+                // 6. Reset to real-time date 31/10/2026
+                setTimeout(function(){
+                    if(typeof setNowDateTimeAndFilter === 'function'){
+                        setNowDateTimeAndFilter();
+                        console.log('Date reset to real-time 31/10/2026');
+                    } else {
+                        // Fallback
+                        var now = new Date();
+                        var day = String(now.getDate()).padStart(2,'0');
+                        var month = String(now.getMonth()+1).padStart(2,'0');
+                        var year = now.getFullYear();
+                        var tgl = document.getElementById('tglTransaksi');
+                        if(tgl){
+                            if(tgl.type === 'date'){
+                                tgl.value = year + '-' + month + '-' + day;
+                            } else {
+                                tgl.value = day + '/' + month + '/' + year;
+                            }
+                        }
+                    }
+                }, 100);
+                
+                // 7. Clear jumlah display
+                var jumlahEls = document.querySelectorAll('[id*="jumlah"], [placeholder*="Rp"]');
+                jumlahEls.forEach(function(j){
+                    if(j.id.includes('filter')) return;
+                    if(j.tagName === 'INPUT' || j.tagName === 'TEXTAREA'){
+                        if(j.id === 'jumlahRupiah' || j.placeholder && j.placeholder.includes('Rp')){
+                            j.value = '';
+                        }
+                    }
+                });
+                
+                console.log('=== RESET DONE - FORM KOSONG ===');
+                
+            }catch(e){
+                console.error('Reset error', e);
+                try{ document.getElementById('transactionForm').reset(); }catch(e2){}
+            }
             
+            localStorage.setItem('shouldResetTambah', 'true');
             // Go to Riwayat
             setTimeout(function(){
-                console.log('Switching to Riwayat');
                 if(typeof switchTab === 'function'){
                     switchTab('riwayat');
                 }
-            }, 200);
+            }, 150);
         };
         function closeSuccessModal(){ window.closeSuccessModal(); }
+
+function closeSuccessModal(){ window.closeSuccessModal(); }
 
 function closeSuccessModal(){ window.closeSuccessModal(); }
 
