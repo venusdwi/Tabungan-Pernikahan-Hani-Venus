@@ -1293,6 +1293,102 @@ body{ overscroll-behavior-y: contain !important; -webkit-overflow-scrolling: tou
 #btnSubmitText.hidden{ display:none!important; }
 #btnSubmitSpinner.hidden{ display:none!important; }
 #btnSubmitSpinner{ display:flex!important; align-items:center; justify-content:center; gap:8px; }
+
+
+/* V42 GUARANTEED SCROLL - Fix total tidak bisa scroll */
+html, body {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  
+  touch-action: pan-y !important;
+  position: relative !important;
+}
+
+body {
+  position: relative !important;
+  display: block !important;
+}
+
+#appBody {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+  position: relative !important;
+  display: block !important;
+}
+
+.tab-content {
+  display: none;
+  height: auto !important;
+  min-height: auto !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+  position: relative !important;
+}
+
+.tab-content.active {
+  display: block !important;
+  height: auto !important;
+  min-height: 60vh !important;
+  overflow: visible !important;
+  animation: tabFadeIn 0.35s ease forwards;
+}
+
+@keyframes tabFadeIn{ from{ opacity:0; transform: translateY(10px); } to{ opacity:1; transform: translateY(0); } }
+
+/* Ensure refresh button works */
+button[onclick*="refreshHalaman"] {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* Remove any fixed height that blocks */
+main, .main-content, #mainContent {
+  height: auto !important;
+  min-height: auto !important;
+  overflow: visible !important;
+}
+
+/* Bottom tab should not block */
+.bottom-tab, #bottomTab, nav.fixed {
+  position: fixed !important;
+  bottom: 0 !important;
+  z-index: 50 !important;
+}
+
+
+/* V43 FIX - Matiin pull-to-refresh Chrome tapi scroll tetep jalan */
+html {
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: contain !important;
+}
+
+body {
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  /* Jangan overflow:hidden! */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Tab content scrollable */
+.tab-content {
+  overscroll-behavior-y: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Disable pull-to-refresh specifically */
+#appContainer, main {
+  overscroll-behavior-y: contain !important;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -3300,7 +3396,7 @@ function openGantiPinModal(){
 function kunciAplikasi(){
   var lock=document.getElementById('pinLockScreen');
   if(lock){ lock.classList.remove('hidden'); }
-  else { location.reload(); }
+  else { refreshHalaman(); }
 }
 function exportExcelCSV(){
   if(typeof transactions==='undefined' || !transactions || transactions.length===0){ alert('Tidak ada data'); return; }
@@ -3476,7 +3572,7 @@ function kunciSekarang(){
 function kunciAplikasi(){
   var lock=document.getElementById('pinLockScreen');
   if(lock){ lock.classList.remove('hidden'); }
-  else { location.reload(); }
+  else { refreshHalaman(); }
 }
 window.kunciAplikasi = kunciAplikasi;
 window.openKunciModal = openKunciModal;
@@ -3830,19 +3926,50 @@ function switchTab(tabName){
 window.switchTab = switchTab;
 
 
+        
         function refreshHalaman(){
+            console.log('refreshHalaman called');
             try{
-                if(typeof updateUI==='function') updateUI();
-                if(typeof updateDashboardDiagram==='function') updateDashboardDiagram();
-                if(typeof updateLaporanUI==='function') updateLaporanUI();
                 var btn = document.querySelector('[onclick*="refreshHalaman"]');
+                var originalHTML = '';
                 if(btn){
-                    var orig = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Ter-refresh!';
-                    setTimeout(function(){ btn.innerHTML = orig; }, 1500);
+                    originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Refresh...';
+                    btn.disabled = true;
                 }
-            }catch(e){}
+                
+                // Refresh all UI
+                if(typeof updateUI==='function'){ 
+                    try{ updateUI(); }catch(e){ console.log('updateUI error', e); }
+                }
+                if(typeof updateDashboardDiagram==='function'){
+                    try{ updateDashboardDiagram(); }catch(e){}
+                }
+                if(typeof updateLaporanUI==='function'){
+                    try{ updateLaporanUI(); }catch(e){}
+                }
+                
+                // Show success
+                setTimeout(function(){
+                    if(btn){
+                        btn.innerHTML = '<i class="fa-solid fa-check"></i> Ter-refresh!';
+                        btn.disabled = false;
+                        setTimeout(function(){ 
+                            btn.innerHTML = originalHTML || '<i class="fa-solid fa-rotate"></i> Refresh Halaman'; 
+                        }, 2000);
+                    }
+                }, 500);
+                
+                console.log('refresh done');
+            }catch(e){ 
+                console.log('refresh error', e);
+                alert('Refresh error: ' + e.message);
+            }
         }
+        window.refreshHalaman = refreshHalaman;
+        // Also attach to window for inline onclick
+        if(typeof window!=='undefined'){ window.refreshHalaman = refreshHalaman; }
+
         window.refreshHalaman = refreshHalaman;
 
 
@@ -3883,6 +4010,42 @@ window.switchTab = switchTab;
         }
         function confirmDeleteTransaction(){ openCustomDeleteModal(); }
         window.confirmDeleteTransaction = confirmDeleteTransaction;
+
+
+        // V43: Cegah pull-to-refresh Chrome tanpa block scroll
+        (function(){
+            var lastTouchY = 0;
+            var maybePrevent = false;
+            
+            document.addEventListener('touchstart', function(e){
+                if(e.touches.length !== 1) return;
+                lastTouchY = e.touches[0].clientY;
+                maybePrevent = window.scrollY === 0;
+            }, {passive: false});
+            
+            document.addEventListener('touchmove', function(e){
+                if(!maybePrevent) return;
+                var currentY = e.touches[0].clientY;
+                var diff = currentY - lastTouchY;
+                // Hanya cegah kalau di paling atas dan narik ke bawah (pull to refresh)
+                if(diff > 0 && window.scrollY <= 0){
+                    // Cek apakah elemen yang di-scroll adalah body/html (bukan inner scroll)
+                    var target = e.target;
+                    var isBody = true;
+                    while(target && target !== document.body && target !== document.documentElement){
+                        if(target.scrollHeight > target.clientHeight){
+                            // Ini inner scrollable element, jangan cegah
+                            isBody = false;
+                            break;
+                        }
+                        target = target.parentElement;
+                    }
+                    if(isBody && window.scrollY <= 0){
+                        e.preventDefault();
+                    }
+                }
+            }, {passive: false});
+        })();
 </script>
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
@@ -3958,7 +4121,6 @@ window.switchTab = switchTab;
 </div>
 </div>
 </div>
-
 <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 z-[95] hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="customDeleteModal">
 <div class="rounded-[2rem] p-6 sm:p-7 max-w-sm w-full shadow-2xl text-center transform scale-95 transition-transform duration-300" id="customDeleteModalBox" style="background:white; border:1px solid #e2e8f0;">
 <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#ffe4e6; color:#e11d48;">
