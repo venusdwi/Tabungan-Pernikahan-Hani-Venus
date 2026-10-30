@@ -1280,6 +1280,68 @@ body.dark #successModalBox{ background:#1e293b !important; background-color:#1e2
 body.dark #successModalBox h3{ color:white !important; }
 #successModalBox p{ color:#64748b !important; }
 body.dark #successModalBox p{ color:#94a3b8 !important; }
+
+/* Custom Laporan Filter - Tema Glass */
+.filter-sel-custom{
+  background: rgba(255,255,255,var(--box-opacity,0.85))!important;
+  backdrop-filter: blur(2px) saturate(1.05)!important;
+  -webkit-backdrop-filter: blur(2px) saturate(1.05)!important;
+  border: 1px solid rgba(255,255,255,0.5)!important;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.04)!important;
+  transition: all 0.15s!important;
+}
+body.dark .filter-sel-custom{
+  background: rgba(30,41,59,var(--box-opacity,0.85))!important;
+  border-color: rgba(71,85,105,0.4)!important;
+  color: #f1f5f9!important;
+}
+.filter-sel-custom:active{ transform: scale(0.97)!important; }
+
+/* Custom Delete Modal */
+#customDeleteModalBox{
+  background: rgba(255,255,255,0.96)!important;
+  backdrop-filter: blur(16px) saturate(1.2)!important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.2)!important;
+  border: 1px solid rgba(255,255,255,0.6)!important;
+}
+body.dark #customDeleteModalBox{
+  background: rgba(15,23,42,0.96)!important;
+  border-color: rgba(51,65,85,0.4)!important;
+}
+
+/* Custom Picker for Month/Year - Glass theme */
+.laporan-picker-option{
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+body.dark .laporan-picker-option{
+  background: rgba(30,41,59,0.7);
+  border-color: rgba(71,85,105,0.3);
+  color: #e2e8f0;
+}
+.laporan-picker-option:hover{
+  background: #f1f5f9;
+  transform: scale(1.01);
+}
+body.dark .laporan-picker-option:hover{
+  background: #334155;
+}
+.laporan-picker-option.active{
+  background: #3b82f6!important;
+  color: white!important;
+  border-color: #2563eb!important;
+  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+}
+.laporan-picker-option.active i{ color: white!important; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -1453,12 +1515,21 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <div class="tab-content" id="tab-laporan">
 <div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Laporan Keuangan</h2><p class="text-sky-200/70 text-[11px] mt-1">Auto dari Firebase</p></div>
 <div class="glass-box rounded-2xl p-4 mb-3">
-<div class="filter-presisi">
-<select class="filter-sel" id="filterBulanLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select>
-<select class="filter-sel" id="filterTahunLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
-<button class="filter-btn" onclick="resetFilterLaporan()"><i class="fa-solid fa-rotate-left"></i></button>
-<button class="filter-btn pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i></button>
+
+<div class="filter-presisi flex gap-2">
+<button class="flex-1 filter-sel-custom glass-box rounded-xl px-3 py-2.5 text-left flex justify-between items-center text-[13px] font-bold" id="btnFilterBulanLaporan" onclick="openLaporanMonthPicker()">
+<span id="textFilterBulanLaporan">Oktober 2026</span><i class="fa-solid fa-chevron-down text-[11px] text-slate-400"></i>
+</button>
+<button class="filter-sel-custom glass-box rounded-xl px-3 py-2.5 text-left flex justify-between items-center text-[13px] font-bold min-w-[110px]" id="btnFilterTahunLaporan" onclick="openLaporanYearPicker()">
+<span id="textFilterTahunLaporan">2026</span><i class="fa-solid fa-chevron-down text-[11px] text-slate-400"></i>
+</button>
+<button class="filter-btn glass-box rounded-xl w-11 h-11 flex items-center justify-center" onclick="resetFilterLaporan()"><i class="fa-solid fa-rotate-left text-sm"></i></button>
+<button class="filter-btn pdf glass-box rounded-xl w-11 h-11 flex items-center justify-center bg-rose-50" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf text-sm text-rose-600"></i></button>
 </div>
+<!-- Hidden original selects for logic compatibility -->
+<select class="hidden" id="filterBulanLaporan"><option value="all">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select>
+<select class="hidden" id="filterTahunLaporan"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
+
 </div>
 <div class="grid grid-cols-1 gap-2 mb-3">
 <div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p></div>
@@ -3760,6 +3831,228 @@ function switchTab(tabName){
   try{ sessionStorage.setItem('lastActiveTab',tabName); }catch(e){}
 }
 window.switchTab = switchTab;
+
+
+// ===== CUSTOM DELETE MODAL - SESUAI TEMA =====
+var pendingDeleteDocId = null;
+
+function openCustomDeleteModal(docId){
+  pendingDeleteDocId = docId || document.getElementById('editId').value;
+  var modal = document.getElementById('customDeleteModal');
+  var box = document.getElementById('customDeleteModalBox');
+  if(!modal || !box) return;
+  modal.classList.remove('hidden','pointer-events-none');
+  setTimeout(function(){
+    modal.classList.remove('opacity-0');
+    box.classList.remove('scale-95');
+    box.classList.add('scale-100');
+  }, 10);
+}
+
+function closeCustomDeleteModal(){
+  var modal = document.getElementById('customDeleteModal');
+  var box = document.getElementById('customDeleteModalBox');
+  if(!modal || !box) return;
+  modal.classList.add('opacity-0');
+  box.classList.remove('scale-100');
+  box.classList.add('scale-95');
+  setTimeout(function(){
+    modal.classList.add('hidden','pointer-events-none');
+    pendingDeleteDocId = null;
+  }, 250);
+}
+
+function executeDeleteTransaction(){
+  var docId = pendingDeleteDocId || document.getElementById('editId').value;
+  if(!docId){ closeCustomDeleteModal(); return; }
+  if(typeof db!=='undefined'){
+    db.collection("transactions").doc(docId).delete().then(function(){
+      closeCustomDeleteModal();
+      if(typeof closeEditModal==='function') closeEditModal();
+    }).catch(function(err){
+      alert("Gagal menghapus: " + err.message);
+      closeCustomDeleteModal();
+    });
+  }
+}
+
+// Override old confirmDeleteTransaction
+function confirmDeleteTransaction(){
+  openCustomDeleteModal();
+}
+window.confirmDeleteTransaction = confirmDeleteTransaction;
+window.openCustomDeleteModal = openCustomDeleteModal;
+window.closeCustomDeleteModal = closeCustomDeleteModal;
+window.executeDeleteTransaction = executeDeleteTransaction;
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e){
+  var modal = document.getElementById('customDeleteModal');
+  if(modal && e.target===modal){ closeCustomDeleteModal(); }
+});
+
+// ===== LAPORAN FILTER CUSTOM + REAL-TIME =====
+var laporanMonths = [
+  {val:'all', label:'Semua Bulan', short:'Semua'},
+  {val:'01', label:'Januari', short:'Jan'},
+  {val:'02', label:'Februari', short:'Feb'},
+  {val:'03', label:'Maret', short:'Mar'},
+  {val:'04', label:'April', short:'Apr'},
+  {val:'05', label:'Mei', short:'Mei'},
+  {val:'06', label:'Juni', short:'Jun'},
+  {val:'07', label:'Juli', short:'Jul'},
+  {val:'08', label:'Agustus', short:'Agu'},
+  {val:'09', label:'September', short:'Sep'},
+  {val:'10', label:'Oktober', short:'Okt'},
+  {val:'11', label:'November', short:'Nov'},
+  {val:'12', label:'Desember', short:'Des'}
+];
+var laporanYears = [
+  {val:'all', label:'Semua Tahun'},
+  {val:'2024', label:'2024'},
+  {val:'2025', label:'2025'},
+  {val:'2026', label:'2026'},
+  {val:'2027', label:'2027'},
+  {val:'2028', label:'2028'}
+];
+
+function initLaporanRealTime(){
+  var now = new Date();
+  var curMonth = String(now.getMonth()+1).padStart(2,'0');
+  var curYear = String(now.getFullYear());
+  
+  var selBulan = document.getElementById('filterBulanLaporan');
+  var selTahun = document.getElementById('filterTahunLaporan');
+  var txtBulan = document.getElementById('textFilterBulanLaporan');
+  var txtTahun = document.getElementById('textFilterTahunLaporan');
+  
+  if(selBulan) selBulan.value = curMonth;
+  if(selTahun) selTahun.value = curYear;
+  
+  if(txtBulan){
+    var m = laporanMonths.find(function(x){ return x.val===curMonth; });
+    txtBulan.innerText = m ? (m.label + ' ' + curYear) : 'Bulan Ini';
+  }
+  if(txtTahun){
+    txtTahun.innerText = curYear;
+  }
+  
+  if(typeof syncLaporanFilter==='function') syncLaporanFilter();
+}
+
+function openLaporanMonthPicker(){
+  var modal = document.getElementById('customSelectModal');
+  var content = document.getElementById('customSelectContent');
+  var title = document.getElementById('popupTitle');
+  var container = document.getElementById('popupOptionsContainer');
+  if(!modal || !container) return;
+  
+  var current = document.getElementById('filterBulanLaporan').value;
+  title.innerText = 'Pilih Bulan';
+  container.innerHTML = '';
+  
+  laporanMonths.forEach(function(m){
+    var div = document.createElement('div');
+    div.className = 'laporan-picker-option' + (m.val===current?' active':'');
+    div.innerHTML = '<span>'+m.label+'</span>' + (m.val===current ? '<i class="fa-solid fa-check text-blue-600"></i>' : '<i class="fa-solid fa-calendar text-slate-400 text-[11px]"></i>');
+    div.onclick = function(){ selectLaporanMonth(m.val); };
+    container.appendChild(div);
+  });
+  
+  modal.classList.remove('hidden','pointer-events-none');
+  setTimeout(function(){
+    modal.classList.remove('opacity-0');
+    content.classList.remove('translate-y-full','scale-95');
+    content.classList.add('translate-y-0','scale-100');
+  }, 10);
+}
+
+function openLaporanYearPicker(){
+  var modal = document.getElementById('customSelectModal');
+  var content = document.getElementById('customSelectContent');
+  var title = document.getElementById('popupTitle');
+  var container = document.getElementById('popupOptionsContainer');
+  if(!modal || !container) return;
+  
+  var current = document.getElementById('filterTahunLaporan').value;
+  title.innerText = 'Pilih Tahun';
+  container.innerHTML = '';
+  
+  laporanYears.forEach(function(y){
+    var div = document.createElement('div');
+    div.className = 'laporan-picker-option' + (y.val===current?' active':'');
+    div.innerHTML = '<span>'+y.label+'</span>' + (y.val===current ? '<i class="fa-solid fa-check text-blue-600"></i>' : '<i class="fa-solid fa-calendar-days text-slate-400 text-[11px]"></i>');
+    div.onclick = function(){ selectLaporanYear(y.val); };
+    container.appendChild(div);
+  });
+  
+  modal.classList.remove('hidden','pointer-events-none');
+  setTimeout(function(){
+    modal.classList.remove('opacity-0');
+    content.classList.remove('translate-y-full','scale-95');
+    content.classList.add('translate-y-0','scale-100');
+  }, 10);
+}
+
+function selectLaporanMonth(val){
+  var sel = document.getElementById('filterBulanLaporan');
+  var txt = document.getElementById('textFilterBulanLaporan');
+  if(sel) sel.value = val;
+  if(txt){
+    var m = laporanMonths.find(function(x){ return x.val===val; });
+    var y = document.getElementById('filterTahunLaporan').value;
+    if(val==='all'){
+      txt.innerText = 'Semua Bulan';
+    } else {
+      txt.innerText = m ? (m.label + (y!=='all' ? ' ' + y : '')) : m.label;
+    }
+  }
+  closePopup();
+  if(typeof syncLaporanFilter==='function') syncLaporanFilter();
+}
+
+function selectLaporanYear(val){
+  var sel = document.getElementById('filterTahunLaporan');
+  var txt = document.getElementById('textFilterTahunLaporan');
+  if(sel) sel.value = val;
+  if(txt){
+    txt.innerText = val==='all' ? 'Semua Tahun' : val;
+  }
+  // Update month text if needed
+  var txtBulan = document.getElementById('textFilterBulanLaporan');
+  var bulanVal = document.getElementById('filterBulanLaporan').value;
+  if(txtBulan && bulanVal!=='all' && val!=='all'){
+    var m = laporanMonths.find(function(x){ return x.val===bulanVal; });
+    if(m) txtBulan.innerText = m.label + ' ' + val;
+  }
+  closePopup();
+  if(typeof syncLaporanFilter==='function') syncLaporanFilter();
+}
+
+// Override reset to update custom UI
+var originalResetLaporan = window.resetFilterLaporan;
+window.resetFilterLaporan = function(){
+  var selB=document.getElementById('filterBulanLaporan');
+  var selT=document.getElementById('filterTahunLaporan');
+  var txtB=document.getElementById('textFilterBulanLaporan');
+  var txtT=document.getElementById('textFilterTahunLaporan');
+  if(selB) selB.value='all';
+  if(selT) selT.value='all';
+  if(txtB) txtB.innerText='Semua Bulan';
+  if(txtT) txtT.innerText='Semua Tahun';
+  if(typeof syncLaporanFilter==='function') syncLaporanFilter();
+};
+
+// Init real-time on load
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){ initLaporanRealTime(); }, 800);
+});
+
+window.openLaporanMonthPicker = openLaporanMonthPicker;
+window.openLaporanYearPicker = openLaporanYearPicker;
+window.selectLaporanMonth = selectLaporanMonth;
+window.selectLaporanYear = selectLaporanYear;
+window.initLaporanRealTime = initLaporanRealTime;
 </script>
 <!-- Custom Ganti PIN Modal -->
 <div class="custom-themed-modal" id="gantiPinModal">
@@ -3832,6 +4125,22 @@ window.switchTab = switchTab;
 <button class="w-full py-3.5 rounded-xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-bold text-sm flex items-center justify-center gap-2" onclick="kunciSekarang()"><i class="fa-solid fa-lock"></i> Kunci Sekarang</button>
 </div>
 <p class="text-[10px] text-slate-400 text-center">Pengaturan disimpan otomatis di perangkat ini</p>
+</div>
+</div>
+</div>
+
+<!-- Custom Delete Confirmation Modal - Sesuai Tema -->
+<div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 z-[95] hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="customDeleteModal">
+<div class="glass-box rounded-[2rem] p-6 sm:p-7 max-w-sm w-full shadow-2xl text-center transform scale-95 transition-transform duration-300" id="customDeleteModalBox">
+<div class="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 text-2xl">
+<i class="fa-solid fa-trash-can"></i>
+</div>
+<h3 class="font-serif text-xl font-bold text-slate-900 dark:text-white mb-2">Hapus Transaksi?</h3>
+<p class="text-sm text-slate-600 dark:text-slate-300 mb-1">Apakah Anda yakin ingin menghapus transaksi ini?</p>
+<p class="text-[11px] text-slate-500 dark:text-slate-400 mb-6">Data yang dihapus tidak bisa dikembalikan.</p>
+<div class="grid grid-cols-2 gap-3">
+<button class="py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-600 transition" onclick="closeCustomDeleteModal()">Batal</button>
+<button class="py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-lg shadow-rose-600/20 transition flex items-center justify-center gap-2" onclick="executeDeleteTransaction()"><i class="fa-solid fa-trash"></i> Hapus</button>
 </div>
 </div>
 </div>
