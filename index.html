@@ -1397,7 +1397,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW skip'); });
 }
 </script>
-</head>
+<meta content="V60-PIN-FIXED-2024-10-31" name="version"/></head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
 <!-- OVERLAY LAYAR KUNCI PIN -->
@@ -1663,7 +1663,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <div class="hidden mt-2 p-2 rounded-xl text-[11px] text-center font-bold" id="deviceOwnerInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
 </div>
-
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
 <div class="space-y-3">
@@ -2480,13 +2479,16 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
         }
 
         function appendPin(num) {
+            console.log('appendPin', num, 'current:', currentPin);
+            try{
             if (currentPin.length < 6) {
                 currentPin += num;
                 updatePinDisplay();
                 if (currentPin.length === 6) {
-                    setTimeout(() => verifyPin(currentPin), 100);
+                    setTimeout(function(){ verifyPin(currentPin); }, 100);
                 }
             }
+            }catch(e){ console.log('appendPin error', e); }
         }
 
         function deletePin() {
@@ -2502,7 +2504,11 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
         }
 
         function updatePinDisplay() {
-            document.getElementById('pinErrMsg').classList.add('hidden');
+            try{
+            var errEl = document.getElementById('pinErrMsg');
+            if(errEl) errEl.classList.add('hidden');
+            }catch(e){}
+            try{
 
             for (let i = 0; i < 6; i++) {
                 const dot = document.getElementById(`dot-${i}`);
@@ -2932,34 +2938,46 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             input.value = value ? new Intl.NumberFormat('id-ID').format(value) : '';
         }
 
-        function previewMainBukti(event){
-          try{
-            var file = event.target.files[0];
-            if(!file) return;
-            var reader = new FileReader();
-            reader.onload = function(e){
-              var img = new Image();
-              img.onload = function(){
-                var canvas = document.createElement('canvas');
-                var maxW = 400;
-                var ratio = Math.min(maxW / img.width, maxW / img.height, 1);
-                canvas.width = img.width * ratio;
-                canvas.height = img.height * ratio;
-                var ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                tempBuktiBase64 = canvas.toDataURL('image/jpeg', 0.6);
-                window.tempBuktiBase64 = tempBuktiBase64;
-                var container = document.getElementById('buktiPreviewContainer');
-                var previewImg = document.getElementById('buktiPreviewImg');
-                if(container && previewImg){
-                  previewImg.src = tempBuktiBase64;
-                  container.classList.remove('hidden');
+        function previewMainBukti(event) {
+            const file = event.target.files[0];
+            const container = document.getElementById('buktiPreviewContainer');
+            const img = document.getElementById('buktiPreviewImg');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 800;
+                        let width = tempImg.width;
+                        let height = tempImg.height;
+
+                        if (width > height && width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(tempImg, 0, 0, width, height);
+
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        img.src = compressedBase64;
+                        tempBuktiBase64 = compressedBase64;
+                        container.classList.remove('hidden');
+                    };
+                    tempImg.src = e.target.result;
                 }
-              };
-              img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-          }catch(e){ console.log('preview error', e); }
+                reader.readAsDataURL(file);
+            } else {
+                container.classList.add('hidden');
+                tempBuktiBase64 = "";
+            }
         }
 
         function handleFormSubmit(e) {
@@ -2967,136 +2985,135 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             var tipe = document.getElementById('tipeTransaksi').value;
             var penabung = document.getElementById('namaPenabung').value;
             var ketInput = document.getElementById('keteranganTransaksi').value.trim();
-
-            if (!tipe || !penabung) {
-                alert('Pilih Tipe & Penabung!');
-                return;
-            }
-            if (tipe === 'pengeluaran' && !ketInput) {
-                alert('Keterangan wajib untuk pengeluaran!');
-                return;
-            }
-
+            if (!tipe || !penabung) { alert('Pilih Tipe & Penabung!'); return; }
+            if (tipe === 'pengeluaran' && !ketInput) { alert('Keterangan wajib!'); return; }
             var rawJumlah = document.getElementById('jumlahRupiah').value.replace(/\./g, '');
             var jumlah = parseFloat(rawJumlah) || 0;
-            if (jumlah <= 0) {
-                alert('Jumlah tidak valid!');
-                return;
-            }
-
+            if (jumlah <= 0) { alert('Jumlah tidak valid!'); return; }
+            
             var btn = document.getElementById('btnSubmit');
             var btnText = document.getElementById('btnSubmitText');
             var btnSpin = document.getElementById('btnSubmitSpinner');
             if(btn) btn.disabled = true;
             if(btnText) btnText.classList.add('hidden');
             if(btnSpin) btnSpin.classList.remove('hidden');
-
+            
             var manualLink = document.getElementById('buktiFoto');
-            if(manualLink && manualLink.value.trim().startsWith('http')){
-                window.buktiFotoUrl = manualLink.value.trim();
-            }
-
+            var buktiUrlManual = "";
+            if(manualLink && manualLink.value.trim().startsWith('http')){ buktiUrlManual = manualLink.value.trim(); }
+            
             var fileInput = document.getElementById('buktiTransfer');
             var file = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
-
-            function doFinalSave(finalBuktiUrl){
-                var tgl = document.getElementById('tglTransaksi').value;
-                var jam = document.getElementById('jamTransaksi').value;
-                var finalUrl = finalBuktiUrl || window.buktiFotoUrl || "";
+            
+            // SIMPAN LANGSUNG TANPA NUNGGU UPLOAD FOTO - BIAR CEPET 3 DETIK!
+            var tgl = document.getElementById('tglTransaksi').value;
+            var jam = document.getElementById('jamTransaksi').value;
+            var newItem = {
+                id: Date.now(),
+                tipe: tipe,
+                penabung: penabung,
+                tgl: tgl,
+                jam: jam,
+                jumlah: jumlah,
+                ket: ketInput || (tipe === 'pemasukan' ? 'Pemasukan' : (tipe === 'pengembalian' ? 'Pengembalian' : 'Pengeluaran')),
+                bukti: buktiUrlManual,
+                buktiUrl: buktiUrlManual,
+                buktiFoto: buktiUrlManual
+            };
+            
+            console.log('Saving instantly (no wait for photo):', newItem);
+            
+            db.collection("transactions").add(newItem).then(function(docRef){
+                console.log('Saved instantly:', docRef.id);
+                var savedDocId = docRef.id;
                 
-                var newItem = {
-                    id: Date.now(),
-                    tipe: tipe,
-                    penabung: penabung,
-                    tgl: tgl,
-                    jam: jam,
-                    jumlah: jumlah,
-                    ket: ketInput || (tipe === 'pemasukan' ? 'Pemasukan' : (tipe === 'pengembalian' ? 'Pengembalian' : 'Pengeluaran')),
-                    bukti: finalUrl,
-                    buktiUrl: finalUrl,
-                    buktiFoto: finalUrl
-                };
-
-                db.collection("transactions").add(newItem).then(function(docRef){
-                    console.log('Saved:', docRef.id);
+                // RESET FORM & TAMPILKAN POP-UP BERHASIL LANGSUNG!
+                try{ document.getElementById('transactionForm').reset(); if(typeof setNowDateTimeAndFilter === 'function') setNowDateTimeAndFilter(); }catch(err){}
+                window.tempBuktiBase64 = "";
+                var cont = document.getElementById('buktiPreviewContainer');
+                if(cont) cont.classList.add('hidden');
+                var linkIn = document.getElementById('buktiFoto');
+                if(linkIn) linkIn.value = "";
+                
+                if(btn){ btn.disabled = false; }
+                if(btnText){ btnText.classList.remove('hidden'); btnText.innerText = 'Simpan Transaksi'; }
+                if(btnSpin){ btnSpin.classList.add('hidden'); }
+                
+                if(typeof playSuccessSound === 'function'){ try{ playSuccessSound(); }catch(e){} }
+                
+                var successModal = document.getElementById('successModal');
+                if(successModal){
+                    successModal.classList.remove('hidden');
+                    successModal.classList.add('flex');
+                    setTimeout(function(){
+                        successModal.classList.add('hidden');
+                        successModal.classList.remove('flex');
+                        if(typeof switchTab === 'function') switchTab('riwayat');
+                    }, 2500);
+                }
+                
+                // WA NOTIFIKASI LANGSUNG (tanpa nunggu foto)
+                if(typeof sendWhatsAppNotif === 'function'){ 
+                    try{ 
+                        // Jika ada foto, WA pertama tanpa foto dulu, nanti update
+                        sendWhatsAppNotif(newItem); 
+                    }catch(err){} 
+                }
+                
+                // JIKA ADA FILE FOTO, UPLOAD DI BACKGROUND SETELAH POP-UP MUNCUL!
+                if(file){
+                    console.log('Uploading foto di background:', file.name);
+                    var uploadStatus = document.getElementById('waNotifInfo');
+                    if(uploadStatus){
+                        uploadStatus.classList.remove('hidden');
+                        uploadStatus.innerHTML = '⏳ Upload bukti foto...';
+                    }
                     
                     try{
-                        document.getElementById('transactionForm').reset();
-                        if(typeof setNowDateTimeAndFilter === 'function') setNowDateTimeAndFilter();
-                    }catch(err){}
-                    
-                    window.tempBuktiBase64 = "";
-                    window.buktiFotoUrl = "";
-                    var cont = document.getElementById('buktiPreviewContainer');
-                    if(cont) cont.classList.add('hidden');
-                    var linkIn = document.getElementById('buktiFoto');
-                    if(linkIn) linkIn.value = "";
-                    
-                    if(btn){ btn.disabled = false; }
-                    if(btnText){ btnText.classList.remove('hidden'); btnText.innerText = 'Simpan Transaksi'; }
-                    if(btnSpin){ btnSpin.classList.add('hidden'); }
-                    
-                    if(typeof playSuccessSound === 'function'){
-                        try{ playSuccessSound(); }catch(e){}
+                        var storageRef = firebase.storage().ref().child('bukti/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]/gi,'_'));
+                        storageRef.put(file).then(function(snap){
+                            return snap.ref.getDownloadURL();
+                        }).then(function(url){
+                            console.log('Background upload success:', url);
+                            // Update transaksi di Firestore dengan link foto
+                            db.collection("transactions").doc(savedDocId).update({
+                                bukti: url,
+                                buktiUrl: url,
+                                buktiFoto: url
+                            }).then(function(){
+                                console.log('Firestore updated with bukti link');
+                                // Update WA message dengan link foto
+                                newItem.bukti = url;
+                                newItem.buktiUrl = url;
+                                newItem.buktiFoto = url;
+                                if(typeof sendWhatsAppNotif === 'function'){
+                                    try{ sendWhatsAppNotif(newItem); }catch(e){}
+                                }
+                                if(uploadStatus){
+                                    uploadStatus.innerHTML = '✅ Bukti foto terupload!<br>📸 <a href="'+url+'" target="_blank" class="underline text-blue-600">Lihat bukti</a>';
+                                }
+                                if(typeof showAppNotification === 'function'){
+                                    showAppNotification('📸 Bukti Foto Terupload', 'Link bukti sudah siap di WA', 'success');
+                                }
+                            });
+                        }).catch(function(err){
+                            console.log('Background upload fail:', err);
+                            if(uploadStatus){
+                                uploadStatus.innerHTML = '⚠️ Upload bukti gagal, transaksi tetap tersimpan<br>Error: ' + (err.code || err.message);
+                            }
+                        });
+                    }catch(err){
+                        console.log('Background upload error', err);
                     }
-                    
-                    var successModal = document.getElementById('successModal');
-                    if(successModal){
-                        successModal.classList.remove('hidden');
-                        successModal.classList.add('flex');
-                        setTimeout(function(){
-                            successModal.classList.add('hidden');
-                            successModal.classList.remove('flex');
-                            if(typeof switchTab === 'function') switchTab('riwayat');
-                        }, 2500);
-                    } else {
-                        if(typeof showAppNotification === 'function'){
-                            showAppNotification('Berhasil!', 'Transaksi berhasil', 'success');
-                        }
-                        if(typeof switchTab === 'function') switchTab('riwayat');
-                    }
-                    
-                    if(typeof sendWhatsAppNotif === 'function'){
-                        try{ sendWhatsAppNotif(newItem); }catch(err){ console.log(err); }
-                    }
-                    
-                }).catch(function(err){
-                    console.error('Firestore error:', err);
-                    alert('Gagal simpan: ' + err.message);
-                    if(btn){ btn.disabled = false; }
-                    if(btnText){ btnText.classList.remove('hidden'); }
-                    if(btnSpin){ btnSpin.classList.add('hidden'); }
-                });
-            }
-
-            if(file && !window.buktiFotoUrl){
-                // Upload with timeout
-                var uploadTimeout = setTimeout(function(){
-                    console.log('Upload timeout, save without bukti');
-                    doFinalSave("");
-                }, 12000);
-                
-                try{
-                    var storageRef = firebase.storage().ref().child('bukti/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]/gi,'_'));
-                    storageRef.put(file).then(function(snap){
-                        clearTimeout(uploadTimeout);
-                        return snap.ref.getDownloadURL();
-                    }).then(function(url){
-                        window.buktiFotoUrl = url;
-                        console.log('Uploaded:', url);
-                        doFinalSave(url);
-                    }).catch(function(err){
-                        clearTimeout(uploadTimeout);
-                        console.log('Upload fail:', err.code);
-                        doFinalSave("");
-                    });
-                }catch(err){
-                    clearTimeout(uploadTimeout);
-                    doFinalSave("");
                 }
-            } else {
-                doFinalSave(window.buktiFotoUrl || "");
-            }
+                
+            }).catch(function(err){
+                console.error('Firestore error:', err);
+                alert('Gagal simpan: ' + err.message);
+                if(btn){ btn.disabled = false; }
+                if(btnText){ btnText.classList.remove('hidden'); }
+                if(btnSpin){ btnSpin.classList.add('hidden'); }
+            });
         }
 
         function getTipeLabel(val) {
@@ -3271,7 +3288,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <p class="text-sm text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
 </div>
 </div>
-
 <div>
 <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
 <i class="fa-solid fa-link mr-1"></i> Atau Link Foto Bukti (Opsional)
@@ -4425,8 +4441,8 @@ function testWANotif(target){
 }
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadWANumbers, 800); });
 </script>
-
 <script>
+// V60 PIN FIX - with debug
 function loadDeviceOwner(){
   try{
     var o = localStorage.getItem('myDeviceOwner') || '';
@@ -4442,76 +4458,10 @@ function loadDeviceOwner(){
   }catch(e){}
 }
 function setDeviceOwner(o){ localStorage.setItem('myDeviceOwner', o); loadDeviceOwner(); }
-function formatRupiahV59(n){ return 'Rp ' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
-
-setTimeout(function(){
-  window.sendWhatsAppNotif = function(trx){
-    try{
-      var enabled = localStorage.getItem('waNotifEnabled') === 'true';
-      if(!enabled) return;
-      var mode = localStorage.getItem('waMode') || 'pasangan';
-      var haniNum = localStorage.getItem('waNumberHani') || '';
-      var venusNum = localStorage.getItem('waNumberVenus') || '';
-      var penabung = (trx.penabung||'HANI').toUpperCase();
-      var jenis = (trx.tipe||'pemasukan').toLowerCase();
-      var kategori = trx.ket||'-';
-      var nominal = trx.jumlah||0;
-      var catatan = trx.ket||'';
-      var bukti = trx.buktiUrl||trx.buktiFoto||trx.bukti||'';
-      var saldoEl = document.getElementById('totalSaldo');
-      var saldo = saldoEl ? saldoEl.innerText : 'Lihat di aplikasi';
-      var emoji = jenis==='pemasukan' ? '💰' : (jenis==='pengembalian' ? '↩️' : '💸');
-      var jenisText = jenis==='pemasukan' ? 'PEMASUKAN' : (jenis==='pengembalian' ? 'PENGEMBALIAN DANA' : 'PENGELUARAN');
-      var warna = jenis==='pemasukan' ? '🟢' : (jenis==='pengembalian' ? '🔵' : '🔴');
-      var msg = '*' + emoji + ' TABUNGAN PERNIKAHAN*\n*'+warna+' '+jenisText+' BARU*\n\n👤 *'+penabung+'* menambahkan:\n📂 Kategori: '+kategori+'\n💵 Nominal: '+formatRupiahV59(nominal)+'\n';
-      if(catatan && catatan!==kategori) msg += '📝 Catatan: '+catatan+'\n';
-      msg += '\n';
-      if(bukti && bukti.length>10 && bukti.startsWith('http')) msg += '📸 *Bukti Foto:*\n'+bukti+'\n\n';
-      msg += '💎 *Total Saldo:* '+saldo+'\n🎯 Target: 03 April 2027\n\n_Dari Tabungan Pernikahan Hani & Venus_';
-      window.lastWAMessage = msg;
-      var targetNum=''; var targetName=''; var isGroup=(mode==='grup');
-      if(isGroup){ targetName='GRUP'; } else { if(penabung==='HANI'){ targetNum=venusNum; targetName='VENUS'; } else { targetNum=haniNum; targetName='HANI'; } if(!targetNum) targetNum=haniNum||venusNum; }
-      window.lastWATarget=targetNum; window.lastWATargetName=targetName;
-      var waBtn=document.getElementById('btnSendWA'); var waInfo=document.getElementById('waNotifInfo');
-      if(waBtn){
-        waBtn.classList.remove('hidden');
-        if(isGroup){
-          waBtn.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim ke Grup WA';
-          waBtn.onclick=function(){ window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank'); };
-        } else {
-          waBtn.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim ke '+targetName;
-          waBtn.onclick=function(){ 
-            var clean=targetNum.replace(/[^0-9]/g,''); if(clean.startsWith('0')) clean=clean.substring(1); if(!clean.startsWith('62')) clean='62'+clean;
-            window.open('https://wa.me/'+clean+'?text='+encodeURIComponent(msg), '_blank'); 
-          };
-        }
-      }
-      if(waInfo){
-        waInfo.classList.remove('hidden');
-        var html=isGroup ? 'Siap kirim ke Grup' : 'Ke '+targetName;
-        if(catatan) html+='<br>📝 '+catatan.substring(0,40);
-        if(bukti) html+='<br>📸 Ada bukti';
-        waInfo.innerHTML=html;
-      }
-      if(typeof showAppNotification==='function'){
-        var body=kategori+' • '+formatRupiahV59(nominal);
-        if(catatan) body+=' - '+catatan.substring(0,50);
-        showAppNotification(emoji+' '+jenisText+' Baru - '+penabung, body, 'success');
-      }
-      var auto=localStorage.getItem('waAutoEnabled')==='true';
-      if(auto){
-        setTimeout(function(){
-          if(isGroup) window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
-          else if(targetNum){
-            var c=targetNum.replace(/[^0-9]/g,''); if(c.startsWith('0')) c=c.substring(1); if(!c.startsWith('62')) c='62'+c;
-            window.open('https://wa.me/'+c+'?text='+encodeURIComponent(msg), '_blank');
-          }
-        }, 1800);
-      }
-    }catch(e){ console.log('WA error', e); }
-  };
-}, 1000);
-document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadDeviceOwner, 800); });
+document.addEventListener('DOMContentLoaded', function(){ 
+  setTimeout(loadDeviceOwner, 800);
+  console.log('V60 PIN FIX loaded, currentPin:', typeof currentPin, 'appendPin:', typeof appendPin);
+});
 </script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
