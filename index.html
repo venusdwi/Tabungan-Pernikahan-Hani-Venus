@@ -1,28 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="id">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>TABUNGAN PERNIKAHAN Hani &amp; Venus 💍</title>
@@ -1398,34 +1377,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 }
 </script>
 
-<style id="pinThemeFix">
-/* V71 - PIN mengikuti mode utama */
-#pinScreen, #pin-screen, .pin-screen {
-  background: var(--bg-main, #f0f4ff) !important;
-  transition: all 0.3s ease !important;
-}
-#pinScreen.dark-mode, #pin-screen.dark-mode {
-  background: #0f172a !important;
-}
-.theme-follow {
-  background: rgba(255,255,255,0.85) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255,255,255,0.5) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important;
-}
-.dark-mode .theme-follow {
-  background: rgba(15,23,42,0.9) !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
-}
-.dark-mode #pinScreen, .dark-mode #pin-screen {
-  background: #0f172a !important;
-}
-.dark-mode .theme-follow h2,
-.dark-mode .theme-follow p {
-  color: white !important;
-}
-</style>
-
 <style id="customDropdownTheme">
 /* V71 Custom dropdown sesuai tema aplikasi */
 select {
@@ -1466,6 +1417,135 @@ select:focus {
 }
 #deviceHani:active, #deviceVenus:active {
   transform: scale(0.95) !important;
+}
+</style>
+
+<style id="pinThemeFixV72">
+/* V72 - PIN putih bersih tanpa glass/blur di mode terang, dark seperti sebelumnya */
+#pinScreen, #pin-screen, .pin-screen {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Light mode - putih bersih no blur + teks kontras */
+#pinScreen .theme-follow,
+#pin-screen .theme-follow,
+.pin-screen .theme-follow {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+
+#pinScreen .theme-follow h2,
+#pinScreen .theme-follow h1,
+#pin-screen .theme-follow h2,
+.theme-follow h2 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+#pinScreen .theme-follow p,
+#pin-screen .theme-follow p,
+.theme-follow p {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+#pinScreen .pin-dots div,
+#pin-screen .pin-dots div {
+  background: #e2e8f0 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+#pinScreen .pin-dots div.filled,
+#pin-screen .pin-dots div.filled {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+#pinScreen .pin-keys button,
+#pin-screen .pin-keys button {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+#pinScreen .pin-keys button:active,
+#pin-screen .pin-keys button:active {
+  background: #e2e8f0 !important;
+  transform: scale(0.95) !important;
+}
+
+/* Dark mode - seperti sebelumnya (dark biru) */
+.dark-mode #pinScreen,
+.dark-mode #pin-screen,
+.dark-mode .pin-screen,
+#pinScreen.dark,
+#pin-screen.dark {
+  background: #0f172a !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.dark-mode #pinScreen .theme-follow,
+.dark-mode #pin-screen .theme-follow {
+  background: rgba(15,23,42,0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(51,65,85,0.5) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+}
+
+.dark-mode #pinScreen .theme-follow h2,
+.dark-mode #pin-screen .theme-follow h2 {
+  color: white !important;
+}
+
+.dark-mode #pinScreen .theme-follow p,
+.dark-mode #pin-screen .theme-follow p {
+  color: #94a3b8 !important;
+}
+
+.dark-mode #pinScreen .pin-dots div {
+  background: rgba(51,65,85,0.5) !important;
+  border-color: rgba(71,85,105,0.5) !important;
+}
+
+.dark-mode #pinScreen .pin-keys button {
+  background: rgba(30,41,59,0.8) !important;
+  border-color: rgba(71,85,105,0.3) !important;
+  color: white !important;
+}
+</style>
+
+<style id="deviceBlueFix">
+/* V72 Device owner biru untuk yang dipilih */
+#deviceHani, #deviceVenus {
+  transition: all 0.3s ease !important;
+  font-weight: 700 !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+#deviceHani.selected, #deviceVenus.selected {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3) !important;
+}
+#deviceHani.selected::after, #deviceVenus.selected::after {
+  content: '✅';
+  margin-left: 6px;
+}
+#deviceOwnerInfo {
+  background: #dbeafe !important;
+  border: 1px solid #93c5fd !important;
+  color: #1e40af !important;
+  font-weight: 700 !important;
 }
 </style>
 </head>
@@ -4792,7 +4872,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
-
 <script>
 // V71 Fix - Perangkat Ini Milik Siapa? clickable
 document.addEventListener('DOMContentLoaded', function(){
@@ -4845,7 +4924,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }, 1500);
 });
 </script>
-
 <script>
 // V71 Fix - Laporan & Riwayat filter real-time + custom tema sesuai aplikasi
 document.addEventListener('DOMContentLoaded', function(){
@@ -4969,5 +5047,40 @@ function createCustomDropdown(selectId, options){
   select.style.display = 'none';
 }
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+
+<script>
+// V72 Device owner biru fix
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    var saved = localStorage.getItem('myDeviceOwner');
+    if(saved && window.setDeviceOwner){
+      window.setDeviceOwner(saved);
+      console.log('Device owner loaded:', saved);
+    }
+    
+    // Ensure buttons show blue when selected
+    var haniBtn = document.getElementById('deviceHani');
+    var venusBtn = document.getElementById('deviceVenus');
+    
+    if(haniBtn && venusBtn){
+      // Add selected class logic
+      var observer = new MutationObserver(function(){
+        var haniBg = haniBtn.style.background;
+        var venusBg = venusBtn.style.background;
+        if(haniBg.includes('2563eb') || haniBg.includes('rgb(37, 99, 235)')){
+          haniBtn.classList.add('selected');
+          venusBtn.classList.remove('selected');
+        } else if(venusBg.includes('2563eb') || venusBg.includes('rgb(37, 99, 235)')){
+          venusBtn.classList.add('selected');
+          haniBtn.classList.remove('selected');
+        }
+      });
+      
+      observer.observe(haniBtn, {attributes: true, attributeFilter: ['style']});
+      observer.observe(venusBtn, {attributes: true, attributeFilter: ['style']});
+    }
+  }, 1000);
+});
+</script>
+</body>
 </html>
