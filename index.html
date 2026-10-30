@@ -1,7 +1,28 @@
 <!DOCTYPE html>
 
 <html lang="id">
-<head>
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>TABUNGAN PERNIKAHAN Hani &amp; Venus 💍</title>
@@ -1376,36 +1397,69 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW skip'); });
 }
 </script>
-<style id="customDropdownTheme">
-/* V71 Custom dropdown sesuai tema aplikasi */
-select {
-  background: rgba(255,255,255,0.9) !important;
+
+<style id="pinDarkOriginal">
+/* V74 - PIN balik ke tema gelap biru semula seperti video 6.5s */
+#pinScreen {
+  background: #0f172a !important;
+  background-color: #0f172a !important;
+}
+
+#pinScreen > div,
+#pinScreen div[class*="rounded-[2rem]"],
+#pinScreen div.bg-slate-900\/70 {
+  background: rgba(15, 23, 42, 0.9) !important;
+  background-color: rgba(15, 23, 42, 0.9) !important;
   backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(226,232,240,0.8) !important;
-  border-radius: 1rem !important;
-  padding: 0.75rem 1rem !important;
-  font-weight: 600 !important;
-  color: #1e293b !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(51, 65, 105, 0.5) !important;
+  box-shadow: 0 8px 32px rgba(2, 132, 199, 0.3) !important;
 }
-select:hover {
-  background: rgba(255,255,255,0.95) !important;
-  border-color: #93c5fd !important;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.15) !important;
-}
-select:focus {
-  outline: none !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.1) !important;
-}
-.dark-mode select {
-  background: rgba(30,41,59,0.9) !important;
-  border-color: rgba(71,85,105,0.5) !important;
+
+#pinScreen h2 {
   color: white !important;
+  font-weight: 800 !important;
 }
-/* Device owner buttons fix */
+
+#pinScreen p {
+  color: #94a3b8 !important;
+}
+
+/* Dots - dark */
+#pinScreen .pin-dots div,
+#pinScreen div[class*="flex"] > div[class*="w-8"] {
+  background: rgba(51, 65, 85, 0.5) !important;
+  border: 1px solid rgba(71, 85, 105, 0.5) !important;
+}
+
+#pinScreen .pin-dots div.filled,
+#pinScreen div[class*="bg-sky"] {
+  background: #0ea5e9 !important;
+  border-color: #0ea5e9 !important;
+}
+
+/* Keys - dark */
+#pinScreen button {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid rgba(71, 85, 105, 0.3) !important;
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+#pinScreen button:active {
+  background: rgba(51, 65, 85, 0.8) !important;
+  transform: scale(0.95) !important;
+}
+</style>
+
+<style id="deviceFixV74">
+/* V74 Device owner - blue selected */
+#deviceOwnerBox {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
 #deviceHani, #deviceVenus {
   pointer-events: auto !important;
   cursor: pointer !important;
@@ -1413,200 +1467,29 @@ select:focus {
   touch-action: manipulation !important;
   position: relative !important;
   z-index: 10 !important;
+  transition: all 0.3s ease !important;
+  font-weight: 700 !important;
+  min-height: 48px !important;
 }
+
 #deviceHani:active, #deviceVenus:active {
   transform: scale(0.95) !important;
 }
-</style>
-<style id="pinThemeFixV72">
-/* V72 - PIN putih bersih tanpa glass/blur di mode terang, dark seperti sebelumnya */
-#pinScreen, #pin-screen, .pin-screen {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  transition: all 0.3s ease !important;
-}
 
-/* Light mode - putih bersih no blur + teks kontras */
-#pinScreen .theme-follow,
-#pin-screen .theme-follow,
-.pin-screen .theme-follow {
-  background: #ffffff !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
-}
-
-#pinScreen .theme-follow h2,
-#pinScreen .theme-follow h1,
-#pin-screen .theme-follow h2,
-.theme-follow h2 {
-  color: #0f172a !important;
-  font-weight: 800 !important;
-  text-shadow: none !important;
-}
-
-#pinScreen .theme-follow p,
-#pin-screen .theme-follow p,
-.theme-follow p {
-  color: #475569 !important;
-  font-weight: 500 !important;
-}
-
-#pinScreen .pin-dots div,
-#pin-screen .pin-dots div {
-  background: #e2e8f0 !important;
-  border: 1px solid #cbd5e1 !important;
-}
-
-#pinScreen .pin-dots div.filled,
-#pin-screen .pin-dots div.filled {
-  background: #2563eb !important;
-  border-color: #2563eb !important;
-}
-
-#pinScreen .pin-keys button,
-#pin-screen .pin-keys button {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  color: #0f172a !important;
-  font-weight: 700 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-
-#pinScreen .pin-keys button:active,
-#pin-screen .pin-keys button:active {
-  background: #e2e8f0 !important;
-  transform: scale(0.95) !important;
-}
-
-/* Dark mode - seperti sebelumnya (dark biru) */
-.dark-mode #pinScreen,
-.dark-mode #pin-screen,
-.dark-mode .pin-screen,
-#pinScreen.dark,
-#pin-screen.dark {
-  background: #0f172a !important;
-  backdrop-filter: blur(20px) !important;
-}
-
-.dark-mode #pinScreen .theme-follow,
-.dark-mode #pin-screen .theme-follow {
-  background: rgba(15,23,42,0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(51,65,85,0.5) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
-}
-
-.dark-mode #pinScreen .theme-follow h2,
-.dark-mode #pin-screen .theme-follow h2 {
-  color: white !important;
-}
-
-.dark-mode #pinScreen .theme-follow p,
-.dark-mode #pin-screen .theme-follow p {
-  color: #94a3b8 !important;
-}
-
-.dark-mode #pinScreen .pin-dots div {
-  background: rgba(51,65,85,0.5) !important;
-  border-color: rgba(71,85,105,0.5) !important;
-}
-
-.dark-mode #pinScreen .pin-keys button {
-  background: rgba(30,41,59,0.8) !important;
-  border-color: rgba(71,85,105,0.3) !important;
-  color: white !important;
-}
-</style>
-<style id="deviceBlueFix">
-/* V72 Device owner biru untuk yang dipilih */
-#deviceHani, #deviceVenus {
-  transition: all 0.3s ease !important;
-  font-weight: 700 !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
 #deviceHani.selected, #deviceVenus.selected {
   background: #2563eb !important;
+  background-color: #2563eb !important;
   border-color: #2563eb !important;
   color: white !important;
-  box-shadow: 0 4px 12px rgba(37,99,235,0.3) !important;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.4) !important;
 }
-#deviceHani.selected::after, #deviceVenus.selected::after {
-  content: '✅';
-  margin-left: 6px;
-}
+
 #deviceOwnerInfo {
-  background: #dbeafe !important;
-  border: 1px solid #93c5fd !important;
-  color: #1e40af !important;
-  font-weight: 700 !important;
-}
-</style>
-
-<style id="pinWhiteFixV73">
-/* V73 SUPER STRONG - PIN putih bersih mode terang */
-#pinScreen {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  display: none;
 }
 
-#pinScreen > div,
-#pinScreen .bg-slate-900\/70,
-#pinScreen [class*="bg-slate"],
-#pinScreen [class*="backdrop-blur"],
-#pinScreen .rounded-\[2rem\] {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
-}
-
-/* Teks kontras */
-#pinScreen h2,
-#pinScreen h1,
-#pinScreen .text-white,
-#pinScreen [class*="text-white"] {
-  color: #0f172a !important;
-  font-weight: 800 !important;
-}
-
-#pinScreen p,
-#pinScreen .text-slate-400,
-#pinScreen .text-slate-300,
-#pinScreen [class*="text-slate"] {
-  color: #475569 !important;
-  font-weight: 500 !important;
-}
-
-/* Dark mode - balik seperti sebelumnya */
-.dark-mode #pinScreen,
-#pinScreen.dark-mode,
-body.dark-mode #pinScreen {
-  background: #0f172a !important;
-  background-color: #0f172a !important;
-  backdrop-filter: blur(20px) !important;
-}
-
-.dark-mode #pinScreen > div,
-.dark-mode #pinScreen .rounded-\[2rem\] {
-  background: rgba(15,23,42,0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(51,65,85,0.5) !important;
-}
-
-.dark-mode #pinScreen h2 {
-  color: white !important;
-}
-
-.dark-mode #pinScreen p {
-  color: #94a3b8 !important;
+#deviceOwnerInfo:not(.hidden) {
+  display: block !important;
 }
 </style>
 </head>
@@ -1614,7 +1497,7 @@ body.dark-mode #pinScreen {
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
 <!-- OVERLAY LAYAR KUNCI PIN -->
 <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-700" id="pinLockScreen">
-<div class="bg-slate-900/70 backdrop-blur-xl border border-sky-500/30 p-6 sm:p-8 rounded-[2rem] max-w-sm w-full text-center shadow-[0_8px_32px_rgba(2,132,199,0.3)] transform transition-all duration-300 overflow-hidden relative theme-follow">
+<div class="bg-slate-900/70 backdrop-blur-xl border border-sky-500/30 p-6 sm:p-8 rounded-[2rem] max-w-sm w-full text-center shadow-[0_8px_32px_rgba(2,132,199,0.3)] transform transition-all duration-300 overflow-hidden relative">
 <div class="transition-opacity duration-300" id="pinInputContent">
 <div class="w-14 h-14 bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-xl shadow-inner">
 <i class="fa-solid fa-lock"></i>
@@ -4707,68 +4590,7 @@ function loadDeviceOwner(){
     if(info){ info.classList.remove('hidden'); info.innerText='✅ Perangkat: '+o; }
   }catch(e){}
 }
-function setDeviceOwner(owner){
-  try{
-    console.log('setDeviceOwner CALLED:', owner);
-    localStorage.setItem('myDeviceOwner', owner);
-    
-    var haniBtn = document.getElementById('deviceHani');
-    var venusBtn = document.getElementById('deviceVenus');
-    var info = document.getElementById('deviceOwnerInfo');
-    
-    if(haniBtn && venusBtn){
-      if(owner==='HANI'){
-        haniBtn.style.background='#2563eb';
-        haniBtn.style.backgroundColor='#2563eb';
-        haniBtn.style.borderColor='#2563eb';
-        haniBtn.style.color='white';
-        haniBtn.style.boxShadow='0 4px 12px rgba(37,99,235,0.4)';
-        haniBtn.innerHTML='✅ Saya HANI';
-        haniBtn.classList.add('selected');
-        
-        venusBtn.style.background='white';
-        venusBtn.style.backgroundColor='white';
-        venusBtn.style.borderColor='#e2e8f0';
-        venusBtn.style.color='#64748b';
-        venusBtn.style.boxShadow='none';
-        venusBtn.innerHTML='Saya VENUS';
-        venusBtn.classList.remove('selected');
-      } else {
-        venusBtn.style.background='#2563eb';
-        venusBtn.style.backgroundColor='#2563eb';
-        venusBtn.style.borderColor='#2563eb';
-        venusBtn.style.color='white';
-        venusBtn.style.boxShadow='0 4px 12px rgba(37,99,235,0.4)';
-        venusBtn.innerHTML='✅ Saya VENUS';
-        venusBtn.classList.add('selected');
-        
-        haniBtn.style.background='white';
-        haniBtn.style.backgroundColor='white';
-        haniBtn.style.borderColor='#e2e8f0';
-        haniBtn.style.color='#64748b';
-        haniBtn.style.boxShadow='none';
-        haniBtn.innerHTML='Saya HANI';
-        haniBtn.classList.remove('selected');
-      }
-    }
-    
-    if(info){
-      info.classList.remove('hidden');
-      info.style.display='block';
-      info.style.background='#dbeafe';
-      info.style.border='1px solid #93c5fd';
-      info.style.color='#1e40af';
-      info.innerText='✅ Perangkat: '+owner+' - Notif pasangan akan muncul di HP ini';
-    }
-    
-    if(typeof showAppNotification === 'function'){
-      showAppNotification('✅ Perangkat Diset', 'Ini HP '+owner, 'success');
-    }
-    
-  }catch(e){ console.log('setDeviceOwner ERROR', e); }
-}
-window.setDeviceOwner = setDeviceOwner;
-
+function setDeviceOwner(o){ localStorage.setItem('myDeviceOwner', o); loadDeviceOwner(); }
 
 function formatRupiah(n){ return 'Rp ' + (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
@@ -4907,8 +4729,6 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }, 1000);
 });
-
-window.setDeviceOwner = setDeviceOwner;
 </script>
 <script>
 function loadWASettings(){
@@ -4994,297 +4814,164 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+
 <script>
-// V71 Fix - Perangkat Ini Milik Siapa? clickable
+// V74 - Device owner fix tuntas
+function setDeviceOwner(owner){
+  try{
+    console.log('=== setDeviceOwner CALLED ===', owner);
+    localStorage.setItem('myDeviceOwner', owner);
+    
+    var haniBtn = document.getElementById('deviceHani');
+    var venusBtn = document.getElementById('deviceVenus');
+    var info = document.getElementById('deviceOwnerInfo');
+    
+    console.log('Elements:', {hani: !!haniBtn, venus: !!venusBtn, info: !!info});
+    
+    if(haniBtn && venusBtn){
+      // Reset both
+      [haniBtn, venusBtn].forEach(function(btn){
+        btn.style.background = 'white';
+        btn.style.backgroundColor = 'white';
+        btn.style.borderColor = '#e2e8f0';
+        btn.style.color = '#64748b';
+        btn.style.boxShadow = 'none';
+        btn.classList.remove('selected');
+      });
+      
+      if(owner === 'HANI'){
+        haniBtn.style.background = '#2563eb';
+        haniBtn.style.backgroundColor = '#2563eb';
+        haniBtn.style.borderColor = '#2563eb';
+        haniBtn.style.color = 'white';
+        haniBtn.style.boxShadow = '0 4px 12px rgba(37,99,235,0.4)';
+        haniBtn.innerHTML = '✅ Saya HANI';
+        haniBtn.classList.add('selected');
+        console.log('HANI selected - BLUE');
+      } else {
+        venusBtn.style.background = '#2563eb';
+        venusBtn.style.backgroundColor = '#2563eb';
+        venusBtn.style.borderColor = '#2563eb';
+        venusBtn.style.color = 'white';
+        venusBtn.style.boxShadow = '0 4px 12px rgba(37,99,235,0.4)';
+        venusBtn.innerHTML = '✅ Saya VENUS';
+        venusBtn.classList.add('selected');
+        console.log('VENUS selected - BLUE');
+      }
+    }
+    
+    if(info){
+      info.classList.remove('hidden');
+      info.style.display = 'block';
+      info.style.background = '#dbeafe';
+      info.style.border = '1px solid #93c5fd';
+      info.style.color = '#1e40af';
+      info.style.padding = '8px';
+      info.style.borderRadius = '12px';
+      info.style.fontSize = '11px';
+      info.style.fontWeight = '700';
+      info.style.textAlign = 'center';
+      info.style.marginTop = '8px';
+      info.innerText = '✅ Perangkat: ' + owner + ' - Notif pasangan akan muncul';
+      console.log('Info updated');
+    }
+    
+    if(typeof showAppNotification === 'function'){
+      showAppNotification('✅ Perangkat: ' + owner, 'HP ini diset sebagai ' + owner, 'success');
+    }
+    
+    if(navigator.vibrate) navigator.vibrate(50);
+    
+  }catch(e){
+    console.error('setDeviceOwner ERROR:', e);
+    alert('Error: ' + e.message);
+  }
+}
+window.setDeviceOwner = setDeviceOwner;
+console.log('setDeviceOwner READY - global');
+
 document.addEventListener('DOMContentLoaded', function(){
+  console.log('DOM loaded - fixing device buttons');
+  
   setTimeout(function(){
     var haniBtn = document.getElementById('deviceHani');
     var venusBtn = document.getElementById('deviceVenus');
+    var box = document.getElementById('deviceOwnerBox');
+    
+    console.log('Device box:', !!box, 'Hani:', !!haniBtn, 'Venus:', !!venusBtn);
+    
+    if(box){
+      box.style.pointerEvents = 'auto';
+    }
     
     if(haniBtn){
       haniBtn.style.pointerEvents = 'auto';
       haniBtn.style.cursor = 'pointer';
       haniBtn.style.userSelect = 'none';
+      haniBtn.style.touchAction = 'manipulation';
+      haniBtn.style.position = 'relative';
+      haniBtn.style.zIndex = '10';
+      
+      // Remove old listeners and add new
+      var newHani = haniBtn.cloneNode(true);
+      haniBtn.parentNode.replaceChild(newHani, haniBtn);
+      haniBtn = newHani;
+      
       haniBtn.addEventListener('click', function(e){
         e.preventDefault();
         e.stopPropagation();
-        console.log('HANI button clicked via listener');
-        if(window.setDeviceOwner) window.setDeviceOwner('HANI');
+        console.log('HANI BUTTON CLICKED');
+        setDeviceOwner('HANI');
       });
-      // Also touch
+      
       haniBtn.addEventListener('touchend', function(e){
         e.preventDefault();
-        if(window.setDeviceOwner) window.setDeviceOwner('HANI');
+        console.log('HANI TOUCHED');
+        setDeviceOwner('HANI');
       });
+      
+      console.log('HANI button fixed');
     }
     
     if(venusBtn){
       venusBtn.style.pointerEvents = 'auto';
       venusBtn.style.cursor = 'pointer';
       venusBtn.style.userSelect = 'none';
+      venusBtn.style.touchAction = 'manipulation';
+      venusBtn.style.position = 'relative';
+      venusBtn.style.zIndex = '10';
+      
+      var newVenus = venusBtn.cloneNode(true);
+      venusBtn.parentNode.replaceChild(newVenus, venusBtn);
+      venusBtn = newVenus;
+      
       venusBtn.addEventListener('click', function(e){
         e.preventDefault();
         e.stopPropagation();
-        console.log('VENUS button clicked via listener');
-        if(window.setDeviceOwner) window.setDeviceOwner('VENUS');
+        console.log('VENUS BUTTON CLICKED');
+        setDeviceOwner('VENUS');
       });
+      
       venusBtn.addEventListener('touchend', function(e){
         e.preventDefault();
-        if(window.setDeviceOwner) window.setDeviceOwner('VENUS');
+        console.log('VENUS TOUCHED');
+        setDeviceOwner('VENUS');
       });
-    }
-    
-    // Load existing
-    if(typeof loadDeviceOwner === 'function'){
-      loadDeviceOwner();
-    } else if(window.setDeviceOwner){
-      var saved = localStorage.getItem('myDeviceOwner');
-      if(saved) window.setDeviceOwner(saved);
-    }
-    
-    console.log('Device owner buttons fixed - clickable');
-  }, 1500);
-});
-</script>
-<script>
-// V71 Fix - Laporan & Riwayat filter real-time + custom tema sesuai aplikasi
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(function(){
-    // Real-time bulan & tahun sekarang
-    var now = new Date();
-    var currentMonth = now.getMonth() + 1; // 1-12
-    var currentYear = now.getFullYear(); // 2026
-    
-    console.log('Real-time:', currentMonth, currentYear);
-    
-    // Fix Laporan filter
-    var laporanBulan = document.getElementById('filterBulanLaporan') || document.getElementById('laporanBulan') || document.querySelector('#laporanPage select, [data-page="laporan"] select');
-    var laporanTahun = document.getElementById('filterTahunLaporan') || document.getElementById('laporanTahun');
-    
-    // Fix Riwayat filter
-    var riwayatBulan = document.getElementById('filterBulan') || document.getElementById('filterBulanRiwayat') || document.querySelector('#riwayatPage select:first-child, [data-page="riwayat"] select:first-child');
-    var riwayatTahun = document.getElementById('filterTahun') || document.getElementById('filterTahunRiwayat');
-    
-    // Set real-time default to current month/year if exists
-    var allSelects = document.querySelectorAll('select');
-    allSelects.forEach(function(sel){
-      var id = (sel.id || '').toLowerCase();
-      var isBulan = id.includes('bulan') || sel.previousElementSibling && sel.previousElementSibling.textContent.toLowerCase().includes('bulan');
-      var isTahun = id.includes('tahun') || sel.previousElementSibling && sel.previousElementSibling.textContent.toLowerCase().includes('tahun');
       
-      // Style custom sesuai tema aplikasi - glass-box
-      sel.style.background = 'rgba(255,255,255,0.9)';
-      sel.style.backdropFilter = 'blur(20px)';
-      sel.style.border = '1px solid rgba(226,232,240,0.8)';
-      sel.style.borderRadius = '1rem';
-      sel.style.padding = '0.75rem 1rem';
-      sel.style.fontSize = '0.875rem';
-      sel.style.fontWeight = '600';
-      sel.style.color = '#1e293b';
-      sel.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
-      sel.style.cursor = 'pointer';
-      
-      // Real-time: set to current month/year if options exist
-      if(sel.options.length > 0){
-        for(var i=0; i<sel.options.length; i++){
-          var optVal = sel.options[i].value;
-          if(isBulan || id.includes('bulan')){
-            // Bulan: set to current month
-            if(optVal == currentMonth || optVal == String(currentMonth).padStart(2,'0') || sel.options[i].text.includes(['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][currentMonth-1])){
-              // Don't auto-select if user wants Semua Bulan - keep Semua as default but mark real-time
-              // Just ensure option exists
-            }
-          }
-          if(isTahun || id.includes('tahun')){
-            if(optVal == currentYear || optVal == String(currentYear)){
-              // Same - keep Semua as default
-            }
-          }
-        }
-      }
-    });
-    
-    // Custom dropdown themed - add class
-    var filterBoxes = document.querySelectorAll('#laporanPage .glass-box, #riwayatPage .glass-box, .filter-box');
-    filterBoxes.forEach(function(box){
-      box.style.background = 'rgba(255,255,255,0.7)';
-      box.style.backdropFilter = 'blur(20px)';
-      box.style.border = '1px solid rgba(255,255,255,0.5)';
-    });
-    
-    console.log('Laporan & Riwayat filter themed + real-time ready');
-    
-    // Set default filter to current month/year for real-time (optional - keep Semua Bulan as default but show real-time indicator)
-    // If user wants real-time, we set filter to current month/year
-    if(typeof window.filterTransaksi === 'function'){
-      // Keep existing filter logic
+      console.log('VENUS button fixed');
     }
     
-  }, 2000);
-});
-
-// Custom themed dropdown function
-function createCustomDropdown(selectId, options){
-  var select = document.getElementById(selectId);
-  if(!select) return;
-  
-  // Hide native select and create custom
-  var wrapper = document.createElement('div');
-  wrapper.className = 'custom-dropdown-wrapper relative';
-  wrapper.style.position = 'relative';
-  
-  var button = document.createElement('button');
-  button.className = 'w-full bg-white/90 backdrop-blur border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-left flex justify-between items-center shadow-sm';
-  button.innerHTML = select.options[select.selectedIndex]?.text || 'Pilih <i class="fa-solid fa-chevron-down text-xs"></i>';
-  button.type = 'button';
-  
-  var list = document.createElement('div');
-  list.className = 'hidden absolute top-full mt-2 w-full bg-white/95 backdrop-blur-xl border border-slate-200 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto';
-  list.style.backdropFilter = 'blur(20px)';
-  
-  // Add options
-  for(var i=0; i<select.options.length; i++){
-    var opt = document.createElement('div');
-    opt.className = 'px-4 py-2.5 text-sm hover:bg-blue-50 cursor-pointer transition';
-    opt.textContent = select.options[i].text;
-    opt.dataset.value = select.options[i].value;
-    opt.addEventListener('click', (function(val, text){
-      return function(){
-        select.value = val;
-        button.innerHTML = text + ' <i class="fa-solid fa-chevron-down text-xs"></i>';
-        list.classList.add('hidden');
-        select.dispatchEvent(new Event('change'));
-      };
-    })(select.options[i].value, select.options[i].text));
-    list.appendChild(opt);
-  }
-  
-  button.addEventListener('click', function(){
-    list.classList.toggle('hidden');
-  });
-  
-  wrapper.appendChild(button);
-  wrapper.appendChild(list);
-  select.parentNode.insertBefore(wrapper, select);
-  select.style.display = 'none';
-}
-</script>
-<script>
-// V72 Device owner biru fix
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(function(){
+    // Load saved
     var saved = localStorage.getItem('myDeviceOwner');
-    if(saved && window.setDeviceOwner){
-      window.setDeviceOwner(saved);
-      console.log('Device owner loaded:', saved);
+    console.log('Saved owner:', saved);
+    if(saved){
+      setTimeout(function(){
+        setDeviceOwner(saved);
+      }, 500);
     }
     
-    // Ensure buttons show blue when selected
-    var haniBtn = document.getElementById('deviceHani');
-    var venusBtn = document.getElementById('deviceVenus');
-    
-    if(haniBtn && venusBtn){
-      // Add selected class logic
-      var observer = new MutationObserver(function(){
-        var haniBg = haniBtn.style.background;
-        var venusBg = venusBtn.style.background;
-        if(haniBg.includes('2563eb') || haniBg.includes('rgb(37, 99, 235)')){
-          haniBtn.classList.add('selected');
-          venusBtn.classList.remove('selected');
-        } else if(venusBg.includes('2563eb') || venusBg.includes('rgb(37, 99, 235)')){
-          venusBtn.classList.add('selected');
-          haniBtn.classList.remove('selected');
-        }
-      });
-      
-      observer.observe(haniBtn, {attributes: true, attributeFilter: ['style']});
-      observer.observe(venusBtn, {attributes: true, attributeFilter: ['style']});
-    }
   }, 1000);
 });
 </script>
-
-<script>
-// V73 Force PIN white clean in light mode
-function forcePinWhite(){
-  try{
-    var body = document.body;
-    var isDark = body.classList.contains('dark-mode') || localStorage.getItem('theme') === 'dark';
-    var pinScreen = document.getElementById('pinScreen');
-    if(!pinScreen) return;
-    
-    if(!isDark){
-      pinScreen.style.setProperty('background', '#ffffff', 'important');
-      pinScreen.style.setProperty('background-color', '#ffffff', 'important');
-      pinScreen.style.setProperty('backdrop-filter', 'none', 'important');
-      
-      var inner = pinScreen.querySelector('div.rounded-\[2rem\], div[class*="rounded"]');
-      if(inner){
-        inner.style.setProperty('background', '#ffffff', 'important');
-        inner.style.setProperty('background-color', '#ffffff', 'important');
-        inner.style.setProperty('backdrop-filter', 'none', 'important');
-        inner.style.setProperty('border', '1px solid #e2e8f0', 'important');
-      }
-      
-      var h2 = pinScreen.querySelector('h2, h1');
-      if(h2){
-        h2.style.setProperty('color', '#0f172a', 'important');
-      }
-      var p = pinScreen.querySelector('p');
-      if(p){
-        p.style.setProperty('color', '#475569', 'important');
-      }
-    }
-  }catch(e){ console.log('forcePinWhite error', e); }
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(forcePinWhite, 100);
-  setTimeout(forcePinWhite, 500);
-  setTimeout(forcePinWhite, 1000);
-});
-</script>
-
-<script>
-// V73 Device owner fix
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(function(){
-    var haniBtn = document.getElementById('deviceHani');
-    var venusBtn = document.getElementById('deviceVenus');
-    
-    if(haniBtn){
-      haniBtn.style.pointerEvents = 'auto';
-      haniBtn.style.cursor = 'pointer';
-      haniBtn.style.zIndex = '10';
-      haniBtn.onclick = function(e){
-        e.preventDefault();
-        console.log('HANI clicked');
-        window.setDeviceOwner('HANI');
-      };
-    }
-    
-    if(venusBtn){
-      venusBtn.style.pointerEvents = 'auto';
-      venusBtn.style.cursor = 'pointer';
-      venusBtn.style.zIndex = '10';
-      venusBtn.onclick = function(e){
-        e.preventDefault();
-        console.log('VENUS clicked');
-        window.setDeviceOwner('VENUS');
-      };
-    }
-    
-    var saved = localStorage.getItem('myDeviceOwner');
-    if(saved && window.setDeviceOwner){
-      window.setDeviceOwner(saved);
-    }
-    
-    if(typeof forcePinWhite === 'function'){
-      forcePinWhite();
-    }
-    
-  }, 800);
-});
-</script>
-</body>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
