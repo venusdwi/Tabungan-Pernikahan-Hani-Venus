@@ -1342,6 +1342,128 @@ body.dark .laporan-picker-option:hover{
   box-shadow: 0 4px 12px rgba(59,130,246,0.3);
 }
 .laporan-picker-option.active i{ color: white!important; }
+
+/* ===== V32 FIX - SPINNER BERGERAK + POPUP BIRU TEMA ===== */
+
+/* Spinner Menyimpan - fix animation */
+#btnSubmitSpinner i,
+.fa-spinner,
+.fa-spin,
+.fa-circle-notch,
+.animate-spin{
+  animation: spin 0.8s linear infinite !important;
+  -webkit-animation: spin 0.8s linear infinite !important;
+  display: inline-block !important;
+}
+@keyframes spin{
+  0%{ transform: rotate(0deg); }
+  100%{ transform: rotate(360deg); }
+}
+@-webkit-keyframes spin{
+  0%{ -webkit-transform: rotate(0deg); }
+  100%{ -webkit-transform: rotate(360deg); }
+}
+
+/* Pastikan button spinner visible saat menyimpan */
+#btnSubmit:disabled{
+  opacity: 0.9 !important;
+}
+#btnSubmitSpinner{
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Popup Berhasil - BIRU sesuai tema app */
+#successModalBox{
+  background: white !important;
+  background-color: white !important;
+}
+body.dark #successModalBox{
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+}
+#successModalBox .bg-emerald-100,
+#successModalBox .bg-emerald-900\/50{
+  background: #dbeafe !important;
+  background-color: #dbeafe !important;
+  color: #2563eb !important;
+}
+body.dark #successModalBox .bg-emerald-100{
+  background: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+}
+#successModalBox .text-emerald-600,
+#successModalBox .text-emerald-400{
+  color: #2563eb !important;
+}
+body.dark #successModalBox .text-emerald-600{
+  color: #93c5fd !important;
+}
+#successModalBox .bg-emerald-600,
+#successModalBox button.bg-emerald-600{
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.3) !important;
+}
+#successModalBox .bg-emerald-600:hover{
+  background: #1d4ed8 !important;
+  background-color: #1d4ed8 !important;
+}
+
+/* Popup Hapus - BIRU sesuai tema (bukan merah) */
+#customDeleteModalBox{
+  background: rgba(255,255,255,0.97)!important;
+  backdrop-filter: blur(16px) saturate(1.2)!important;
+}
+body.dark #customDeleteModalBox{
+  background: rgba(15,23,42,0.97)!important;
+}
+#customDeleteModalBox .bg-rose-100{
+  background: #dbeafe !important;
+  background-color: #dbeafe !important;
+}
+body.dark #customDeleteModalBox .bg-rose-100{
+  background: #1e3a8a !important;
+}
+#customDeleteModalBox .text-rose-600,
+#customDeleteModalBox .text-rose-400{
+  color: #2563eb !important;
+}
+body.dark #customDeleteModalBox .text-rose-600{
+  color: #93c5fd !important;
+}
+#customDeleteModalBox .bg-rose-600,
+#customDeleteModalBox button.bg-rose-600{
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.3) !important;
+}
+#customDeleteModalBox .bg-rose-600:hover{
+  background: #1d4ed8 !important;
+}
+
+/* Tombol Simpan Transaksi loading - biru */
+#btnSubmit{
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+}
+#btnSubmit:hover{
+  background: #1d4ed8 !important;
+}
+
+#btnSubmitSpinner i{ animation: spin 0.8s linear infinite !important; display:inline-block!important; }
+@keyframes spin{ 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+#successModalBox, #customDeleteModalBox{ background:white!important; }
+body.dark #successModalBox, body.dark #customDeleteModalBox{ background:#1e293b!important; border-color:#334155!important; }
+
+/* V34 - Berhasil BIRU, Hapus MERAH */
+#btnSubmitSpinner i{ animation: spin 0.8s linear infinite !important; }
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+#customDeleteModalBox{ background:white!important; }
+#successModalBox{ background:white!important; }
+body.dark #customDeleteModalBox, body.dark #successModalBox{ background:#1e293b!important; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -1515,7 +1637,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <div class="tab-content" id="tab-laporan">
 <div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Laporan Keuangan</h2><p class="text-sky-200/70 text-[11px] mt-1">Auto dari Firebase</p></div>
 <div class="glass-box rounded-2xl p-4 mb-3">
-
 <div class="filter-presisi flex gap-2">
 <button class="flex-1 filter-sel-custom glass-box rounded-xl px-3 py-2.5 text-left flex justify-between items-center text-[13px] font-bold" id="btnFilterBulanLaporan" onclick="openLaporanMonthPicker()">
 <span id="textFilterBulanLaporan">Oktober 2026</span><i class="fa-solid fa-chevron-down text-[11px] text-slate-400"></i>
@@ -1529,7 +1650,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <!-- Hidden original selects for logic compatibility -->
 <select class="hidden" id="filterBulanLaporan"><option value="all">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select>
 <select class="hidden" id="filterTahunLaporan"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
-
 </div>
 <div class="grid grid-cols-1 gap-2 mb-3">
 <div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p></div>
@@ -1719,16 +1839,16 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <!-- MODAL NOTIFIKASI SUKSES KUSTOM (SESUAI TEMA APLIKASI & SOUND) -->
 <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="successModal">
-<div class="bg-white dark:bg-slate-900 p-6 sm:p-8 max-w-sm w-full shadow-2xl rounded-[2rem] text-center relative mx-4 transform scale-95 transition-transform duration-300" id="successModalBox">
-<div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
-<i class="fa-solid fa-check"></i>
+
+<div class="p-6 sm:p-8 max-w-sm w-full shadow-2xl rounded-[2rem] text-center relative mx-4 transform scale-95 transition-transform duration-300" id="successModalBox" style="background:white; border:1px solid #e2e8f0;">
+<div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#dbeafe; color:#2563eb;">
+<i class="fa-solid fa-check" style="color:#2563eb;"></i>
 </div>
-<h3 class="font-serif text-2xl font-bold text-slate-900 dark:text-white mb-1">Berhasil!</h3>
-<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Transaksi berhasil disimpan &amp; tersinkronisasi ke Cloud Firestore.</p>
-<button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer" onclick="closeSuccessModalAndReload()">
-                Oke, Mengerti
-            </button>
+<h3 class="font-serif text-2xl font-bold mb-1" style="color:#0f172a;">Berhasil!</h3>
+<p class="text-sm mb-6" style="color:#64748b;">Transaksi berhasil disimpan &amp; tersinkronisasi ke Cloud Firestore.</p>
+<button class="w-full text-white font-medium py-3 px-4 rounded-xl shadow-lg transition-all cursor-pointer" onclick="closeSuccessModalAndReload()" style="background:#2563eb; box-shadow:0 8px 20px rgba(37,99,235,0.3);">Oke, Mengerti</button>
 </div>
+
 </div>
 <!-- MODAL EDIT / HAPUS TRANSAKSI -->
 <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="editModal">
@@ -3060,7 +3180,35 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
             document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
         }
-    </script>
+    
+
+function closeSuccessModalAndReload(){
+  var sm=document.getElementById('successModal');
+  var sb=document.getElementById('successModalBox');
+  if(sm){
+    sm.classList.add('opacity-0','pointer-events-none');
+    if(sb){ sb.classList.remove('scale-100'); sb.classList.add('scale-95'); }
+    setTimeout(function(){ sm.classList.add('hidden'); }, 200);
+  }
+  if(typeof closeTambahModal==='function'){ try{ closeTambahModal(); }catch(e){} }
+  setTimeout(function(){
+    if(typeof switchTab==='function'){ switchTab('riwayat'); }
+    else {
+      document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); el.style.display='none'; });
+      var r=document.getElementById('tab-riwayat'); if(r){ r.style.display='block'; r.classList.add('active'); }
+      document.querySelectorAll('.bottom-tab-item').forEach(function(b){ b.classList.remove('active'); if(b.dataset.tab==='riwayat') b.classList.add('active'); });
+      window.scrollTo(0,0);
+    }
+    var btnSubmit=document.getElementById('btnSubmit');
+    var btnText=document.getElementById('btnSubmitText');
+    var btnSpinner=document.getElementById('btnSubmitSpinner');
+    if(btnSubmit) btnSubmit.disabled=false;
+    if(btnText){ btnText.classList.remove('hidden'); btnText.innerText='Simpan Transaksi'; }
+    if(btnSpinner) btnSpinner.classList.add('hidden');
+  }, 250);
+}
+window.closeSuccessModalAndReload = closeSuccessModalAndReload;
+</script>
 <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-[60] hidden opacity-0 transition-all duration-200 flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none" id="tambahModal">
 <div class="bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-hidden shadow-2xl transform translate-y-full sm:translate-y-4 sm:scale-95 transition-all duration-200 flex flex-col" id="tambahModalBox">
 <div class="flex items-center justify-between p-4 border-b bg-white dark:bg-slate-900"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center"><i class="fa-solid fa-plus text-sm"></i></div><div><h3 class="font-bold text-sm">Tambah Transaksi</h3><p class="text-[11px] text-slate-500">Masuk Firebase otomatis</p></div></div><button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center" onclick="closeTambahModal()"><i class="fa-solid fa-xmark text-xs"></i></button></div>
@@ -4128,21 +4276,22 @@ window.initLaporanRealTime = initLaporanRealTime;
 </div>
 </div>
 </div>
-
 <!-- Custom Delete Confirmation Modal - Sesuai Tema -->
+
 <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 z-[95] hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="customDeleteModal">
-<div class="glass-box rounded-[2rem] p-6 sm:p-7 max-w-sm w-full shadow-2xl text-center transform scale-95 transition-transform duration-300" id="customDeleteModalBox">
-<div class="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 text-2xl">
-<i class="fa-solid fa-trash-can"></i>
+<div class="rounded-[2rem] p-6 sm:p-7 max-w-sm w-full shadow-2xl text-center transform scale-95 transition-transform duration-300" id="customDeleteModalBox" style="background:white; border:1px solid #e2e8f0;">
+<div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl" style="background:#ffe4e6; color:#e11d48;">
+<i class="fa-solid fa-trash-can" style="color:#e11d48;"></i>
 </div>
-<h3 class="font-serif text-xl font-bold text-slate-900 dark:text-white mb-2">Hapus Transaksi?</h3>
-<p class="text-sm text-slate-600 dark:text-slate-300 mb-1">Apakah Anda yakin ingin menghapus transaksi ini?</p>
-<p class="text-[11px] text-slate-500 dark:text-slate-400 mb-6">Data yang dihapus tidak bisa dikembalikan.</p>
+<h3 class="font-serif text-xl font-bold mb-2" style="color:#0f172a;">Hapus Transaksi?</h3>
+<p class="text-sm mb-1" style="color:#475569;">Apakah Anda yakin ingin menghapus transaksi ini?</p>
+<p class="text-[11px] mb-6" style="color:#94a3b8;">Data yang dihapus tidak bisa dikembalikan.</p>
 <div class="grid grid-cols-2 gap-3">
-<button class="py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-600 transition" onclick="closeCustomDeleteModal()">Batal</button>
-<button class="py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-lg shadow-rose-600/20 transition flex items-center justify-center gap-2" onclick="executeDeleteTransaction()"><i class="fa-solid fa-trash"></i> Hapus</button>
+<button class="py-3 px-4 rounded-xl font-bold text-sm transition" onclick="closeCustomDeleteModal()" style="background:#f1f5f9; color:#475569;">Batal</button>
+<button class="py-3 px-4 rounded-xl text-white font-bold text-sm shadow-lg transition flex items-center justify-center gap-2" onclick="executeDeleteTransaction()" style="background:#e11d48; box-shadow:0 8px 20px rgba(225,29,72,0.3);"><i class="fa-solid fa-trash"></i> Hapus</button>
 </div>
 </div>
 </div>
+
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
