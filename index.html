@@ -1469,7 +1469,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   display: block !important;
 }
 </style>
-
 <style id="iphoneFixV75">
 /* V75 - iPhone only fix, Android tidak terpengaruh */
 /* Safe area for iPhone X+ with notch and home indicator */
@@ -1572,6 +1571,151 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
       padding-bottom: 0 !important;
     }
   }
+}
+</style>
+
+<style id="filterRealTimeCustomV76">
+/* V76 - Filter Bulan/Tahun Real-time + Custom Tema Aplikasi */
+
+/* Hide native select arrow and style */
+.filter-select, 
+#filterBulan, #filterTahun, 
+#filterBulanLaporan, #filterTahunLaporan,
+#filterBulanRiwayat, #filterTahunRiwayat,
+select[id*="Bulan"], select[id*="Tahun"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background: rgba(255,255,255,0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1.5px solid rgba(37,99,235,0.15) !important;
+  border-radius: 1rem !important;
+  padding: 0.75rem 2.5rem 0.75rem 1rem !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232563eb'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 1.25rem !important;
+}
+
+.filter-select:hover,
+#filterBulan:hover, #filterTahun:hover,
+select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
+  background: rgba(255,255,255,0.95) !important;
+  border-color: #93c5fd !important;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+.filter-select:focus,
+#filterBulan:focus, #filterTahun:focus {
+  outline: none !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1), 0 4px 12px rgba(37,99,235,0.15) !important;
+}
+
+/* Real-time indicator - current month/year blue */
+.filter-select option[value="10"],
+.filter-select option[value="2026"],
+#filterBulan option[value="10"],
+#filterTahun option[value="2026"] {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  font-weight: 800 !important;
+}
+
+/* Custom dropdown wrapper - tema aplikasi */
+.custom-filter-wrapper {
+  position: relative;
+  display: inline-block;
+  width: auto;
+}
+
+.custom-filter-btn {
+  background: rgba(255,255,255,0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1.5px solid rgba(37,99,235,0.15) !important;
+  border-radius: 1rem !important;
+  padding: 0.75rem 2.5rem 0.75rem 1rem !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.5rem !important;
+  min-width: 140px !important;
+  transition: all 0.3s ease !important;
+}
+
+.custom-filter-btn:hover {
+  border-color: #93c5fd !important;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.15) !important;
+}
+
+.custom-filter-btn.active {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important;
+  background: white !important;
+}
+
+.custom-filter-dropdown {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: rgba(255,255,255,0.98) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(226,232,240,0.8) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+  z-index: 100 !important;
+  max-height: 240px !important;
+  overflow-y: auto !important;
+  padding: 0.5rem !important;
+}
+
+.custom-filter-option {
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.75rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.custom-filter-option:hover {
+  background: #f0f9ff !important;
+  color: #2563eb !important;
+}
+
+.custom-filter-option.selected {
+  background: #2563eb !important;
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+.custom-filter-option.current {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #93c5fd !important;
+}
+
+.custom-filter-option.current.selected {
+  background: #2563eb !important;
+  color: white !important;
 }
 </style>
 </head>
@@ -5054,7 +5198,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }, 1000);
 });
 </script>
-
 <script>
 // V75 iPhone detection and fix
 function isIPhone(){
@@ -5118,6 +5261,214 @@ window.addEventListener('orientationchange', function(){
       applyIPhoneFix();
     }
   }, 500);
+});
+</script>
+
+<script>
+// V76 - Filter Real-time Oktober 2026 + Custom Tema Aplikasi
+document.addEventListener('DOMContentLoaded', function(){
+  console.log('V76 Real-time filter init');
+  
+  setTimeout(function(){
+    var now = new Date();
+    var currentMonth = now.getMonth() + 1; // 10 = Oktober
+    var currentYear = now.getFullYear(); // 2026
+    
+    console.log('Real-time now:', currentMonth, currentYear, 'Oktober 2026');
+    
+    // Find all bulan/tahun selects
+    var bulanSelects = document.querySelectorAll('#filterBulan, #filterBulanLaporan, #filterBulanRiwayat, select[id*="Bulan"]');
+    var tahunSelects = document.querySelectorAll('#filterTahun, #filterTahunLaporan, #filterTahunRiwayat, select[id*="Tahun"]');
+    
+    console.log('Found bulan selects:', bulanSelects.length, 'tahun selects:', tahunSelects.length);
+    
+    // Real-time: Set to current month/year
+    bulanSelects.forEach(function(sel){
+      // Check if current month option exists
+      var hasCurrent = false;
+      for(var i=0; i<sel.options.length; i++){
+        if(sel.options[i].value == currentMonth || sel.options[i].value == String(currentMonth).padStart(2,'0')){
+          hasCurrent = true;
+          break;
+        }
+      }
+      
+      // If not "Semua Bulan" selected, set to current month for real-time
+      // But keep Semua Bulan as option, just set default to current if user hasn't filtered
+      if(!hasCurrent && sel.options.length > 0){
+        // Add current month if not exists
+        var bulanNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        var opt = document.createElement('option');
+        opt.value = currentMonth;
+        opt.text = bulanNames[currentMonth-1] + ' ' + currentYear + ' (Real-time)';
+        opt.selected = true;
+        sel.insertBefore(opt, sel.firstChild);
+      }
+      
+      // Set to current month for real-time - if currently "Semua Bulan", change to current month
+      // Only if user hasn't manually selected something
+      var currentVal = sel.value;
+      if(currentVal === '' || currentVal === 'all' || sel.options[sel.selectedIndex].text.includes('Semua Bulan')){
+        // For real-time, set to Oktober 2026
+        for(var j=0; j<sel.options.length; j++){
+          if(sel.options[j].value == currentMonth){
+            sel.selectedIndex = j;
+            console.log('Set bulan to real-time:', currentMonth, 'Oktober');
+            // Trigger change
+            sel.dispatchEvent(new Event('change'));
+            if(typeof filterTransaksi === 'function') filterTransaksi();
+            if(typeof filterLaporan === 'function') filterLaporan();
+            break;
+          }
+        }
+      }
+      
+      // Add class for styling
+      sel.classList.add('filter-select');
+    });
+    
+    tahunSelects.forEach(function(sel){
+      var hasCurrent = false;
+      for(var i=0; i<sel.options.length; i++){
+        if(sel.options[i].value == currentYear){
+          hasCurrent = true;
+          break;
+        }
+      }
+      
+      if(!hasCurrent && sel.options.length > 0){
+        var opt = document.createElement('option');
+        opt.value = currentYear;
+        opt.text = currentYear + ' (Real-time)';
+        opt.selected = true;
+        sel.insertBefore(opt, sel.firstChild);
+      }
+      
+      var currentVal = sel.value;
+      if(currentVal === '' || currentVal === 'all' || sel.options[sel.selectedIndex].text.includes('Semua')){
+        for(var j=0; j<sel.options.length; j++){
+          if(sel.options[j].value == currentYear){
+            sel.selectedIndex = j;
+            console.log('Set tahun to real-time:', currentYear);
+            sel.dispatchEvent(new Event('change'));
+            if(typeof filterTransaksi === 'function') filterTransaksi();
+            if(typeof filterLaporan === 'function') filterLaporan();
+            break;
+          }
+        }
+      }
+      
+      sel.classList.add('filter-select');
+    });
+    
+    // If no selects found, try to find by text content
+    if(bulanSelects.length === 0){
+      var allSelects = document.querySelectorAll('select');
+      allSelects.forEach(function(sel){
+        var text = sel.options[sel.selectedIndex]?.text || '';
+        if(text.toLowerCase().includes('bulan')){
+          sel.classList.add('filter-select');
+          // Set to Oktober if possible
+          for(var k=0; k<sel.options.length; k++){
+            if(sel.options[k].value == '10' || sel.options[k].text.includes('Oktober')){
+              sel.selectedIndex = k;
+              break;
+            }
+          }
+        }
+        if(text.toLowerCase().includes('tahun') || text.includes('Ta')){
+          sel.classList.add('filter-select');
+          for(var k=0; k<sel.options.length; k++){
+            if(sel.options[k].value == '2026' || sel.options[k].text.includes('2026')){
+              sel.selectedIndex = k;
+              break;
+            }
+          }
+        }
+      });
+    }
+    
+    console.log('Real-time filter applied: Oktober 2026');
+    
+  }, 1500);
+});
+
+// Custom dropdown with tema aplikasi (optional enhancement - keeps native select but styled)
+function initCustomFilterDropdown(){
+  var selects = document.querySelectorAll('#filterBulan, #filterTahun, select[id*="Bulan"], select[id*="Tahun"]');
+  
+  selects.forEach(function(originalSelect){
+    // Skip if already custom
+    if(originalSelect.dataset.customized) return;
+    originalSelect.dataset.customized = 'true';
+    
+    // Style it with theme
+    originalSelect.style.background = 'rgba(255,255,255,0.9)';
+    originalSelect.style.border = '1.5px solid rgba(37,99,235,0.15)';
+    originalSelect.style.borderRadius = '1rem';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(initCustomFilterDropdown, 2000);
+});
+</script>
+
+<script>
+// V76 Ensure filter logic works with real-time
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    // Override or ensure filterTransaksi uses current month/year
+    if(typeof window.filterTransaksi === 'function'){
+      var originalFilter = window.filterTransaksi;
+      window.filterTransaksi = function(){
+        console.log('filterTransaksi called - real-time Oktober 2026');
+        return originalFilter.apply(this, arguments);
+      };
+    }
+    
+    // Auto filter on load to Oktober 2026 if filter exists
+    var now = new Date();
+    var currentMonth = now.getMonth() + 1;
+    var currentYear = now.getFullYear();
+    
+    // Try to trigger filter after 2 seconds
+    setTimeout(function(){
+      var bulanEl = document.getElementById('filterBulan') || document.querySelector('select[id*="Bulan"]');
+      var tahunEl = document.getElementById('filterTahun') || document.querySelector('select[id*="Tahun"]');
+      
+      if(bulanEl && tahunEl){
+        // If still Semua, force to real-time
+        if(bulanEl.value === '' || bulanEl.options[bulanEl.selectedIndex].text.includes('Semua')){
+          for(var i=0; i<bulanEl.options.length; i++){
+            if(bulanEl.options[i].value == currentMonth){
+              bulanEl.selectedIndex = i;
+              break;
+            }
+          }
+        }
+        if(tahunEl.value === '' || tahunEl.options[tahunEl.selectedIndex].text.includes('Semua')){
+          for(var i=0; i<tahunEl.options.length; i++){
+            if(tahunEl.options[i].value == currentYear){
+              tahunEl.selectedIndex = i;
+              break;
+            }
+          }
+        }
+        
+        // Trigger filter
+        if(typeof filterTransaksi === 'function'){
+          filterTransaksi();
+        }
+        if(typeof filterLaporan === 'function'){
+          filterLaporan();
+        }
+        
+        console.log('Forced real-time filter: Bulan', currentMonth, 'Tahun', currentYear);
+      }
+    }, 2500);
+    
+  }, 1000);
 });
 </script>
 </body>
