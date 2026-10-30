@@ -1573,7 +1573,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   }
 }
 </style>
-
 <style id="filterRealTimeCustomV76">
 /* V76 - Filter Bulan/Tahun Real-time + Custom Tema Aplikasi */
 
@@ -3440,20 +3439,122 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
                 }
             }
             
-            // Reset form first
+            // V77 - Reset SEMUA kolom Tambah Transaksi setelah berhasil
             try{
+                console.log('Resetting all Tambah Transaksi fields...');
+                
+                // Reset form
                 var form = document.getElementById('transactionForm');
-                if(form) form.reset();
-                if(typeof setNowDateTimeAndFilter === 'function') setNowDateTimeAndFilter();
-                var cont = document.getElementById('buktiPreviewContainer');
-                if(cont) cont.classList.add('hidden');
+                if(form){
+                    form.reset();
+                    console.log('Form reset');
+                }
+                
+                // Reset tipe transaksi ke default
+                var tipeSelect = document.getElementById('tipeTransaksi');
+                if(tipeSelect) tipeSelect.value = '';
+                
+                // Reset nama penabung ke default
+                var penabungSelect = document.getElementById('namaPenabung');
+                if(penabungSelect) penabungSelect.value = '';
+                
+                // Reset tanggal & jam ke now
+                if(typeof setNowDateTimeAndFilter === 'function'){
+                    setNowDateTimeAndFilter();
+                    console.log('DateTime reset to now');
+                } else {
+                    var tglInput = document.getElementById('tglTransaksi');
+                    var jamInput = document.getElementById('jamTransaksi');
+                    if(tglInput){
+                        var now = new Date();
+                        tglInput.value = now.toISOString().split('T')[0];
+                    }
+                    if(jamInput){
+                        var now = new Date();
+                        jamInput.value = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+                    }
+                }
+                
+                // Reset jumlah Rp ke 0 / kosong
+                var jumlahRupiah = document.getElementById('jumlahRupiah');
+                var jumlahNominal = document.getElementById('jumlahNominal');
+                var jumlahDisplay = document.getElementById('jumlahDisplay');
+                if(jumlahRupiah){
+                    jumlahRupiah.value = '';
+                    jumlahRupiah.innerText = '';
+                }
+                if(jumlahNominal){
+                    jumlahNominal.value = '0';
+                }
+                if(jumlahDisplay){
+                    jumlahDisplay.value = '';
+                    jumlahDisplay.innerText = 'Rp 0';
+                }
+                // Also reset any Rp input
+                var rpInputs = document.querySelectorAll('input[type="text"][id*="jumlah"], input[placeholder*="Rp"]');
+                rpInputs.forEach(function(inp){
+                    if(inp.id !== 'filterBulan' && inp.id !== 'filterTahun'){
+                        inp.value = '';
+                    }
+                });
+                
+                // Reset keterangan / catatan
+                var ketInput = document.getElementById('keteranganTransaksi');
+                var ketInput2 = document.getElementById('ketTransaksi');
+                if(ketInput){
+                    ketInput.value = '';
+                    ketInput.innerText = '';
+                }
+                if(ketInput2){
+                    ketInput2.value = '';
+                }
+                // All textarea
+                var textareas = document.querySelectorAll('textarea');
+                textareas.forEach(function(ta){
+                    if(ta.id.includes('keterangan') || ta.id.includes('ket')){
+                        ta.value = '';
+                    }
+                });
+                
+                // Reset lampiran bukti transfer - FILE INPUT
+                var fileInput = document.getElementById('buktiTransfer');
+                if(fileInput){
+                    fileInput.value = '';
+                    // Clone to fully reset
+                    var newFileInput = fileInput.cloneNode(true);
+                    fileInput.parentNode.replaceChild(newFileInput, fileInput);
+                    console.log('File input reset');
+                }
+                
+                // Reset preview container
+                var previewCont = document.getElementById('buktiPreviewContainer');
+                var previewImg = document.getElementById('buktiPreview');
+                var previewName = document.getElementById('buktiFileName');
+                if(previewCont){
+                    previewCont.classList.add('hidden');
+                    previewCont.style.display = 'none';
+                }
+                if(previewImg){
+                    previewImg.src = '';
+                }
+                if(previewName){
+                    previewName.innerText = '';
+                }
+                
+                // Reset temp bukti
                 window.tempBuktiBase64 = "";
-                // Reset amount display
-                var jumlahDisplay = document.getElementById('jumlahRupiah');
-                if(jumlahDisplay) jumlahDisplay.value = "";
-                var jumlahHidden = document.getElementById('jumlahNominal');
-                if(jumlahHidden) jumlahHidden.value = "0";
-            }catch(e){ console.log('Reset error', e); }
+                window.buktiBase64 = "";
+                if(window.selectedFile) window.selectedFile = null;
+                
+                console.log('All fields reset - form kosong lagi');
+                
+            }catch(e){ 
+                console.log('Reset error', e); 
+                // Fallback simple reset
+                try{
+                    document.getElementById('transactionForm').reset();
+                }catch(e2){}
+            }
             
             // Langsung ke Riwayat tanpa dihalangi Tambah - delay sedikit biar modal nutup dulu
             setTimeout(function(){
@@ -5263,7 +5364,6 @@ window.addEventListener('orientationchange', function(){
   }, 500);
 });
 </script>
-
 <script>
 // V76 - Filter Real-time Oktober 2026 + Custom Tema Aplikasi
 document.addEventListener('DOMContentLoaded', function(){
@@ -5413,7 +5513,6 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(initCustomFilterDropdown, 2000);
 });
 </script>
-
 <script>
 // V76 Ensure filter logic works with real-time
 document.addEventListener('DOMContentLoaded', function(){
