@@ -1397,11 +1397,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW skip'); });
 }
 </script>
-<meta content="#0f172a" name="theme-color"/>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="Tabungan Pernikahan" name="apple-mobile-web-app-title"/>
-<link href="https://cdn-icons-png.flaticon.com/512/1087/1087815.png" rel="apple-touch-icon"/>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
@@ -1659,21 +1654,16 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <div class="flex-1">
 <h3 class="font-bold text-sm">Perangkat Ini Milik Siapa?</h3>
-<p class="text-[11px] opacity-70">Biar notif pasangan muncul di HP yang benar</p>
+<p class="text-[11px] opacity-70">Biar notif pasangan muncul</p>
 </div>
 </div>
 <div class="grid grid-cols-2 gap-2">
-<button class="py-3 rounded-xl text-xs font-bold border-2 flex flex-col items-center gap-1" id="deviceHani" onclick="setDeviceOwner('HANI')" style="background:white; border-color:#e2e8f0; color:#64748b;">
-<span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background:#f472b6;">H</span>
-          Saya HANI
-        </button>
-<button class="py-3 rounded-xl text-xs font-bold border-2 flex flex-col items-center gap-1" id="deviceVenus" onclick="setDeviceOwner('VENUS')" style="background:white; border-color:#e2e8f0; color:#64748b;">
-<span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background:#60a5fa;">V</span>
-          Saya VENUS
-        </button>
+<button class="py-3 rounded-xl text-xs font-bold border-2" id="deviceHani" onclick="setDeviceOwner('HANI')" style="background:white; border-color:#e2e8f0;">Saya HANI</button>
+<button class="py-3 rounded-xl text-xs font-bold border-2" id="deviceVenus" onclick="setDeviceOwner('VENUS')" style="background:white; border-color:#e2e8f0;">Saya VENUS</button>
 </div>
 <div class="hidden mt-2 p-2 rounded-xl text-[11px] text-center font-bold" id="deviceOwnerInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
 </div>
+
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
 <div class="space-y-3">
@@ -2942,7 +2932,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             input.value = value ? new Intl.NumberFormat('id-ID').format(value) : '';
         }
 
-        let buktiFotoUrl = "";
         function previewMainBukti(event) {
             const file = event.target.files[0];
             const container = document.getElementById('buktiPreviewContainer');
@@ -2985,11 +2974,65 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             }
         }
 
+        
+        let buktiFotoUrl = "";
+        
+        function previewMainBukti(event){
+          try{
+            var file = event.target.files[0];
+            if(!file) return;
+            var reader = new FileReader();
+            reader.onload = function(e){
+              tempBuktiBase64 = e.target.result;
+              var container = document.getElementById('buktiPreviewContainer');
+              var img = document.getElementById('buktiPreviewImg');
+              if(container && img){
+                img.src = tempBuktiBase64;
+                container.classList.remove('hidden');
+              }
+            };
+            reader.readAsDataURL(file);
+          }catch(e){ console.log('preview error', e); }
+        }
+        
+        function uploadBuktiToStorage(file){
+          return new Promise(function(resolve){
+            try{
+              if(!file){ resolve(""); return; }
+              if(typeof firebase.storage === 'undefined'){
+                resolve(""); return;
+              }
+              var storageRef = firebase.storage().ref();
+              var fileName = 'bukti/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g,'_');
+              var fileRef = storageRef.child(fileName);
+              var btnText = document.getElementById('btnSubmitText');
+              var orig = btnText ? btnText.innerText : '';
+              if(btnText) btnText.innerText = 'Upload bukti...';
+              
+              fileRef.put(file).then(function(snapshot){
+                return snapshot.ref.getDownloadURL();
+              }).then(function(url){
+                if(btnText) btnText.innerText = orig;
+                buktiFotoUrl = url;
+                console.log('Bukti uploaded:', url);
+                resolve(url);
+              }).catch(function(e){
+                console.log('Upload error', e);
+                if(btnText) btnText.innerText = orig;
+                resolve("");
+              });
+            }catch(e){
+              console.log('Upload error', e);
+              resolve("");
+            }
+          });
+        }
+        
         function handleFormSubmit(e) {
             e.preventDefault();
-            const tipe = document.getElementById('tipeTransaksi').value;
-            const penabung = document.getElementById('namaPenabung').value;
-            const ketInput = document.getElementById('keteranganTransaksi').value.trim();
+            var tipe = document.getElementById('tipeTransaksi').value;
+            var penabung = document.getElementById('namaPenabung').value;
+            var ketInput = document.getElementById('keteranganTransaksi').value.trim();
 
             if (!tipe || !penabung) {
                 alert('Silakan pilih Tipe Transaksi dan Nama Penabung terlebih dahulu!');
@@ -3001,90 +3044,102 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
                 return;
             }
 
-            const rawJumlah = document.getElementById('jumlahRupiah').value.replace(/\./g, '');
-            const jumlah = parseFloat(rawJumlah) || 0;
+            var rawJumlah = document.getElementById('jumlahRupiah').value.replace(/\./g, '');
+            var jumlah = parseFloat(rawJumlah) || 0;
 
             if (jumlah <= 0) {
                 alert('Masukkan jumlah uang yang valid!');
                 return;
             }
 
-            const btnSubmit = document.getElementById('btnSubmit');
-            const btnSubmitText = document.getElementById('btnSubmitText');
-            const btnSubmitSpinner = document.getElementById('btnSubmitSpinner');
+            var btnSubmit = document.getElementById('btnSubmit');
+            var btnText = document.getElementById('btnSubmitText');
+            var btnSpinner = document.getElementById('btnSubmitSpinner');
+            if(btnSubmit) btnSubmit.disabled = true;
+            if(btnText) btnText.classList.add('hidden');
+            if(btnSpinner) btnSpinner.classList.remove('hidden');
 
-            btnSubmit.disabled = true;
-            btnSubmitText.classList.add('hidden');
-            btnSubmitSpinner.classList.remove('hidden');
+            // Cek link manual
+            var manualUrlEl = document.getElementById('buktiFoto');
+            if(manualUrlEl && manualUrlEl.value && manualUrlEl.value.trim().startsWith('http')){
+                buktiFotoUrl = manualUrlEl.value.trim();
+            }
 
-            const tgl = document.getElementById('tglTransaksi').value;
-            const jam = document.getElementById('jamTransaksi').value;
-            const ket = ketInput || (tipe === 'pemasukan' ? 'Pemasukan' : (tipe === 'pengembalian' ? 'Pengembalian Dana' : 'Pengeluaran'));
-
-            
-            // Upload bukti foto ke Firebase Storage jika ada file
-            let fileToUpload = null;
             var buktiInput = document.getElementById('buktiTransfer');
+            var fileToUpload = null;
             if(buktiInput && buktiInput.files && buktiInput.files[0]){
-              fileToUpload = buktiInput.files[0];
+                fileToUpload = buktiInput.files[0];
             }
-            if(fileToUpload){
-              try{
-                var uploadedUrl = await uploadBuktiToStorage(fileToUpload);
-                if(uploadedUrl) buktiFotoUrl = uploadedUrl;
-              }catch(e){ console.log('Upload failed', e); }
-            }
-            
-            const newItem = {
-                id: Date.now(),
-                tipe,
-                penabung,
-                tgl,
-                jam,
-                jumlah,
-                ket,
-                bukti: tempBuktiBase64, buktiUrl: buktiFotoUrl || tempBuktiBase64, buktiFoto: buktiFotoUrl || tempBuktiBase64
-            };
 
-            setTimeout(() => {
-                db.collection("transactions").add(newItem).then(() => {
-                    try{ var waTx = {penabung: newItem.penabung, jenis: newItem.tipe, kategori: newItem.ket, nominal: newItem.jumlah}; if(typeof sendWhatsAppNotif==='function') sendWhatsAppNotif(waTx); }catch(e){}
+            function doSave(finalUrl){
+                var tgl = document.getElementById('tglTransaksi').value;
+                var jam = document.getElementById('jamTransaksi').value;
+                var newItem = {
+                    id: Date.now(),
+                    tipe: tipe,
+                    penabung: penabung,
+                    tgl: tgl,
+                    jam: jam,
+                    jumlah: jumlah,
+                    ket: ketInput,
+                    bukti: tempBuktiBase64,
+                    buktiUrl: finalUrl || buktiFotoUrl || "",
+                    buktiFoto: finalUrl || buktiFotoUrl || ""
+                };
 
-                    document.getElementById('tipeTransaksi').value = '';
-                    const btnTipe = document.getElementById('textTipeTransaksi');
-                    btnTipe.innerText = '-- Pilih Tipe Transaksi --';
-                    btnTipe.classList.add('text-slate-400');
-                    btnTipe.classList.remove('text-slate-800');
-
-                    document.getElementById('namaPenabung').value = '';
-                    const btnPenabung = document.getElementById('textNamaPenabung');
-                    btnPenabung.innerText = '-- Pilih Nama Penabung --';
-                    btnPenabung.classList.add('text-slate-400');
-                    btnPenabung.classList.remove('text-slate-800');
-
-                    document.getElementById('jumlahRupiah').value = '';
-                    document.getElementById('keteranganTransaksi').value = '';
-                    document.getElementById('buktiTransfer').value = '';
-                    document.getElementById('buktiPreviewContainer').classList.add('hidden');
-                    tempBuktiBase64 = "";
-
+                db.collection("transactions").add(newItem).then(function() {
+                    // Reset
+                    document.getElementById('transactionForm').reset();
                     setNowDateTimeAndFilter();
-                    updateKeteranganValidation();
-
-                    btnSubmit.disabled = false;
-                    btnSubmitText.classList.remove('hidden');
-                    btnSubmitSpinner.classList.add('hidden');
+                    tempBuktiBase64 = "";
+                    buktiFotoUrl = "";
+                    var previewContainer = document.getElementById('buktiPreviewContainer');
+                    if(previewContainer) previewContainer.classList.add('hidden');
+                    var buktiLinkInput = document.getElementById('buktiFoto');
+                    if(buktiLinkInput) buktiLinkInput.value = "";
                     
-                    // MEMUNCULKAN MODAL SUKSES KUSTOM BESERTA EFEK SUARA
-                    showSuccessModal();
-                }).catch(err => {
-                    alert("Gagal: " + err.message);
-                    btnSubmit.disabled = false;
-                    btnSubmitText.classList.remove('hidden');
-                    btnSubmitSpinner.classList.add('hidden');
+                    if(btnSubmit) btnSubmit.disabled = false;
+                    if(btnText){ btnText.classList.remove('hidden'); btnText.innerText = 'Simpan Transaksi'; }
+                    if(btnSpinner) btnSpinner.classList.add('hidden');
+                    
+                    if(typeof playSuccessSound === 'function') playSuccessSound();
+                    
+                    var successModal = document.getElementById('successModal');
+                    if(successModal){
+                        successModal.classList.remove('hidden');
+                        successModal.classList.add('flex');
+                        setTimeout(function(){
+                            successModal.classList.add('hidden');
+                            successModal.classList.remove('flex');
+                        }, 2000);
+                    }
+                    
+                    if(typeof sendWhatsAppNotif === 'function'){
+                        sendWhatsAppNotif(newItem);
+                    }
+                    
+                    if(typeof showAppNotification === 'function'){
+                        showAppNotification('Transaksi Berhasil', newItem.ket + ' - Rp ' + jumlah.toLocaleString('id-ID'), 'success');
+                    }
+                    
+                }).catch(function(error){
+                    console.error("Error:", error);
+                    alert('Gagal simpan: ' + error.message);
+                    if(btnSubmit) btnSubmit.disabled = false;
+                    if(btnText){ btnText.classList.remove('hidden'); }
+                    if(btnSpinner) btnSpinner.classList.add('hidden');
                 });
-            }, 2000);
+            }
+
+            if(fileToUpload && !buktiFotoUrl){
+                uploadBuktiToStorage(fileToUpload).then(function(url){
+                    doSave(url);
+                });
+            } else {
+                doSave(buktiFotoUrl);
+            }
         }
+
 
         function getTipeLabel(val) {
             const found = optionDataTipe.find(x => x.val === val);
@@ -3257,13 +3312,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <h3 class="font-serif text-xl font-bold text-slate-900">Input Catatan Tabungan</h3>
 <p class="text-sm text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
 </div>
-</div>
-<div>
-<label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
-<i class="fa-solid fa-link mr-1"></i> Atau Link Foto Bukti (Opsional)
-  </label>
-<input class="w-full bg-white/90 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" id="buktiFoto" oninput="if(this.value.startsWith('http')){ buktiFotoUrl = this.value.trim(); tempBuktiBase64 = this.value.trim(); }" placeholder="https://drive.google.com/... atau https://..." type="url"/>
-<p class="text-[10px] opacity-60 mt-1.5">Paste link jika foto sudah di-upload ke Google Drive / Imgur</p>
 </div>
 <form class="space-y-5" id="transactionForm" onsubmit="handleFormSubmit(event)">
 <!-- TOMBOL POPUP TIPE TRANSAKSI -->
@@ -4412,8 +4460,8 @@ function testWANotif(target){
 }
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadWANumbers, 800); });
 </script>
+
 <script>
-// V52 FIX - PIN + iOS Form + Dual HP - MINIMAL, NO DUPLICATE FIREBASE
 function loadDeviceOwner(){
   try{
     var owner = localStorage.getItem('myDeviceOwner') || '';
@@ -4422,22 +4470,20 @@ function loadDeviceOwner(){
     var btnVenus = document.getElementById('deviceVenus');
     if(!owner){
       if(info) info.classList.add('hidden');
-      if(btnHani){ btnHani.style.background='white'; btnHani.style.borderColor='#e2e8f0'; }
-      if(btnVenus){ btnVenus.style.background='white'; btnVenus.style.borderColor='#e2e8f0'; }
       return;
     }
     if(btnHani && btnVenus){
       if(owner === 'HANI'){
-        btnHani.style.background = '#fce7f3'; btnHani.style.borderColor = '#ec4899'; btnHani.style.color = '#be185d';
-        btnVenus.style.background = 'white'; btnVenus.style.borderColor = '#e2e8f0'; btnVenus.style.color = '#64748b';
+        btnHani.style.background = '#fce7f3'; btnHani.style.borderColor = '#ec4899';
+        btnVenus.style.background = 'white'; btnVenus.style.borderColor = '#e2e8f0';
       } else {
-        btnVenus.style.background = '#dbeafe'; btnVenus.style.borderColor = '#2563eb'; btnVenus.style.color = '#1d4ed8';
-        btnHani.style.background = 'white'; btnHani.style.borderColor = '#e2e8f0'; btnHani.style.color = '#64748b';
+        btnVenus.style.background = '#dbeafe'; btnVenus.style.borderColor = '#2563eb';
+        btnHani.style.background = 'white'; btnHani.style.borderColor = '#e2e8f0';
       }
     }
     if(info){
       info.classList.remove('hidden');
-      info.innerText = '✅ Perangkat ini: ' + owner;
+      info.innerText = '✅ Perangkat: ' + owner;
     }
   }catch(e){}
 }
@@ -4445,290 +4491,9 @@ function setDeviceOwner(owner){
   try{
     localStorage.setItem('myDeviceOwner', owner);
     loadDeviceOwner();
-    if(typeof showAppNotification === 'function'){
-      showAppNotification('Perangkat: ' + owner, 'Notifikasi pasangan akan muncul di HP ini', 'success');
-    }
   }catch(e){}
 }
-
-// iOS Form Fix - include catatan + bukti foto
-function formatRupiahV52(num){
-  try{
-    return 'Rp ' + (num||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  }catch(e){ return 'Rp ' + num; }
-}
-
-// Override sendWhatsAppNotif to include catatan + bukti (iOS fix)
-var originalSendWA = null;
-setTimeout(function(){
-  if(typeof sendWhatsAppNotif === 'function'){
-    originalSendWA = sendWhatsAppNotif;
-  }
-  
-  window.sendWhatsAppNotif = function(transaction){
-    try{
-      var enabled = localStorage.getItem('waNotifEnabled') === 'true';
-      if(!enabled) return;
-      
-      var mode = localStorage.getItem('waMode') || 'pasangan';
-      var haniNum = localStorage.getItem('waNumberHani') || '';
-      var venusNum = localStorage.getItem('waNumberVenus') || '';
-      var groupLink = localStorage.getItem('waGroupLink') || '';
-      
-      var penabung = (transaction.penabung || 'HANI').toUpperCase();
-      var jenis = (transaction.jenis || transaction.tipe || 'pemasukan').toLowerCase();
-      var kategori = transaction.kategori || transaction.ket || '-';
-      var nominal = transaction.nominal || transaction.jumlah || 0;
-      var catatan = transaction.catatan || transaction.keterangan || transaction.ket || '';
-      var bukti = transaction.bukti || transaction.buktiUrl || transaction.foto || '';
-      
-      var saldoEl = document.getElementById('totalSaldo');
-      var saldoText = saldoEl ? saldoEl.innerText : '';
-      
-      var emoji = jenis === 'pemasukan' ? '💰' : (jenis === 'pengembalian' ? '↩️' : '💸');
-      var jenisText = jenis === 'pemasukan' ? 'PEMASUKAN' : (jenis === 'pengembalian' ? 'PENGEMBALIAN DANA' : 'PENGELUARAN');
-      var warnaEmoji = jenis === 'pemasukan' ? '🟢' : (jenis === 'pengembalian' ? '🔵' : '🔴');
-      
-      // Format baru - ada catatan + bukti link untuk iOS
-      var message = '*' + emoji + ' TABUNGAN PERNIKAHAN*\n';
-      message += '*' + warnaEmoji + ' ' + jenisText + ' BARU*\n\n';
-      message += '👤 *' + penabung + '* menambahkan:\n';
-      message += '📂 Kategori: ' + kategori + '\n';
-      message += '💵 Nominal: ' + formatRupiahV52(nominal) + '\n';
-      if(catatan && catatan !== '-' && catatan !== kategori && catatan.trim() !== ''){
-        message += '📝 Catatan: ' + catatan + '\n';
-      }
-      message += '\n';
-      if(bukti && bukti !== '' && bukti !== '-' && bukti.length > 5){
-        message += '📸 *Bukti Foto:*\n' + bukti + '\n\n';
-      }
-      message += '💎 *Total Saldo:* ' + (saldoText || 'Lihat di aplikasi') + '\n';
-      message += '🎯 Target: 03 April 2027\n\n';
-      message += '_Dari Tabungan Pernikahan Hani & Venus_';
-      
-      window.lastWAMessage = message;
-      
-      var targetNum = '';
-      var targetName = '';
-      var isGroup = (mode === 'grup');
-      
-      if(isGroup){
-        targetName = 'GRUP';
-      } else {
-        if(penabung === 'HANI'){ targetNum = venusNum; targetName = 'VENUS'; }
-        else { targetNum = haniNum; targetName = 'HANI'; }
-        if(!targetNum) targetNum = haniNum || venusNum;
-      }
-      
-      window.lastWATarget = targetNum;
-      window.lastWATargetName = targetName;
-      
-      var waBtn = document.getElementById('btnSendWA');
-      var waInfo = document.getElementById('waNotifInfo');
-      if(waBtn){
-        waBtn.classList.remove('hidden');
-        if(isGroup){
-          waBtn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Kirim ke Grup WA';
-          waBtn.onclick = function(){ openWhatsAppGroupV52(message); };
-        } else {
-          waBtn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Kirim ke ' + targetName;
-          waBtn.onclick = function(){ openWhatsAppV52(targetNum, message); };
-        }
-      }
-      if(waInfo){
-        waInfo.classList.remove('hidden');
-        var infoHtml = isGroup ? 'Siap kirim ke Grup' : 'Ke ' + targetName;
-        if(catatan) infoHtml += '<br>📝 ' + catatan.substring(0,40);
-        if(bukti) infoHtml += '<br>📸 Ada bukti';
-        waInfo.innerHTML = infoHtml;
-      }
-      
-      if(typeof showAppNotification === 'function'){
-        var body = kategori + ' • ' + formatRupiahV52(nominal);
-        if(catatan) body += ' - ' + catatan.substring(0,50);
-        showAppNotification(emoji + ' ' + jenisText + ' Baru - ' + penabung, body, 'success');
-      }
-      
-      try{
-        localStorage.setItem('lastTransaction', JSON.stringify({
-          penabung: penabung,
-          kategori: kategori,
-          jumlah: nominal,
-          catatan: catatan,
-          bukti: bukti,
-          timestamp: Date.now()
-        }));
-      }catch(e){}
-      
-      var autoEnabled = localStorage.getItem('waAutoEnabled') === 'true';
-      if(autoEnabled){
-        setTimeout(function(){
-          if(isGroup) openWhatsAppGroupV52(message);
-          else if(targetNum) openWhatsAppV52(targetNum, message);
-          else openWhatsAppGroupV52(message);
-        }, 1500);
-      }
-      
-    }catch(e){ console.log('WA V52 error', e); }
-  };
-  
-  window.openWhatsAppGroupV52 = function(message){
-    try{
-      var url = 'https://wa.me/?text=' + encodeURIComponent(message);
-      var win = window.open(url, '_blank');
-      if(!win){
-        if(navigator.clipboard){
-          navigator.clipboard.writeText(message).then(function(){
-            alert('✅ Laporan lengkap (catatan + bukti) di-copy!\nBuka WA → Grup → paste → kirim');
-          });
-        } else {
-          prompt('Copy laporan lengkap:', message);
-        }
-      }
-    }catch(e){ console.log(e); }
-  };
-  
-  window.openWhatsAppV52 = function(number, message){
-    try{
-      if(!number){ openWhatsAppGroupV52(message); return; }
-      var cleanNum = number.replace(/[^0-9]/g,'');
-      if(cleanNum.startsWith('0')) cleanNum = cleanNum.substring(1);
-      if(cleanNum.indexOf('62') !== 0) cleanNum = '62' + cleanNum;
-      var url = 'https://wa.me/' + cleanNum + '?text=' + encodeURIComponent(message);
-      var win = window.open(url, '_blank');
-      if(!win && navigator.clipboard){
-        navigator.clipboard.writeText(message);
-      }
-    }catch(e){ alert('Gagal buka WA'); }
-  };
-  
-  // Alias for compatibility
-  window.openWhatsAppGroup = window.openWhatsAppGroupV52;
-  window.openWhatsApp = window.openWhatsAppV52;
-  
-}, 1000);
-
-// Dual HP real-time notif via Firestore (without duplicate Firebase)
-var knownIds = new Set();
-var firstLoad = true;
-
-function initDualHPNotif(){
-  try{
-    if(typeof transactions !== 'undefined' && transactions.length){
-      transactions.forEach(function(t){ if(t.id) knownIds.add(t.id.toString()); });
-    }
-    setTimeout(function(){ firstLoad = false; }, 4000);
-  }catch(e){}
-}
-
-function checkNewTransaction(docData){
-  try{
-    if(firstLoad) return;
-    var id = (docData.id || '').toString();
-    if(!id || knownIds.has(id)) return;
-    knownIds.add(id);
-    
-    var myOwner = localStorage.getItem('myDeviceOwner') || '';
-    var penabung = (docData.penabung || '').toUpperCase();
-    if(myOwner && penabung === myOwner) return; // Dari diri sendiri, jangan notif
-    
-    var jenis = (docData.tipe || docData.jenis || 'pemasukan').toLowerCase();
-    var kategori = docData.ket || docData.kategori || '-';
-    var nominal = docData.jumlah || docData.nominal || 0;
-    var catatan = docData.ket || '';
-    
-    var jenisText = jenis === 'pemasukan' ? 'PEMASUKAN' : (jenis === 'pengembalian' ? 'PENGEMBALIAN' : 'PENGELUARAN');
-    var emoji = jenis === 'pemasukan' ? '💰' : (jenis === 'pengembalian' ? '↩️' : '💸');
-    
-    if(typeof showAppNotification === 'function'){
-      var body = kategori + ' • ' + formatRupiahV52(nominal);
-      if(catatan) body += ' - ' + catatan.substring(0,50);
-      showAppNotification(emoji + ' ' + penabung + ' Menambahkan ' + jenisText, body, 'success');
-    }
-    
-    if(navigator.vibrate) navigator.vibrate([100,50,100]);
-  }catch(e){ console.log(e); }
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(function(){
-    loadDeviceOwner();
-    initDualHPNotif();
-    
-    // Hook into existing onSnapshot if exists
-    try{
-      if(typeof db !== 'undefined' && db.collection){
-        db.collection("transactions").orderBy("id", "desc").limit(10).onSnapshot(function(snap){
-          if(!snap) return;
-          snap.docChanges().forEach(function(change){
-            if(change.type === 'added'){
-              var data = change.doc.data();
-              data.id = change.doc.id;
-              checkNewTransaction(data);
-            }
-          });
-          if(firstLoad){
-            setTimeout(function(){ firstLoad = false; }, 3000);
-          }
-        });
-      }
-    }catch(e){ console.log('dual HP listener error', e); }
-  }, 1500);
-});
-</script>
-
-<script>
-// Final override for WA with bukti link - V54
-setTimeout(function(){
-  var origWA = window.sendWhatsAppNotif;
-  window.sendWhatsAppNotif = function(transaction){
-    try{
-      // Get latest values
-      var bukti = transaction.buktiUrl || transaction.buktiFoto || transaction.bukti || '';
-      // If transaction has temp base64 that is actually URL, use it
-      if(!bukti && typeof buktiFotoUrl !== 'undefined' && buktiFotoUrl){
-        bukti = buktiFotoUrl;
-        transaction.buktiUrl = buktiFotoUrl;
-        transaction.buktiFoto = buktiFotoUrl;
-      }
-      
-      // Call original if exists, but ensure it includes bukti
-      if(origWA){
-        // Enhance transaction with bukti
-        if(bukti) transaction.bukti = bukti;
-        return origWA(transaction);
-      }
-      
-      // Fallback simple WA
-      var penabung = (transaction.penabung || 'HANI').toUpperCase();
-      var kategori = transaction.kategori || transaction.ket || '-';
-      var nominal = transaction.nominal || transaction.jumlah || 0;
-      var catatan = transaction.catatan || transaction.ket || '';
-      
-      var msg = '*💍 TABUNGAN PERNIKAHAN*\n';
-      msg += '*🟢 PEMASUKAN BARU*\n\n';
-      msg += '👤 *' + penabung + '* menambahkan:\n';
-      msg += '📂 Kategori: ' + kategori + '\n';
-      msg += '💵 Nominal: Rp ' + (nominal||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + '\n';
-      if(catatan) msg += '📝 Catatan: ' + catatan + '\n';
-      msg += '\n';
-      if(bukti) msg += '📸 *Bukti Foto:*\n' + bukti + '\n\n';
-      msg += '💎 *Total Saldo:* Lihat di aplikasi\n';
-      msg += '🎯 Target: 03 April 2027';
-      
-      // Show in console
-      console.log('WA Message with bukti:', msg);
-      
-      // Try to open WA
-      var mode = localStorage.getItem('waMode') || 'pasangan';
-      var isGroup = (mode === 'grup');
-      var url = 'https://wa.me/' + (isGroup ? '' : (localStorage.getItem('waNumberHani')||'')) + '?text=' + encodeURIComponent(msg);
-      // Don't auto open here, let original handle
-      window.lastWAMessage = msg;
-      
-    }catch(e){ console.log('Final WA override error', e); }
-  };
-}, 1500);
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadDeviceOwner, 800); });
 </script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
