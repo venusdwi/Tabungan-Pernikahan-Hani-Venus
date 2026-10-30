@@ -51,7 +51,7 @@
 <meta content="512" property="og:image:height"/>
 <!-- FIREBASE SDK (FIRESTORE & APP) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
 <script>
         tailwind.config = {
             theme: {
@@ -1893,15 +1893,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <img alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300" id="editBuktiImg" src=""/>
 </div>
 </div>
-<div>
-<label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-<i class="fa-solid fa-camera mr-1"></i> Link Bukti Foto
-  </label>
-<input class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" id="editBukti" placeholder="https://... link bukti" type="url"/>
-<div class="hidden mt-2" id="editBuktiPreview">
-<img class="w-full max-h-32 object-contain rounded-lg border" id="editBuktiPreviewImg" src=""/>
-</div>
-</div>
 <div class="pt-4 flex gap-3">
 <button class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-xl border border-rose-200 text-sm sm:text-base transition" onclick="confirmDeleteTransaction()" type="button">
 <i class="fa-solid fa-trash sm:mr-1"></i> Hapus
@@ -2951,6 +2942,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             input.value = value ? new Intl.NumberFormat('id-ID').format(value) : '';
         }
 
+        let buktiFotoUrl = "";
         function previewMainBukti(event) {
             const file = event.target.files[0];
             const container = document.getElementById('buktiPreviewContainer');
@@ -2993,114 +2985,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             }
         }
 
-        
-        // Firebase Storage for bukti foto
-        let buktiFotoUrl = "";
-        
-        function previewMainBukti(event){
-          try{
-            var file = event.target.files[0];
-            if(!file) return;
-            var reader = new FileReader();
-            reader.onload = function(e){
-              tempBuktiBase64 = e.target.result;
-              var container = document.getElementById('buktiPreviewContainer');
-              var img = document.getElementById('buktiPreviewImg');
-              if(container && img){
-                img.src = tempBuktiBase64;
-                container.classList.remove('hidden');
-              }
-              // Also update new bukti field preview
-              var preview = document.getElementById('buktiPreview');
-              var previewImg = document.getElementById('buktiPreviewImg');
-              var previewLink = document.getElementById('buktiPreviewLink');
-              if(preview && previewImg){
-                previewImg.src = tempBuktiBase64;
-                preview.classList.remove('hidden');
-                if(previewLink) previewLink.innerText = 'File siap upload: ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-              }
-            };
-            reader.readAsDataURL(file);
-          }catch(e){ console.log('preview error', e); }
-        }
-        
-        function handleBuktiFileUpload(input){
-          if(input.files && input.files[0]){
-            var event = { target: { files: [input.files[0]] } };
-            previewMainBukti(event);
-            // Also copy to main buktiTransfer input
-            var mainInput = document.getElementById('buktiTransfer');
-            if(mainInput && mainInput !== input){
-              // Can't copy files directly, but we have tempBuktiBase64
-            }
-          }
-        }
-        
-        function previewBuktiFoto(url){
-          try{
-            var preview = document.getElementById('buktiPreview');
-            var img = document.getElementById('buktiPreviewImg');
-            var link = document.getElementById('buktiPreviewLink');
-            if(url && url.length > 10){
-              if(img){ img.src = url; }
-              if(preview){ preview.classList.remove('hidden'); }
-              if(link){ link.innerText = url; }
-              tempBuktiBase64 = url; // If it's already a URL
-              buktiFotoUrl = url;
-            } else {
-              if(preview){ preview.classList.add('hidden'); }
-            }
-          }catch(e){}
-        }
-        
-        function clearBuktiFoto(){
-          tempBuktiBase64 = "";
-          buktiFotoUrl = "";
-          var input = document.getElementById('buktiFoto');
-          var fileInput = document.getElementById('buktiFileInput');
-          var mainFileInput = document.getElementById('buktiTransfer');
-          var preview = document.getElementById('buktiPreview');
-          var container = document.getElementById('buktiPreviewContainer');
-          if(input) input.value = "";
-          if(fileInput) fileInput.value = "";
-          if(mainFileInput) mainFileInput.value = "";
-          if(preview) preview.classList.add('hidden');
-          if(container) container.classList.add('hidden');
-        }
-        
-        async function uploadBuktiToStorage(file){
-          try{
-            if(!file) return "";
-            // Check if Firebase Storage is available
-            if(typeof firebase.storage === 'undefined'){
-              console.log('Firebase Storage not loaded, using base64');
-              return "";
-            }
-            
-            var storageRef = firebase.storage().ref();
-            var fileName = 'bukti/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g,'_');
-            var fileRef = storageRef.child(fileName);
-            
-            // Show uploading
-            var btnText = document.getElementById('btnSubmitText');
-            var originalText = btnText ? btnText.innerText : '';
-            if(btnText) btnText.innerText = 'Upload bukti...';
-            
-            var snapshot = await fileRef.put(file);
-            var downloadUrl = await snapshot.ref.getDownloadURL();
-            
-            if(btnText) btnText.innerText = originalText;
-            
-            console.log('Bukti uploaded:', downloadUrl);
-            buktiFotoUrl = downloadUrl;
-            return downloadUrl;
-          }catch(e){
-            console.log('Upload bukti error', e);
-            return "";
-          }
-        }
-        
-
         function handleFormSubmit(e) {
             e.preventDefault();
             const tipe = document.getElementById('tipeTransaksi').value;
@@ -3138,28 +3022,18 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
             const ket = ketInput || (tipe === 'pemasukan' ? 'Pemasukan' : (tipe === 'pengembalian' ? 'Pengembalian Dana' : 'Pengeluaran'));
 
             
-            // Upload bukti foto jika ada file
+            // Upload bukti foto ke Firebase Storage jika ada file
             let fileToUpload = null;
             var buktiInput = document.getElementById('buktiTransfer');
-            var buktiFileInput = document.getElementById('buktiFileInput');
             if(buktiInput && buktiInput.files && buktiInput.files[0]){
               fileToUpload = buktiInput.files[0];
-            } else if(buktiFileInput && buktiFileInput.files && buktiFileInput.files[0]){
-              fileToUpload = buktiFileInput.files[0];
             }
-            
-            // Jika ada URL manual di input buktiFoto, pakai itu
-            var manualUrlInput = document.getElementById('buktiFoto');
-            if(manualUrlInput && manualUrlInput.value && manualUrlInput.value.startsWith('http')){
-              buktiFotoUrl = manualUrlInput.value.trim();
-            } else if(fileToUpload){
-              // Upload ke Storage
+            if(fileToUpload){
               try{
                 var uploadedUrl = await uploadBuktiToStorage(fileToUpload);
                 if(uploadedUrl) buktiFotoUrl = uploadedUrl;
               }catch(e){ console.log('Upload failed', e); }
             }
-            
             
             const newItem = {
                 id: Date.now(),
@@ -3386,27 +3260,10 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <div>
 <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
-<i class="fa-solid fa-camera mr-1"></i> Link Foto Bukti Transfer (Opsional)
+<i class="fa-solid fa-link mr-1"></i> Atau Link Foto Bukti (Opsional)
   </label>
-<div class="relative">
-<input class="w-full bg-white/90 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm pr-12" id="buktiFoto" oninput="previewBuktiFoto(this.value)" placeholder="https://... link foto bukti atau upload di bawah" type="url"/>
-<button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center" onclick="document.getElementById('buktiFileInput').click()" style="background:#dbeafe; color:#2563eb;" type="button">
-<i class="fa-solid fa-upload text-xs"></i>
-</button>
-</div>
-<input accept="image/*" class="hidden" id="buktiFileInput" onchange="handleBuktiFileUpload(this)" type="file"/>
-<div class="hidden mt-3 p-3 rounded-xl" id="buktiPreview" style="background:#f8fafc; border:1px solid #e2e8f0;">
-<div class="flex items-center justify-between mb-2">
-<span class="text-xs font-bold text-slate-600">Preview Bukti:</span>
-<button class="text-xs text-red-500 font-bold" onclick="clearBuktiFoto()" type="button"><i class="fa-solid fa-trash"></i> Hapus</button>
-</div>
-<img alt="Preview" class="w-full max-h-48 object-contain rounded-lg border" id="buktiPreviewImg" src=""/>
-<p class="text-[10px] text-slate-500 mt-2 break-all" id="buktiPreviewLink"></p>
-</div>
-<p class="text-[10px] opacity-60 mt-1.5">
-    📸 Upload foto bukti transfer / struk. Foto akan di-upload ke Firebase Storage &amp; link otomatis masuk WA.<br/>
-    Atau paste link Google Drive / Imgur / foto yang sudah di-upload.
-  </p>
+<input class="w-full bg-white/90 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm" id="buktiFoto" oninput="if(this.value.startsWith('http')){ buktiFotoUrl = this.value.trim(); tempBuktiBase64 = this.value.trim(); }" placeholder="https://drive.google.com/... atau https://..." type="url"/>
+<p class="text-[10px] opacity-60 mt-1.5">Paste link jika foto sudah di-upload ke Google Drive / Imgur</p>
 </div>
 <form class="space-y-5" id="transactionForm" onsubmit="handleFormSubmit(event)">
 <!-- TOMBOL POPUP TIPE TRANSAKSI -->
@@ -4818,6 +4675,60 @@ document.addEventListener('DOMContentLoaded', function(){
     }catch(e){ console.log('dual HP listener error', e); }
   }, 1500);
 });
+</script>
+
+<script>
+// Final override for WA with bukti link - V54
+setTimeout(function(){
+  var origWA = window.sendWhatsAppNotif;
+  window.sendWhatsAppNotif = function(transaction){
+    try{
+      // Get latest values
+      var bukti = transaction.buktiUrl || transaction.buktiFoto || transaction.bukti || '';
+      // If transaction has temp base64 that is actually URL, use it
+      if(!bukti && typeof buktiFotoUrl !== 'undefined' && buktiFotoUrl){
+        bukti = buktiFotoUrl;
+        transaction.buktiUrl = buktiFotoUrl;
+        transaction.buktiFoto = buktiFotoUrl;
+      }
+      
+      // Call original if exists, but ensure it includes bukti
+      if(origWA){
+        // Enhance transaction with bukti
+        if(bukti) transaction.bukti = bukti;
+        return origWA(transaction);
+      }
+      
+      // Fallback simple WA
+      var penabung = (transaction.penabung || 'HANI').toUpperCase();
+      var kategori = transaction.kategori || transaction.ket || '-';
+      var nominal = transaction.nominal || transaction.jumlah || 0;
+      var catatan = transaction.catatan || transaction.ket || '';
+      
+      var msg = '*💍 TABUNGAN PERNIKAHAN*\n';
+      msg += '*🟢 PEMASUKAN BARU*\n\n';
+      msg += '👤 *' + penabung + '* menambahkan:\n';
+      msg += '📂 Kategori: ' + kategori + '\n';
+      msg += '💵 Nominal: Rp ' + (nominal||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + '\n';
+      if(catatan) msg += '📝 Catatan: ' + catatan + '\n';
+      msg += '\n';
+      if(bukti) msg += '📸 *Bukti Foto:*\n' + bukti + '\n\n';
+      msg += '💎 *Total Saldo:* Lihat di aplikasi\n';
+      msg += '🎯 Target: 03 April 2027';
+      
+      // Show in console
+      console.log('WA Message with bukti:', msg);
+      
+      // Try to open WA
+      var mode = localStorage.getItem('waMode') || 'pasangan';
+      var isGroup = (mode === 'grup');
+      var url = 'https://wa.me/' + (isGroup ? '' : (localStorage.getItem('waNumberHani')||'')) + '?text=' + encodeURIComponent(msg);
+      // Don't auto open here, let original handle
+      window.lastWAMessage = msg;
+      
+    }catch(e){ console.log('Final WA override error', e); }
+  };
+}, 1500);
 </script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
