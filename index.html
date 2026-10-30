@@ -1,30 +1,9 @@
 <!DOCTYPE html>
 
 <html lang="id">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
 <title>TABUNGAN PERNIKAHAN Hani &amp; Venus 💍</title>
 <!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -1397,7 +1376,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('SW skip'); });
 }
 </script>
-
 <style id="pinDarkOriginal">
 /* V74 - PIN balik ke tema gelap biru semula seperti video 6.5s */
 #pinScreen {
@@ -1451,7 +1429,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
   transform: scale(0.95) !important;
 }
 </style>
-
 <style id="deviceFixV74">
 /* V74 Device owner - blue selected */
 #deviceOwnerBox {
@@ -1490,6 +1467,111 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 
 #deviceOwnerInfo:not(.hidden) {
   display: block !important;
+}
+</style>
+
+<style id="iphoneFixV75">
+/* V75 - iPhone only fix, Android tidak terpengaruh */
+/* Safe area for iPhone X+ with notch and home indicator */
+
+/* Only apply when safe-area supported (iPhone X+) */
+@supports (padding: max(0px)) {
+  /* Body safe area */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* PIN screen - jangan bocor ke atas */
+  #pinScreen {
+    padding-top: max(20px, env(safe-area-inset-top)) !important;
+    padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
+  
+  /* Main container - jangan bocor ke atas */
+  #app, .app-container, main, .main-content {
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
+  }
+  
+  /* Header - tambah padding top biar gak ke-potong notch */
+  header, .header, [class*="TABUNGAN PERNIKAHAN"] {
+    padding-top: max(16px, env(safe-area-inset-top)) !important;
+    margin-top: env(safe-area-inset-top) !important;
+  }
+  
+  /* Countdown box - jangan mepet notch */
+  .countdown-box, [class*="COUNTDOWN"] {
+    margin-top: max(8px, env(safe-area-inset-top)) !important;
+  }
+  
+  /* Bottom nav - jangan mepet bawah, kasih safe area */
+  .bottom-nav, 
+  nav.fixed.bottom-0,
+  div.fixed.bottom-0,
+  .bottom-navigation,
+  nav[class*="bottom"],
+  [class*="bottom-0"] {
+    padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    bottom: 0 !important;
+    /* Tambah background biar gak transparan di home indicator */
+    background: rgba(255,255,255,0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(226,232,240,0.5) !important;
+  }
+  
+  .dark-mode .bottom-nav,
+  .dark-mode nav.fixed.bottom-0 {
+    background: rgba(15,23,42,0.95) !important;
+    border-top: 1px solid rgba(51,65,105,0.3) !important;
+  }
+  
+  /* Content area - kasih padding bottom biar gak ketutup nav */
+  .content, .page-content, main {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+  
+  /* Tambah button floating - jangan mepet */
+  .fab, button.fixed, .fixed.bottom-20, .fixed.bottom-24 {
+    bottom: max(20px, calc(80px + env(safe-area-inset-bottom))) !important;
+  }
+}
+
+/* iPhone specific - detected via CSS */
+@supports (-webkit-touch-callout: none) {
+  /* iOS only */
+  body {
+    /* Prevent bounce */
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Fix 100vh issue on iOS */
+  #pinScreen, .min-h-screen {
+    min-height: -webkit-fill-available !important;
+    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  }
+  
+  /* Bottom nav iOS - lebih tinggi */
+  .bottom-nav, nav.fixed.bottom-0 {
+    height: calc(64px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+}
+
+/* Android - jangan terpengaruh, reset */
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports not (-webkit-touch-callout: none) {
+    /* Android - keep original */
+    body {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+  }
 }
 </style>
 </head>
@@ -4814,7 +4896,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
-
 <script>
 // V74 - Device owner fix tuntas
 function setDeviceOwner(owner){
@@ -4973,5 +5054,71 @@ document.addEventListener('DOMContentLoaded', function(){
   }, 1000);
 });
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+
+<script>
+// V75 iPhone detection and fix
+function isIPhone(){
+  return /iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function applyIPhoneFix(){
+  if(!isIPhone()){
+    console.log('Not iPhone - skip iPhone fix');
+    return;
+  }
+  
+  console.log('iPhone detected - applying fixes');
+  
+  // Add class to body
+  document.body.classList.add('iphone');
+  
+  // Fix viewport height
+  var vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+  
+  // Fix pinScreen
+  var pinScreen = document.getElementById('pinScreen');
+  if(pinScreen){
+    pinScreen.style.paddingTop = 'max(20px, env(safe-area-inset-top))';
+    pinScreen.style.minHeight = 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))';
+    pinScreen.style.minHeight = '-webkit-fill-available';
+  }
+  
+  // Fix bottom nav
+  var bottomNavs = document.querySelectorAll('.bottom-nav, nav.fixed.bottom-0, div.fixed.bottom-0');
+  bottomNavs.forEach(function(nav){
+    nav.style.paddingBottom = 'max(12px, env(safe-area-inset-bottom))';
+    nav.style.bottom = '0';
+  });
+  
+  // Fix content padding
+  var main = document.querySelector('main, .main-content, #app');
+  if(main){
+    main.style.paddingBottom = 'calc(80px + env(safe-area-inset-bottom))';
+  }
+  
+  console.log('iPhone fixes applied - top bocor & bottom mepet fixed');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(applyIPhoneFix, 500);
+  setTimeout(applyIPhoneFix, 1500);
+});
+
+window.addEventListener('resize', function(){
+  if(isIPhone()){
+    applyIPhoneFix();
+  }
+});
+
+// Also fix on orientation change
+window.addEventListener('orientationchange', function(){
+  setTimeout(function(){
+    if(isIPhone()){
+      applyIPhoneFix();
+    }
+  }, 500);
+});
+</script>
+</body>
 </html>
