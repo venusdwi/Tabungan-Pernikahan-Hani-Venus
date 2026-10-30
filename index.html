@@ -1663,7 +1663,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 </div>
 <div class="hidden mt-2 p-2 rounded-xl text-[11px] text-center font-bold" id="deviceOwnerInfo" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d;"></div>
 </div>
-
 <div class="glass-box rounded-2xl p-4">
 <h3 class="font-bold text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-bullseye text-emerald-600"></i> Target Tabungan</h3>
 <div class="space-y-3">
@@ -3022,16 +3021,40 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
                 if(btnSpin){ btnSpin.classList.add('hidden'); }
                 if(typeof playSuccessSound === 'function'){ try{ playSuccessSound(); }catch(e){} }
                 var successModal = document.getElementById('successModal');
+                var successBox = document.getElementById('successModalBox');
                 if(successModal){
-                    successModal.classList.remove('hidden');
-                    successModal.classList.add('flex');
+                    successModal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+                    successModal.classList.add('flex', 'opacity-100');
+                    if(successBox){
+                        successBox.classList.remove('scale-95');
+                        successBox.classList.add('scale-100');
+                    }
+                    console.log('Success modal shown');
                     setTimeout(function(){
-                        successModal.classList.add('hidden');
-                        successModal.classList.remove('flex');
+                        successModal.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+                        successModal.classList.remove('flex', 'opacity-100');
+                        if(successBox){
+                            successBox.classList.add('scale-95');
+                            successBox.classList.remove('scale-100');
+                        }
                         if(typeof switchTab === 'function') switchTab('riwayat');
                     }, 2500);
+                } else {
+                    console.log('successModal not found, using fallback');
+                    if(typeof showAppNotification === 'function'){
+                        showAppNotification('Berhasil!', 'Transaksi berhasil disimpan', 'success');
+                    }
+                    if(typeof switchTab === 'function') switchTab('riwayat');
                 }
-                if(typeof sendWhatsAppNotif === 'function'){ try{ sendWhatsAppNotif(newItem); }catch(err){} }
+                if(typeof sendWhatsAppNotif === 'function'){ 
+                    try{ 
+                        console.log('Calling sendWhatsAppNotif');
+                        sendWhatsAppNotif(newItem); 
+                        // Force show WA box even if disabled setting, for debugging
+                        var waBox = document.getElementById('whatsappNotifBox');
+                        if(waBox) waBox.classList.remove('hidden');
+                    }catch(err){ console.log('WA error', err); } 
+                }
                 if(file){
                     try{
                         var storageRef = firebase.storage().ref().child('bukti/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]/gi,'_'));
@@ -3231,7 +3254,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:' && location.ho
 <p class="text-sm text-slate-500">Tambahkan transaksi pemasukan atau pengeluaran baru</p>
 </div>
 </div>
-
 <div>
 <label class="block text-sm font-bold uppercase tracking-wider text-slate-600 mb-2">
 <i class="fa-solid fa-link mr-1"></i> Atau Link Foto Bukti (Opsional)
@@ -4385,7 +4407,6 @@ function testWANotif(target){
 }
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadWANumbers, 800); });
 </script>
-
 <script>
 function loadDeviceOwner(){
   try{
