@@ -1718,209 +1718,156 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
 }
 </style>
 
-<style id="darkModeFixV84">
-/* V84 DARK MODE FIX - Teks terlihat di mode gelap */
 
-/* 1. Tombol Refresh Halaman - dark mode */
-body.dark-mode .refresh-btn,
-body.bg-slate-950 .refresh-btn,
-html.dark .refresh-btn,
-#appBody[style*="#090d16"] ~ * .refresh-btn,
-button[onclick*="refreshHalaman"] {
-  background: white !important;
-  color: #1e293b !important;
-  border: 1px solid #e2e8f0 !important;
-}
+<style id="darkModeFixV85">
+/* V85 DARK MODE FIX - Sesuai request user */
 
-/* Fix specific Refresh Halaman button */
-button:has(i.fa-rotate),
-button:has(i.fa-spinner) {
-  color: #334155 !important;
-}
-
-/* Dashboard refresh button */
-body.dark-mode button[onclick*="refreshHalaman"],
-body.dark-mode [onclick*="refreshHalaman"] {
-  background: #f8fafc !important;
-  color: #1e293b !important;
-  border: 1px solid #cbd5e1 !important;
+/* 1. REFRESH HALAMAN - warna gelap + teks biru tema */
+button[onclick*="refreshHalaman"],
+.refresh-btn {
+  background: #0f172a !important;
+  color: #3b82f6 !important;
+  border: 1px solid #1e3a5f !important;
   font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
 }
 
-/* 2. Alokasi Keuangan - SALDO MASUK KELUAR */
-body.dark-mode .alokasi-box,
-body.dark-mode [class*="SALDO"],
-body.dark-mode [class*="MASUK"],
-body.dark-mode [class*="KELUAR"] {
-  color: #1e293b !important;
+button[onclick*="refreshHalaman"] i,
+.refresh-btn i {
+  color: #3b82f6 !important;
 }
 
-/* Fix pills in Alokasi Keuangan */
-body.dark-mode .bg-emerald-50,
-body.dark-mode .bg-blue-50,
-body.dark-mode .bg-rose-50,
-body.dark-mode .bg-green-50 {
-  background: white !important;
+body.dark-mode button[onclick*="refreshHalaman"],
+html.dark button[onclick*="refreshHalaman"],
+#appBody.bg-slate-950 button[onclick*="refreshHalaman"],
+#appBody[style*="#090d16"] button[onclick*="refreshHalaman"] {
+  background: #0f172a !important;
+  color: #60a5fa !important;
+  border: 1px solid #1e40af !important;
 }
 
-/* Nominal di Alokasi Keuangan */
-body.dark-mode .font-num,
-body.dark-mode [class*="Rp"] {
-  color: #0f172a !important;
+/* Light mode also dark as requested */
+button:has(.fa-rotate) {
+  background: #0f172a !important;
+  color: #3b82f6 !important;
+  border: 1px solid #1e3a5f !important;
 }
 
-/* Specific for Alokasi Keuangan cards */
-#appBody.dark-mode .glass-box,
-#appBody[style*="090d16"] .glass-box {
-  background: rgba(15, 23, 42, 0.9) !important;
+/* 2. ALOKASI KEUANGAN - SALDO MASUK KELUAR */
+/* Find the 3 pills at bottom of Alokasi Keuangan chart */
+
+/* SALDO pill - green theme */
+div:has(> button:contains("SALDO")),
+button:contains("SALDO") {
+  background: #0f172a !important;
+  border: 1px solid #064e3b !important;
 }
 
-/* SALDO MASUK KELUAR pills */
-body.dark-mode button:contains("SALDO"),
-body.dark-mode button:contains("MASUK"),
-body.dark-mode button:contains("KELUAR") {
-  background: white !important;
-  color: #1e293b !important;
+button:contains("SALDO") {
+  background: #022c22 !important;
+  color: #10b981 !important;
+  border: 1px solid #065f46 !important;
 }
 
-/* Fix chart center text */
-body.dark-mode .chart-center-text {
-  color: white !important;
+/* MASUK pill - blue theme */
+button:contains("MASUK") {
+  background: #0c1a32 !important;
+  color: #3b82f6 !important;
+  border: 1px solid #1e40af !important;
 }
 
-/* 3. Setelan - Box kuning dan biru teks hilang */
-/* Warning yellow boxes */
-body.dark-mode .bg-yellow-50,
-body.dark-mode [style*="fef9c3"],
-body.dark-mode [style*="fef3c7"],
-body.dark-mode .bg-amber-50 {
-  background: #fef3c7 !important;
-  color: #92400e !important;
-  border: 1px solid #fcd34d !important;
+/* KELUAR pill - red/rose theme */
+button:contains("KELUAR") {
+  background: #2a0f1a !important;
+  color: #f43f5e !important;
+  border: 1px solid #9f1239 !important;
 }
 
-body.dark-mode .bg-yellow-50 *,
-body.dark-mode [style*="fef9c3"] *,
-body.dark-mode .bg-amber-50 * {
-  color: #92400e !important;
+/* Force dark backgrounds for alokasi pills container */
+#tab-dashboard .rounded-2xl .flex.gap-2,
+#tab-dashboard .flex.gap-3,
+#tab-dashboard .grid.grid-cols-3 {
+  background: transparent !important;
 }
 
-/* Blue info boxes */
-body.dark-mode .bg-blue-50,
-body.dark-mode .bg-sky-50,
-body.dark-mode [style*="dbeafe"],
-body.dark-mode [style*="e0f2fe"] {
-  background: #dbeafe !important;
-  color: #1e40af !important;
-  border: 1px solid #93c5fd !important;
+/* Alokasi Keuangan cards - make nominal visible with theme colors */
+.alokasi-saldo {
+  background: #022c22 !important;
+  color: #10b981 !important;
+  border: 1px solid #065f46 !important;
 }
 
-body.dark-mode .bg-blue-50 *,
-body.dark-mode .bg-sky-50 *,
-body.dark-mode [style*="dbeafe"] * {
-  color: #1e40af !important;
+.alokasi-masuk {
+  background: #0c1a32 !important;
+  color: #60a5fa !important;
+  border: 1px solid #1e40af !important;
 }
 
-/* Green boxes */
-body.dark-mode .bg-green-50,
-body.dark-mode [style*="f0fdf4"] {
-  background: #dcfce7 !important;
-  color: #166534 !important;
+.alokasi-keluar {
+  background: #2a0f1a !important;
+  color: #fb7185 !important;
+  border: 1px solid #9f1239 !important;
 }
 
-body.dark-mode .bg-green-50 *,
-body.dark-mode [style*="f0fdf4"] * {
-  color: #166534 !important;
+/* Specific for chart legend pills */
+#tab-dashboard button[class*="bg-"][class*="rounded"] {
+  min-height: 60px !important;
 }
 
-/* Setelan - Input fields */
-body.dark-mode input,
-body.dark-mode textarea,
-body.dark-mode select {
-  background: rgba(255,255,255,0.95) !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
+/* 3. SETELAN - Fix yellow and blue boxes */
+#tab-setelan .bg-yellow-50,
+#tab-setelan [style*="fef9c3"],
+#tab-setelan [style*="fef3c7"],
+#tab-setelan .bg-amber-50 {
+  background: #451a03 !important;
+  color: #fcd34d !important;
+  border: 1px solid #92400e !important;
 }
 
-body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder {
-  color: #94a3b8 !important;
+#tab-setelan .bg-yellow-50 *,
+#tab-setelan .bg-amber-50 * {
+  color: #fde68a !important;
 }
 
-/* Countdown boxes - light gray bg with white text */
-body.dark-mode .countdown-box,
-body.dark-mode [class*="HARI"],
-body.dark-mode [class*="JAM"] {
-  background: #cbd5e1 !important;
+#tab-setelan .bg-blue-50,
+#tab-setelan .bg-sky-50,
+#tab-setelan [style*="dbeafe"] {
+  background: #0c1a32 !important;
+  color: #93c5fd !important;
+  border: 1px solid #1e40af !important;
 }
 
-body.dark-mode .countdown-box * {
-  color: #1e293b !important;
+#tab-setelan .bg-blue-50 *,
+#tab-setelan .bg-sky-50 * {
+  color: #93c5fd !important;
 }
 
-/* Fix all glass boxes in dark mode */
-body.dark-mode .glass-box p,
-body.dark-mode .glass-box span,
-body.dark-mode .glass-box div {
-  color: inherit;
-}
-
-/* Refresh button specific */
-.refresh-halaman-btn {
-  background: white !important;
-  color: #334155 !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-}
-
-body.dark-mode .refresh-halaman-btn {
-  background: white !important;
-  color: #1e293b !important;
-}
-
-/* Alokasi Keuangan - 3 pills bottom */
-.alokasi-pills button {
-  background: white !important;
-  color: #0f172a !important;
-}
-
-.alokasi-pills button .text-emerald-600,
-.alokasi-pills button .text-blue-600,
-.alokasi-pills button .text-rose-600 {
-  color: #0f172a !important;
-}
-
-/* Force dark text for nominal in dark mode */
-body.dark-mode .text-slate-800,
-body.dark-mode .text-slate-700,
-body.dark-mode .text-slate-600 {
-  color: #e2e8f0 !important;
-}
-
-body.dark-mode .bg-white .text-slate-800,
-body.dark-mode .bg-white .text-slate-700,
-body.dark-mode .bg-slate-50 .text-slate-800 {
-  color: #0f172a !important;
-}
-
-/* Specific fixes for dashboard */
-body.dark-mode #tab-dashboard .bg-white,
-body.dark-mode #tab-dashboard .bg-slate-50 {
+/* Auto-kirim toggle boxes */
+#tab-setelan .bg-white,
+#tab-setelan .bg-slate-50 {
   background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
 }
 
-body.dark-mode #tab-dashboard .bg-white *,
-body.dark-mode #tab-dashboard .bg-slate-50 * {
-  color: #f1f5f9 !important;
+/* Inputs in setelan dark */
+#tab-setelan input[type="text"],
+#tab-setelan input[type="tel"] {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
 }
 
-/* But keep alokasi pills white */
-body.dark-mode #tab-dashboard .bg-white.rounded-2xl {
-  background: white !important;
+#tab-setelan input::placeholder {
+  color: #64748b !important;
 }
 
-body.dark-mode #tab-dashboard .bg-white.rounded-2xl * {
-  color: #0f172a !important;
+/* +62 buttons */
+#tab-setelan button:has(+ input),
+#tab-setelan div:has(> button) button {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #475569 !important;
 }
 </style>
 </head>
@@ -5918,7 +5865,6 @@ function closeSuccessModal(){
 
 console.log('V83 loaded - closeSuccessModalAndReload overridden - reset will work!');
 </script>
-
 <script>
 // V84 DARK MODE FIX - Perbaikan teks tidak terlihat di mode gelap
 function fixDarkModeVisibility(){
@@ -6116,6 +6062,242 @@ setTimeout(function(){
 }, 1200);
 
 console.log('V84 dark mode fix loaded');
+</script>
+
+<script>
+// V85 FIX - Refresh gelap biru + Alokasi nominal warna tema + Setelan dark
+
+function applyV85DarkFix(){
+  try{
+    var appBody = document.getElementById('appBody');
+    var isDark = false;
+    if(appBody){
+      isDark = appBody.classList.contains('bg-slate-950') || 
+               (appBody.style.backgroundColor && appBody.style.backgroundColor.includes('9, 13, 22'));
+    }
+    if(!isDark){
+      isDark = document.body.classList.contains('dark') || 
+               document.documentElement.classList.contains('dark') ||
+               document.querySelector('.dark-mode') !== null;
+    }
+    
+    // 1. REFRESH HALAMAN - gelap + biru tema
+    var allBtns = document.querySelectorAll('button');
+    allBtns.forEach(function(btn){
+      var txt = (btn.textContent || '').trim();
+      if(txt.includes('Refresh Halaman')){
+        btn.style.setProperty('background', '#0f172a', 'important');
+        btn.style.setProperty('color', '#3b82f6', 'important');
+        btn.style.setProperty('border', '1px solid #1e3a5f', 'important');
+        btn.style.setProperty('font-weight', '600', 'important');
+        btn.style.setProperty('box-shadow', '0 2px 8px rgba(0,0,0,0.3)', 'important');
+        var icon = btn.querySelector('i.fa-rotate, i.fa-spinner, .fa-rotate');
+        if(icon){
+          icon.style.setProperty('color', '#3b82f6', 'important');
+        }
+      }
+    });
+    
+    // 2. ALOKASI KEUANGAN - SALDO MASUK KELUAR
+    // Find Alokasi Keuangan section
+    var dashboard = document.getElementById('tab-dashboard');
+    if(dashboard){
+      // Find the 3 pills at bottom of pie chart
+      var pills = dashboard.querySelectorAll('button');
+      pills.forEach(function(pill){
+        var txt = (pill.textContent || '').trim();
+        var upper = txt.toUpperCase();
+        
+        // SALDO - green
+        if(upper === 'SALDO' || (txt.includes('SALDO') && pill.textContent.length < 20)){
+          pill.style.setProperty('background', '#022c22', 'important');
+          pill.style.setProperty('color', '#10b981', 'important');
+          pill.style.setProperty('border', '1px solid #065f46', 'important');
+          pill.style.setProperty('font-weight', '700', 'important');
+          
+          // Find nominal inside or next to it
+          var parent = pill.parentElement;
+          if(parent){
+            // Check siblings or children for Rp
+            var rpEls = parent.querySelectorAll('*');
+            rpEls.forEach(function(el){
+              if(el.textContent && el.textContent.includes('Rp') && el !== pill){
+                el.style.setProperty('color', '#34d399', 'important');
+                el.style.setProperty('font-weight', '700', 'important');
+                el.style.setProperty('display', 'block', 'important');
+                el.style.setProperty('visibility', 'visible', 'important');
+                el.style.setProperty('opacity', '1', 'important');
+              }
+            });
+          }
+          // Also check pill itself for Rp
+          if(pill.innerHTML && pill.innerHTML.includes('Rp')){
+            pill.style.setProperty('color', '#10b981', 'important');
+          }
+        }
+        
+        // MASUK - blue
+        if(upper === 'MASUK' || (txt.includes('MASUK') && !txt.includes('PEMASUKAN') && pill.textContent.length < 20)){
+          pill.style.setProperty('background', '#0c1a32', 'important');
+          pill.style.setProperty('color', '#3b82f6', 'important');
+          pill.style.setProperty('border', '1px solid #1e40af', 'important');
+          pill.style.setProperty('font-weight', '700', 'important');
+        }
+        
+        // KELUAR - rose/red
+        if(upper === 'KELUAR' || (txt.includes('KELUAR') && !txt.includes('PENGELUARAN') && pill.textContent.length < 20)){
+          pill.style.setProperty('background', '#2a0f1a', 'important');
+          pill.style.setProperty('color', '#f43f5e', 'important');
+          pill.style.setProperty('border', '1px solid #9f1239', 'important');
+          pill.style.setProperty('font-weight', '700', 'important');
+        }
+      });
+      
+      // Fix countdown boxes - 153, 09, 57, 31
+      var countdownContainer = dashboard.querySelector('[class*="COUNTDOWN"]');
+      if(countdownContainer){
+        var parent = countdownContainer.parentElement;
+        if(parent){
+          var boxes = parent.querySelectorAll('div.rounded-2xl, div.rounded-xl');
+          boxes.forEach(function(box){
+            var txt = box.textContent || '';
+            if(txt.includes('HARI') || txt.includes('JAM') || txt.includes('MENIT') || txt.includes('DETIK')){
+              box.style.setProperty('background', '#1e293b', 'important');
+              box.style.setProperty('border', '1px solid #334155', 'important');
+              var num = box.querySelector('div:first-child, span:first-child');
+              if(num){
+                var numTxt = num.textContent.trim();
+                if(/^\d+$/.test(numTxt)){
+                  num.style.setProperty('color', '#f1f5f9', 'important');
+                  num.style.setProperty('font-weight', '800', 'important');
+                }
+              }
+              var label = box.querySelector('div:last-child');
+              if(label && (label.textContent.includes('HARI') || label.textContent.includes('JAM'))){
+                label.style.setProperty('color', '#60a5fa', 'important');
+                label.style.setProperty('font-weight', '600', 'important');
+              }
+            }
+          });
+        }
+      }
+    }
+    
+    // Also fix alokasi pills by searching more broadly
+    var saldoPills = document.querySelectorAll('.bg-emerald-50, .bg-green-50, [class*="bg-emerald"], [class*="bg-green"]');
+    saldoPills.forEach(function(el){
+      var txt = el.textContent || '';
+      if(txt.includes('SALDO') && el.tagName === 'BUTTON'){
+        el.style.setProperty('background', '#022c22', 'important');
+        el.style.setProperty('color', '#10b981', 'important');
+      }
+    });
+    
+    // 3. SETELAN - Fix yellow and blue info boxes
+    var setelan = document.getElementById('tab-setelan');
+    if(setelan){
+      // Yellow boxes
+      var yellows = setelan.querySelectorAll('div');
+      yellows.forEach(function(div){
+        var txt = div.textContent || '';
+        var bg = window.getComputedStyle(div).backgroundColor;
+        var hasYellowClass = div.className.includes('yellow') || div.className.includes('amber');
+        var isWarning = txt.includes('Gak ada') || txt.includes('Undang via tautan') || txt.includes('WA tidak izinkan') || txt.includes('Cara jadi admin');
+        
+        if(hasYellowClass || (isWarning && div.classList.contains('rounded-2xl'))){
+          div.style.setProperty('background', '#451a03', 'important');
+          div.style.setProperty('color', '#fcd34d', 'important');
+          div.style.setProperty('border', '1px solid #92400e', 'important');
+          // All children
+          var children = div.querySelectorAll('*');
+          children.forEach(function(child){
+            if(child.tagName !== 'BUTTON' && child.tagName !== 'INPUT'){
+              if(!child.className.includes('bg-') || child.textContent.length > 5){
+                child.style.setProperty('color', '#fde68a', 'important');
+              }
+            }
+          });
+        }
+        
+        // Blue boxes - Solusi Auto Kirim
+        var isBlueInfo = txt.includes('Solusi Auto Kirim') || txt.includes('Di Setelan') || txt.includes('Isi No WA HANI');
+        if(isBlueInfo && div.classList.contains('rounded-2xl')){
+          div.style.setProperty('background', '#0c1a32', 'important');
+          div.style.setProperty('color', '#93c5fd', 'important');
+          div.style.setProperty('border', '1px solid #1e40af', 'important');
+          var children = div.querySelectorAll('*');
+          children.forEach(function(child){
+            if(child.tagName !== 'BUTTON' && child.tagName !== 'INPUT'){
+              child.style.setProperty('color', '#bfdbfe', 'important');
+            }
+          });
+        }
+      });
+      
+      // Fix inputs
+      var inputs = setelan.querySelectorAll('input');
+      inputs.forEach(function(inp){
+        inp.style.setProperty('background', '#0f172a', 'important');
+        inp.style.setProperty('color', '#e2e8f0', 'important');
+        inp.style.setProperty('border', '1px solid #334155', 'important');
+      });
+      
+      // Fix +62 buttons
+      var plus62Btns = setelan.querySelectorAll('button');
+      plus62Btns.forEach(function(btn){
+        if(btn.textContent.trim() === '+62'){
+          btn.style.setProperty('background', '#1e293b', 'important');
+          btn.style.setProperty('color', '#e2e8f0', 'important');
+          btn.style.setProperty('border', '1px solid #475569', 'important');
+        }
+      });
+    }
+    
+    console.log('V85 dark fix applied');
+  }catch(e){
+    console.log('V85 error', e);
+  }
+}
+
+// Run
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(applyV85DarkFix, 500);
+  setTimeout(applyV85DarkFix, 1500);
+  setTimeout(applyV85DarkFix, 3000);
+});
+
+setTimeout(function(){
+  var origToggle = window.toggleThemeMode;
+  if(origToggle){
+    window.toggleThemeMode = function(){
+      origToggle();
+      setTimeout(applyV85DarkFix, 100);
+      setTimeout(applyV85DarkFix, 500);
+      setTimeout(applyV85DarkFix, 1000);
+    };
+  }
+  
+  var origSwitch = window.switchTab;
+  if(origSwitch){
+    window.switchTab = function(tab){
+      origSwitch(tab);
+      setTimeout(applyV85DarkFix, 100);
+      setTimeout(applyV85DarkFix, 400);
+    };
+  }
+  
+  // Observer
+  var observer = new MutationObserver(function(){
+    setTimeout(applyV85DarkFix, 100);
+  });
+  var appBody = document.getElementById('appBody');
+  if(appBody) observer.observe(appBody, { attributes: true });
+  
+  // Initial
+  applyV85DarkFix();
+}, 1000);
+
+console.log('V85 dark mode fix loaded - refresh gelap biru + alokasi warna tema + setelan dark');
 </script>
 </body>
 </html>
