@@ -2397,7 +2397,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <p id="tentangHVTitle" class="font-bold text-sm" style="color: #0f172a !important;">Tabungan HV</p>
 <p><b>Target:</b> 03 April 2027</p>
 <p><b>Countdown:</b> <span id="setelanCountdown">-</span></p>
-<p><b>Versi:</b> <span id="appVersionDisplay">V113.1</span></p>
+<p><b>Versi:</b> <span id="appVersionDisplay">V113.2</span></p>
 <p class="text-[11px] text-emerald-600 mt-2">Firebase: tabungan-hani-venus • Auto Sync</p>
 </div>
 </div>
@@ -2644,20 +2644,124 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
         let activePopupTarget = 'main'; 
         let activePopupType = 'tipe'; 
 
-        function setNowDateTimeAndFilter() {
-            const now = new Date();
-            const yearStr = String(now.getFullYear());
-            const monthStr = String(now.getMonth() + 1).padStart(2, '0');
-
-            document.getElementById('tglTransaksi').value = now.toISOString().split('T')[0];
-            document.getElementById('jamTransaksi').value = now.toTimeString().split(' ')[0].substring(0, 5);
-
-            document.getElementById('filterBulan').value = 'all';
-            document.getElementById('filterTahun').value = 'all';
+        function getWIBNow() {
+            // Real-time WIB (Asia/Jakarta UTC+7) - bukan UTC
+            try {
+                const now = new Date();
+                // Use Intl to get WIB parts
+                const fmt = new Intl.DateTimeFormat('en-CA', {
+                    timeZone: 'Asia/Jakarta',
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: false
+                });
+                const parts = fmt.formatToParts(now);
+                const get = (t) => { const p = parts.find(x=>x.type===t); return p ? p.value : '00'; };
+                const year = get('year');
+                const month = get('month');
+                const day = get('day');
+                const hour = get('hour');
+                const minute = get('minute');
+                const second = get('second');
+                return {
+                    dateObj: new Date(now.toLocaleString('en-US', {timeZone: 'Asia/Jakarta'})),
+                    isoDate: `${year}-${month}-${day}`,
+                    displayDate: `${day}/${month}/${year}`,
+                    time: `${hour}:${minute}`,
+                    hour: parseInt(hour,10),
+                    minute: parseInt(minute,10),
+                    year: year,
+                    month: month,
+                    day: day,
+                    full: `${year}-${month}-${day} ${hour}:${minute}:${second} WIB`
+                };
+            } catch(e) {
+                // Fallback manual UTC+7
+                const now = new Date();
+                const utc = now.getTime() + (now.getTimezoneOffset()*60000);
+                const wib = new Date(utc + (7*3600000));
+                const y = wib.getFullYear();
+                const m = String(wib.getMonth()+1).padStart(2,'0');
+                const d = String(wib.getDate()).padStart(2,'0');
+                const hh = String(wib.getHours()).padStart(2,'0');
+                const mm = String(wib.getMinutes()).padStart(2,'0');
+                return { dateObj: wib, isoDate: `${y}-${m}-${d}`, displayDate: `${d}/${m}/${y}`, time: `${hh}:${mm}`, hour: parseInt(hh,10), minute: parseInt(mm,10), year: String(y), month: m, day: d, full: `${y}-${m}-${d} ${hh}:${mm} WIB` };
+            }
         }
+
+        function setNowDateTimeAndFilter() {
+            const wib = getWIBNow();
+            const tglEl = document.getElementById('tglTransaksi');
+            const jamEl = document.getElementById('jamTransaksi');
+            if(tglEl) tglEl.value = wib.isoDate;
+            if(jamEl) jamEl.value = wib.time;
+            // Keep filter all (don't override user's filter)
+            try {
+                const fb = document.getElementById('filterBulan');
+                const ft = document.getElementById('filterTahun');
+                if(fb && !fb.dataset.userChanged) fb.value = 'all';
+                if(ft && !ft.dataset.userChanged) ft.value = 'all';
+            } catch(e){}
+            console.log('WIB Real-time:', wib.full, 'ISO:', wib.isoDate, 'Time:', wib.time);
+        }
+
+        // Auto-update tanggal & jam setiap menit, cek pergantian hari WIB 00:00
+        let wibInterval = null;
+        let lastWIBDate = '';
+        function startWIBRealTime() {
+            try {
+                if(wibInterval) clearInterval(wibInterval);
+                const wib = getWIBNow();
+                lastWIBDate = wib.isoDate;
+                setNowDateTimeAndFilter();
+                wibInterval = setInterval(() => {
+                    const nowWIB = getWIBNow();
+                    // Update jam real-time setiap menit
+                    const jamEl = document.getElementById('jamTransaksi');
+                    const tglEl = document.getElementById('tglTransaksi');
+                    // Only auto-update if modal is open or user hasn't manually changed date today
+                    const isModalOpen = document.getElementById('tambahModal') && !document.getElementById('tambahModal').classList.contains('hidden');
+                    if(jamEl && (isModalOpen || !jamEl.dataset.userEdited)) {
+                        jamEl.value = nowWIB.time;
+                    }
+                    // Jika ganti hari WIB 00:00, auto ganti tanggal
+                    if(nowWIB.isoDate !== lastWIBDate) {
+                        console.log('WIB Ganti Hari:', lastWIBDate, '->', nowWIB.isoDate);
+                        lastWIBDate = nowWIB.isoDate;
+                        if(tglEl && (isModalOpen || !tglEl.dataset.userEdited)) {
+                            tglEl.value = nowWIB.isoDate;
+                            // Show toast
+                            try {
+                                const toast = document.createElement('div');
+                                toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2 rounded-full text-xs font-bold z-[90] shadow-xl';
+                                toast.innerText = '📅 Tanggal otomatis: ' + nowWIB.displayDate + ' WIB';
+                                document.body.appendChild(toast);
+                                setTimeout(()=>toast.remove(), 3000);
+                            } catch(e){}
+                        }
+                    }
+                }, 30000); // cek tiap 30 detik
+            } catch(e){ console.log('WIB interval error', e); }
+        }
+
+        // Track user manual edit
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const tglEl = document.getElementById('tglTransaksi');
+                const jamEl = document.getElementById('jamTransaksi');
+                if(tglEl) tglEl.addEventListener('change', () => { tglEl.dataset.userEdited = '1'; });
+                if(jamEl) jamEl.addEventListener('change', () => { jamEl.dataset.userEdited = '1'; });
+                const fb = document.getElementById('filterBulan');
+                const ft = document.getElementById('filterTahun');
+                if(fb) fb.addEventListener('change', () => { fb.dataset.userChanged = '1'; });
+                if(ft) ft.addEventListener('change', () => { ft.dataset.userChanged = '1'; });
+            }, 1000);
+        });
+
 
         document.addEventListener('DOMContentLoaded', () => {
             setNowDateTimeAndFilter();
+            startWIBRealTime();
             loadSavedOpacity();
             loadSavedLocalBg();
             
@@ -4132,7 +4236,22 @@ function updateLaporanUI(){
   var lc=document.getElementById('laporanList');
   if(lc){ lc.innerHTML=''; if(filt.length===0) lc.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi di periode ini (coba ganti ke Semua)</p>'; else filt.slice().reverse().forEach(function(it){ var isM=it.tipe==='pemasukan'||it.tipe==='pengembalian'; var d=document.createElement('div'); d.className='riwayat-item-presisi '+(isM?'bg-emerald-50/70 border-emerald-100':'bg-rose-50/70 border-rose-100'); d.innerHTML='<span class="badge">'+(it.penabung||'HANI')+'</span><div class="main"><div class="title '+(isM?'text-emerald-700':'text-rose-700')+'">'+it.ket+'</div><div class="date">'+it.tgl+' | '+it.jam+'</div></div><div class="side"><div class="amount '+(isM?'text-emerald-600':'text-rose-600')+'">'+(isM?'+ Rp ':'- Rp ')+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>'; lc.appendChild(d); }); }
 }
-function openTambahModal(){ var m=document.getElementById('tambahModal'), b=document.getElementById('tambahModalBox'); if(!m||!b) return; m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0','pointer-events-none'); m.classList.add('opacity-100'); b.classList.remove('translate-y-full','sm:translate-y-4','sm:scale-95'); b.classList.add('translate-y-0','sm:scale-100'); document.body.style.overflow='hidden'; }
+function openTambahModal(){ 
+  var m=document.getElementById('tambahModal'), b=document.getElementById('tambahModalBox'); 
+  if(!m||!b) return; 
+  // Real-time WIB setiap buka modal
+  try { 
+    const wib = getWIBNow();
+    const tglEl = document.getElementById('tglTransaksi');
+    const jamEl = document.getElementById('jamTransaksi');
+    if(tglEl) { tglEl.value = wib.isoDate; delete tglEl.dataset.userEdited; }
+    if(jamEl) { jamEl.value = wib.time; delete jamEl.dataset.userEdited; }
+    console.log('Open Modal WIB:', wib.full);
+  } catch(e){}
+  m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0','pointer-events-none'); m.classList.add('opacity-100'); 
+  b.classList.remove('translate-y-full','sm:translate-y-4','sm:scale-95'); b.classList.add('translate-y-0','sm:scale-100'); 
+  document.body.style.overflow='hidden'; 
+}
 function closeTambahModal(){ var m=document.getElementById('tambahModal'), b=document.getElementById('tambahModalBox'); if(!m||!b) return; m.classList.add('opacity-0'); b.classList.add('translate-y-full','sm:translate-y-4','sm:scale-95'); b.classList.remove('translate-y-0','sm:scale-100'); setTimeout(function(){ m.classList.add('hidden','pointer-events-none'); document.body.style.overflow=''; },200); }
 document.addEventListener('click',function(e){ var m=document.getElementById('tambahModal'); if(e.target===m) closeTambahModal(); });
 document.addEventListener('DOMContentLoaded',function(){ 
@@ -6671,7 +6790,7 @@ console.log('V108 loaded - PIN confirm + auto-lock fix + switchTab preserved');
 <script>
 // V109 - Hapus Semua 2 Step + Tentang Tabungan HV + Versi Auto Update V109
 
-const APP_VERSION = 'V113.1';
+const APP_VERSION = 'V113.2';
 const APP_NAME = 'Tabungan HV';
 
 // Auto update version display
@@ -6809,7 +6928,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(m2) m2.addEventListener('click', function(e){ if(e.target===this) closeHapusPinModal(); });
 });
 
-console.log('V113.1 popup fix loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
+console.log('V113.2 WIB real-time fix loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
 </script>
 </body>
 </html>
