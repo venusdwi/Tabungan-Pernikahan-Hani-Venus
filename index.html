@@ -1718,302 +1718,108 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
 }
 </style>
 
+<style id="darkModeFixV100">
+/* V100 - Balik ke Foto Kedua pastel light, cuma fix toggle + input WA, Alokasi biarin V83 asli light pastel */
 
-<style id="darkModeFixV90">
-/* V90 FIX - Fix 2 sisa bug: Alokasi light masih gelap + Setelan dark teks hilang */
-
-/* === 1. REFRESH - keep V89 working === */
-button[onclick="refreshHalaman()"] {
-  transition: none !important;
+/* Toggle on=biru off=abu light/dark */
+#waNotifToggle + div,
+#waAutoToggle + div{transition:all 0.2s ease !important;}
+#appBody.bg-slate-100 #waNotifToggle + div,
+#appBody[style*="f1f5f9"] #waNotifToggle + div,
+body:not(.dark) #waNotifToggle + div,
+#appBody.bg-slate-100 #waAutoToggle + div,
+#appBody[style*="f1f5f9"] #waAutoToggle + div,
+body:not(.dark) #waAutoToggle + div{
+  background:#cbd5e1 !important;
+  background-color:#cbd5e1 !important;
+  border:1px solid #94a3b8 !important;
 }
-
-#appBody.bg-slate-100 button[onclick="refreshHalaman()"],
-#appBody[style*="f1f5f9"] button[onclick="refreshHalaman()"] {
-  background: white !important;
-  color: #334155 !important;
-  border: 1px solid #e2e8f0 !important;
-}
-
-#appBody.bg-slate-950 button[onclick="refreshHalaman()"],
-#appBody[style*="090d16"] button[onclick="refreshHalaman()"] {
-  background: #0f172a !important;
-  color: #60a5fa !important;
-  border: 1px solid #1e3a5f !important;
-}
-
-/* === 2. ALOKASI KEUANGAN - Fix light still dark (video 7-10s) === */
-/* Use higher specificity with html body prefix + both class and style attribute */
-
-/* Light mode - SALDO */
-html body #appBody.bg-slate-100 .bg-emerald-50,
-html body #appBody[style*="f1f5f9"] .bg-emerald-50,
-body #appBody.bg-slate-100 .bg-emerald-50 {
-  background: #ecfdf5 !important;
-  background-color: #ecfdf5 !important;
-  border: 1px solid #a7f3d0 !important;
+#appBody.bg-slate-100 #waNotifToggle:checked + div,
+#appBody[style*="f1f5f9"] #waNotifToggle:checked + div,
+body:not(.dark) #waNotifToggle:checked + div,
+#appBody.bg-slate-100 #waAutoToggle:checked + div,
+#appBody[style*="f1f5f9"] #waAutoToggle:checked + div,
+body:not(.dark) #waAutoToggle:checked + div{
+  background:#2563eb !important;
+  background-color:#2563eb !important;
+  border-color:#1d4ed8 !important;
 }
 
-html body #appBody.bg-slate-100 #diagramSaldo,
-html body #appBody[style*="f1f5f9"] #diagramSaldo {
-  color: #047857 !important;
-  font-weight: 700 !important;
+#appBody.bg-slate-950 #waNotifToggle + div,
+#appBody[style*="090d16"] #waNotifToggle + div,
+body.dark #waNotifToggle + div,
+#appBody.bg-slate-950 #waAutoToggle + div,
+#appBody[style*="090d16"] #waAutoToggle + div,
+body.dark #waAutoToggle + div{
+  background:#334155 !important;
+  background-color:#334155 !important;
+  border:1px solid #475569 !important;
+}
+#appBody.bg-slate-950 #waNotifToggle:checked + div,
+#appBody[style*="090d16"] #waNotifToggle:checked + div,
+body.dark #waNotifToggle:checked + div,
+#appBody.bg-slate-950 #waAutoToggle:checked + div,
+#appBody[style*="090d16"] #waAutoToggle:checked + div,
+body.dark #waAutoToggle:checked + div{
+  background:#3b82f6 !important;
+  background-color:#3b82f6 !important;
+  border-color:#2563eb !important;
+}
+#waNotifToggle + div:after,
+#waAutoToggle + div:after{background:white !important;box-shadow:0 1px 3px rgba(0,0,0,0.3) !important;}
+
+/* Input WA putih light */
+#appBody.bg-slate-100 #waNumberHani,
+#appBody.bg-slate-100 #waNumberVenus,
+#appBody[style*="f1f5f9"] #waNumberHani,
+#appBody[style*="f1f5f9"] #waNumberVenus,
+body:not(.dark) #waNumberHani,
+body:not(.dark) #waNumberVenus{
+  background:white !important;
+  background-color:white !important;
+  color:#0f172a !important;
+  border:1px solid #cbd5e1 !important;
+}
+#appBody.bg-slate-100 #tab-setelan .flex.gap-2 span.bg-slate-100,
+#appBody[style*="f1f5f9"] #tab-setelan .flex.gap-2 span.bg-slate-100,
+body:not(.dark) #tab-setelan .flex.gap-2 span.bg-slate-100{
+  background:white !important;
+  color:#334155 !important;
+  border:1px solid #cbd5e1 !important;
 }
 
-html body #appBody.bg-slate-100 .bg-emerald-50 .text-emerald-600,
-html body #appBody[style*="f1f5f9"] .bg-emerald-50 .text-emerald-600 {
-  color: #059669 !important;
+#appBody.bg-slate-950 #waNumberHani,
+#appBody.bg-slate-950 #waNumberVenus,
+#appBody[style*="090d16"] #waNumberHani,
+#appBody[style*="090d16"] #waNumberVenus,
+body.dark #waNumberHani,
+body.dark #waNumberVenus{
+  background:#0f172a !important;
+  background-color:#0f172a !important;
+  color:#f1f5f9 !important;
+  border:1px solid #334155 !important;
+}
+#appBody.bg-slate-950 #tab-setelan .flex.gap-2 span.bg-slate-100,
+#appBody[style*="090d16"] #tab-setelan .flex.gap-2 span.bg-slate-100,
+body.dark #tab-setelan .flex.gap-2 span.bg-slate-100{
+  background:#1e293b !important;
+  color:#e2e8f0 !important;
+  border:1px solid #475569 !important;
 }
 
-html body #appBody.bg-slate-100 .bg-emerald-50 .text-emerald-700,
-html body #appBody[style*="f1f5f9"] .bg-emerald-50 .text-emerald-700 {
-  color: #047857 !important;
-}
+/* Refresh no flicker */
+button[onclick="refreshHalaman()"]{transition:none !important;}
+#appBody.bg-slate-100 button[onclick="refreshHalaman()"]{background:white !important;color:#334155 !important;border:1px solid #e2e8f0 !important;}
+#appBody.bg-slate-950 button[onclick="refreshHalaman()"]{background:#0f172a !important;color:#60a5fa !important;border:1px solid #1e3a5f !important;}
 
-/* Light - MASUK */
-html body #appBody.bg-slate-100 .bg-blue-50,
-html body #appBody[style*="f1f5f9"] .bg-blue-50 {
-  background: #eff6ff !important;
-  background-color: #eff6ff !important;
-  border: 1px solid #bfdbfe !important;
-}
-
-html body #appBody.bg-slate-100 #diagramMasuk,
-html body #appBody[style*="f1f5f9"] #diagramMasuk {
-  color: #1d4ed8 !important;
-  font-weight: 700 !important;
-}
-
-html body #appBody.bg-slate-100 .bg-blue-50 .text-blue-600,
-html body #appBody[style*="f1f5f9"] .bg-blue-50 .text-blue-600 {
-  color: #2563eb !important;
-}
-
-html body #appBody.bg-slate-100 .bg-blue-50 .text-blue-700,
-html body #appBody[style*="f1f5f9"] .bg-blue-50 .text-blue-700 {
-  color: #1d4ed8 !important;
-}
-
-/* Light - KELUAR */
-html body #appBody.bg-slate-100 .bg-rose-50,
-html body #appBody[style*="f1f5f9"] .bg-rose-50 {
-  background: #fff1f2 !important;
-  background-color: #fff1f2 !important;
-  border: 1px solid #fecdd3 !important;
-}
-
-html body #appBody.bg-slate-100 #diagramKeluar,
-html body #appBody[style*="f1f5f9"] #diagramKeluar {
-  color: #be123c !important;
-  font-weight: 700 !important;
-}
-
-html body #appBody.bg-slate-100 .bg-rose-50 .text-rose-600,
-html body #appBody[style*="f1f5f9"] .bg-rose-50 .text-rose-600 {
-  color: #e11d48 !important;
-}
-
-html body #appBody.bg-slate-100 .bg-rose-50 .text-rose-700,
-html body #appBody[style*="f1f5f9"] .bg-rose-50 .text-rose-700 {
-  color: #be123c !important;
-}
-
-/* Dark mode - SALDO MASUK KELUAR (keep) */
-html body #appBody.bg-slate-950 .bg-emerald-50,
-html body #appBody[style*="090d16"] .bg-emerald-50 {
-  background: #022c22 !important;
-  background-color: #022c22 !important;
-  border: 1px solid #065f46 !important;
-}
-
-html body #appBody.bg-slate-950 #diagramSaldo,
-html body #appBody[style*="090d16"] #diagramSaldo {
-  color: #34d399 !important;
-  font-weight: 800 !important;
-}
-
-html body #appBody.bg-slate-950 .bg-emerald-50 .text-emerald-600,
-html body #appBody[style*="090d16"] .bg-emerald-50 .text-emerald-600 {
-  color: #10b981 !important;
-}
-
-html body #appBody.bg-slate-950 .bg-emerald-50 .text-emerald-700,
-html body #appBody[style*="090d16"] .bg-emerald-50 .text-emerald-700 {
-  color: #34d399 !important;
-}
-
-html body #appBody.bg-slate-950 .bg-blue-50,
-html body #appBody[style*="090d16"] .bg-blue-50 {
-  background: #0c1a32 !important;
-  background-color: #0c1a32 !important;
-  border: 1px solid #1e40af !important;
-}
-
-html body #appBody.bg-slate-950 #diagramMasuk,
-html body #appBody[style*="090d16"] #diagramMasuk {
-  color: #60a5fa !important;
-  font-weight: 800 !important;
-}
-
-html body #appBody.bg-slate-950 .bg-blue-50 .text-blue-600,
-html body #appBody[style*="090d16"] .bg-blue-50 .text-blue-600 {
-  color: #3b82f6 !important;
-}
-
-html body #appBody.bg-slate-950 .bg-blue-50 .text-blue-700,
-html body #appBody[style*="090d16"] .bg-blue-50 .text-blue-700 {
-  color: #60a5fa !important;
-}
-
-html body #appBody.bg-slate-950 .bg-rose-50,
-html body #appBody[style*="090d16"] .bg-rose-50 {
-  background: #2a0f1a !important;
-  background-color: #2a0f1a !important;
-  border: 1px solid #9f1239 !important;
-}
-
-html body #appBody.bg-slate-950 #diagramKeluar,
-html body #appBody[style*="090d16"] #diagramKeluar {
-  color: #fb7185 !important;
-  font-weight: 800 !important;
-}
-
-html body #appBody.bg-slate-950 .bg-rose-50 .text-rose-600,
-html body #appBody[style*="090d16"] .bg-rose-50 .text-rose-600 {
-  color: #f43f5e !important;
-}
-
-html body #appBody.bg-slate-950 .bg-rose-50 .text-rose-700,
-html body #appBody[style*="090d16"] .bg-rose-50 .text-rose-700 {
-  color: #fb7185 !important;
-}
-
-/* === 3. SETELAN - Fix dark teks hilang (video 24-28s) + light input gelap (17-24s) === */
-
-/* Light - inputs */
-html body #appBody.bg-slate-100 #waNumberHani,
-html body #appBody.bg-slate-100 #waNumberVenus,
-html body #appBody.bg-slate-100 #waGroupLink,
-html body #appBody[style*="f1f5f9"] #waNumberHani,
-html body #appBody[style*="f1f5f9"] #waNumberVenus,
-html body #appBody[style*="f1f5f9"] #waGroupLink {
-  background: white !important;
-  background-color: white !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-}
-
-html body #appBody.bg-slate-100 #waNumberHani::placeholder,
-html body #appBody.bg-slate-100 #waNumberVenus::placeholder,
-html body #appBody.bg-slate-100 #waGroupLink::placeholder,
-html body #appBody[style*="f1f5f9"] #waNumberHani::placeholder,
-html body #appBody[style*="f1f5f9"] #waNumberVenus::placeholder {
-  color: #94a3b8 !important;
-  opacity: 1 !important;
-}
-
-/* Light - +62 buttons */
-html body #appBody.bg-slate-100 #tab-setelan div:has(> #waNumberHani) button,
-html body #appBody.bg-slate-100 #tab-setelan div:has(> #waNumberVenus) button,
-html body #appBody[style*="f1f5f9"] #tab-setelan div:has(> #waNumberHani) button,
-html body #appBody[style*="f1f5f9"] #tab-setelan div:has(> #waNumberVenus) button {
-  background: white !important;
-  color: #334155 !important;
-  border: 1px solid #cbd5e1 !important;
-}
-
-/* Dark - inputs */
-html body #appBody.bg-slate-950 #waNumberHani,
-html body #appBody.bg-slate-950 #waNumberVenus,
-html body #appBody.bg-slate-950 #waGroupLink,
-html body #appBody[style*="090d16"] #waNumberHani,
-html body #appBody[style*="090d16"] #waNumberVenus,
-html body #appBody[style*="090d16"] #waGroupLink {
-  background: #0f172a !important;
-  background-color: #0f172a !important;
-  color: #e2e8f0 !important;
-  border: 1px solid #334155 !important;
-}
-
-html body #appBody.bg-slate-950 #waNumberHani::placeholder,
-html body #appBody.bg-slate-950 #waNumberVenus::placeholder,
-html body #appBody.bg-slate-950 #waGroupLink::placeholder,
-html body #appBody[style*="090d16"] #waNumberHani::placeholder,
-html body #appBody[style*="090d16"] #waNumberVenus::placeholder,
-html body #appBody[style*="090d16"] #waGroupLink::placeholder {
-  color: #94a3b8 !important;
-  opacity: 1 !important;
-}
-
-html body #appBody.bg-slate-950 #waNumberHani,
-html body #appBody[style*="090d16"] #waNumberHani {
-  color: #f1f5f9 !important;
-}
-
-/* Dark - +62 buttons */
-html body #appBody.bg-slate-950 #tab-setelan div:has(> #waNumberHani) button,
-html body #appBody.bg-slate-950 #tab-setelan div:has(> #waNumberVenus) button,
-html body #appBody[style*="090d16"] #tab-setelan div:has(> #waNumberHani) button,
-html body #appBody[style*="090d16"] #tab-setelan div:has(> #waNumberVenus) button {
-  background: #1e293b !important;
-  color: #e2e8f0 !important;
-  border: 1px solid #475569 !important;
-}
-
-/* Light - yellow/blue boxes */
-html body #appBody.bg-slate-100 #tab-setelan .bg-yellow-50,
-html body #appBody[style*="f1f5f9"] #tab-setelan .bg-yellow-50 {
-  background: #fef9c3 !important;
-  color: #92400e !important;
-  border: 1px solid #fcd34d !important;
-}
-html body #appBody.bg-slate-100 #tab-setelan .bg-yellow-50 *,
-html body #appBody[style*="f1f5f9"] #tab-setelan .bg-yellow-50 * {
-  color: #92400e !important;
-}
-
-html body #appBody.bg-slate-100 #tab-setelan .bg-blue-50,
-html body #appBody[style*="f1f5f9"] #tab-setelan .bg-blue-50 {
-  background: #dbeafe !important;
-  color: #1e40af !important;
-  border: 1px solid #93c5fd !important;
-}
-html body #appBody.bg-slate-100 #tab-setelan .bg-blue-50 *,
-html body #appBody[style*="f1f5f9"] #tab-setelan .bg-blue-50 * {
-  color: #1e40af !important;
-}
-
-/* Dark - yellow/blue boxes */
-html body #appBody.bg-slate-950 #tab-setelan .bg-yellow-50,
-html body #appBody[style*="090d16"] #tab-setelan .bg-yellow-50 {
-  background: #451a03 !important;
-  color: #fcd34d !important;
-  border: 1px solid #92400e !important;
-}
-html body #appBody.bg-slate-950 #tab-setelan .bg-yellow-50 *,
-html body #appBody[style*="090d16"] #tab-setelan .bg-yellow-50 * {
-  color: #fde68a !important;
-}
-
-html body #appBody.bg-slate-950 #tab-setelan .bg-blue-50,
-html body #appBody[style*="090d16"] #tab-setelan .bg-blue-50 {
-  background: #0c1a32 !important;
-  color: #93c5fd !important;
-  border: 1px solid #1e40af !important;
-}
-html body #appBody.bg-slate-950 #tab-setelan .bg-blue-50 *,
-html body #appBody[style*="090d16"] #tab-setelan .bg-blue-50 * {
-  color: #bfdbfe !important;
-}
-
-/* Fix label No. WA HANI/VENUS in dark */
-html body #appBody.bg-slate-950 #tab-setelan label,
-html body #appBody[style*="090d16"] #tab-setelan label {
-  color: #e2e8f0 !important;
-}
-
-html body #appBody.bg-slate-100 #tab-setelan label {
-  color: #0f172a !important;
-}
+/* Alokasi biarin V83 asli - light pastel kayak foto kedua 20.34 - jangan di-dark-kan! */
+#tab-dashboard .bg-emerald-50.rounded-xl{background:#ecfdf5 !important;background-color:#ecfdf5 !important;border:1px solid #a7f3d0 !important;}
+#tab-dashboard .bg-blue-50.rounded-xl{background:#eff6ff !important;background-color:#eff6ff !important;border:1px solid #bfdbfe !important;}
+#tab-dashboard .bg-rose-50.rounded-xl{background:#fff1f2 !important;background-color:#fff1f2 !important;border:1px solid #fecdd3 !important;}
+#tab-dashboard #diagramSaldo{color:#047857 !important;}
+#tab-dashboard #diagramMasuk{color:#1d4ed8 !important;}
+#tab-dashboard #diagramKeluar{color:#be123c !important;}
+#donutCenterPercent{background:#dcfce7 !important;background-color:#dcfce7 !important;color:#047857 !important;border:1px solid #a7f3d0 !important;}
 </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
@@ -6011,77 +5817,133 @@ function closeSuccessModal(){
 console.log('V83 loaded - closeSuccessModalAndReload overridden - reset will work!');
 </script>
 
-
 <script>
-// V90 FIX - Fix 2 sisa bug without breaking
-function applyV90Fix(){
+// V100 - Balik ke foto kedua pastel, cuma fix toggle + input
+function getIsDarkV100(){
+  if(document.body && document.body.classList.contains('dark')) return true;
+  if(typeof window.isDarkMode !== 'undefined') return !!window.isDarkMode;
+  var appBody = document.getElementById('appBody');
+  if(appBody){
+    if(appBody.classList.contains('bg-slate-950')) return true;
+    if(appBody.classList.contains('bg-slate-100')) return false;
+  }
   try{
-    var appBody = document.getElementById('appBody');
-    if(!appBody) return;
-    var isDark = appBody.classList.contains('bg-slate-950') || 
-                 (appBody.style.backgroundColor && appBody.style.backgroundColor.includes('9, 13, 22'));
+    var ls = localStorage.getItem('darkMode');
+    if(ls !== null) return ls === 'true';
+  }catch(e){}
+  return false;
+}
+
+function applyV100Fix(){
+  try{
+    var isDark = getIsDarkV100();
     
-    // Fix Alokasi - ensure visible
+    // Fix Alokasi - balikin ke pastel light kayak foto kedua 20.34 - jangan gelap!
+    var percent = document.getElementById('donutCenterPercent');
+    var saldoBox = document.querySelector('#tab-dashboard div.bg-emerald-50.rounded-xl');
+    var masukBox = document.querySelector('#tab-dashboard div.bg-blue-50.rounded-xl');
+    var keluarBox = document.querySelector('#tab-dashboard div.bg-rose-50.rounded-xl');
     var saldo = document.getElementById('diagramSaldo');
     var masuk = document.getElementById('diagramMasuk');
     var keluar = document.getElementById('diagramKeluar');
     
-    if(saldo){ saldo.style.visibility='visible'; saldo.style.opacity='1'; }
-    if(masuk){ masuk.style.visibility='visible'; masuk.style.opacity='1'; }
-    if(keluar){ keluar.style.visibility='visible'; keluar.style.opacity='1'; }
+    // Selalu pastel light kayak foto kedua, bahkan di dark mode biar bagus
+    if(percent){ percent.style.setProperty('background', '#dcfce7', 'important'); percent.style.setProperty('background-color', '#dcfce7', 'important'); percent.style.setProperty('color', '#047857', 'important'); percent.style.setProperty('border', '1px solid #a7f3d0', 'important'); }
+    if(saldoBox){ saldoBox.style.setProperty('background', '#ecfdf5', 'important'); saldoBox.style.setProperty('background-color', '#ecfdf5', 'important'); saldoBox.style.setProperty('border', '1px solid #a7f3d0', 'important'); }
+    if(masukBox){ masukBox.style.setProperty('background', '#eff6ff', 'important'); masukBox.style.setProperty('background-color', '#eff6ff', 'important'); masukBox.style.setProperty('border', '1px solid #bfdbfe', 'important'); }
+    if(keluarBox){ keluarBox.style.setProperty('background', '#fff1f2', 'important'); keluarBox.style.setProperty('background-color', '#fff1f2', 'important'); keluarBox.style.setProperty('border', '1px solid #fecdd3', 'important'); }
+    if(saldo) saldo.style.setProperty('color', '#047857', 'important');
+    if(masuk) masuk.style.setProperty('color', '#1d4ed8', 'important');
+    if(keluar) keluar.style.setProperty('color', '#be123c', 'important');
     
-    // Fix WA inputs placeholder visibility
+    // Toggle
+    var notif = document.getElementById('waNotifToggle');
+    var auto = document.getElementById('waAutoToggle');
+    [notif, auto].forEach(function(t){
+      if(!t) return;
+      var div = t.nextElementSibling;
+      if(!div) return;
+      if(isDark){
+        div.style.setProperty('background', t.checked ? '#3b82f6' : '#334155', 'important');
+        div.style.setProperty('background-color', t.checked ? '#3b82f6' : '#334155', 'important');
+      } else {
+        div.style.setProperty('background', t.checked ? '#2563eb' : '#cbd5e1', 'important');
+        div.style.setProperty('background-color', t.checked ? '#2563eb' : '#cbd5e1', 'important');
+      }
+    });
+    
+    // Input WA
     var hani = document.getElementById('waNumberHani');
     var venus = document.getElementById('waNumberVenus');
-    
-    if(hani){
+    [hani, venus].forEach(function(el){
+      if(!el) return;
       if(isDark){
-        hani.style.color = '#f1f5f9';
-        hani.style.background = '#0f172a';
+        el.style.setProperty('background', '#0f172a', 'important');
+        el.style.setProperty('background-color', '#0f172a', 'important');
+        el.style.setProperty('color', '#f1f5f9', 'important');
       } else {
-        hani.style.color = '#0f172a';
-        hani.style.background = 'white';
+        el.style.setProperty('background', 'white', 'important');
+        el.style.setProperty('background-color', 'white', 'important');
+        el.style.setProperty('color', '#0f172a', 'important');
       }
-    }
-    if(venus){
-      if(isDark){
-        venus.style.color = '#f1f5f9';
-        venus.style.background = '#0f172a';
-      } else {
-        venus.style.color = '#0f172a';
-        venus.style.background = 'white';
+      var span = el.parentElement ? el.parentElement.querySelector('span') : null;
+      if(span){
+        if(isDark){
+          span.style.setProperty('background', '#1e293b', 'important');
+          span.style.setProperty('color', '#e2e8f0', 'important');
+        } else {
+          span.style.setProperty('background', 'white', 'important');
+          span.style.setProperty('color', '#334155', 'important');
+        }
       }
-    }
+    });
     
-    console.log('V90 - isDark:', isDark);
-  }catch(e){ console.log('V90 error', e); }
+    console.log('V100 - isDark:', isDark, 'Alokasi pastel light kayak foto kedua 20.34');
+  }catch(e){ console.log('V100 error', e); }
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(applyV90Fix, 400);
+  setTimeout(applyV100Fix, 100);
+  setTimeout(applyV100Fix, 500);
 });
 
 setTimeout(function(){
-  var origToggle = window.toggleThemeMode;
-  if(origToggle && !window._v90Hooked){
-    window._v90Hooked = true;
-    window.toggleThemeMode = function(){
-      origToggle();
-      setTimeout(applyV90Fix, 100);
-    };
+  var origToggleTheme = window.toggleThemeMode;
+  var origToggleDark = window.toggleDarkMode;
+  var origApplyDark = window.applyDarkMode;
+  
+  if(origToggleTheme && !window._v100HookedTheme){
+    window._v100HookedTheme = true;
+    window.toggleThemeMode = function(){ origToggleTheme(); setTimeout(applyV100Fix, 20); setTimeout(applyV100Fix, 200); };
   }
+  if(origToggleDark && !window._v100HookedDark){
+    window._v100HookedDark = true;
+    window.toggleDarkMode = function(){ origToggleDark(); setTimeout(applyV100Fix, 20); setTimeout(applyV100Fix, 200); };
+  }
+  if(origApplyDark && !window._v100HookedApply){
+    window._v100HookedApply = true;
+    window.applyDarkMode = function(){ origApplyDark(); setTimeout(applyV100Fix, 20); };
+  }
+  
   var origSwitch = window.switchTab;
-  if(origSwitch && !window._v90SwitchHooked){
-    window._v90SwitchHooked = true;
-    window.switchTab = function(tab){
-      origSwitch(tab);
-      setTimeout(applyV90Fix, 100);
-    };
+  if(origSwitch && !window._v100SwitchHooked){
+    window._v100Hooked = true;
+    window.switchTab = function(tab){ origSwitch(tab); setTimeout(applyV100Fix, 20); };
   }
-  applyV90Fix();
-}, 900);
+  
+  if(window.MutationObserver){
+    var appBody = document.getElementById('appBody');
+    var observer = new MutationObserver(function(m){ setTimeout(applyV100Fix, 15); });
+    if(appBody) observer.observe(appBody, {attributes:true, attributeFilter:['class','style']});
+    observer.observe(document.body, {attributes:true, attributeFilter:['class']});
+  }
+  
+  applyV100Fix();
+  var c=0;
+  var iv=setInterval(function(){ applyV100Fix(); c++; if(c>8) clearInterval(iv); }, 300);
+}, 300);
 
-console.log('V90 loaded - fix 2 sisa bug');
+console.log('V100 loaded - foto kedua pastel');
 </script>
 </body>
 </html>
