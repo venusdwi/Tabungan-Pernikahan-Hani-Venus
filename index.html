@@ -1717,7 +1717,6 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
   color: white !important;
 }
 </style>
-
 <style id="darkModeFixV100">
 /* V100 - Balik ke Foto Kedua pastel light, cuma fix toggle + input WA, Alokasi biarin V83 asli light pastel */
 
@@ -1820,6 +1819,166 @@ button[onclick="refreshHalaman()"]{transition:none !important;}
 #tab-dashboard #diagramMasuk{color:#1d4ed8 !important;}
 #tab-dashboard #diagramKeluar{color:#be123c !important;}
 #donutCenterPercent{background:#dcfce7 !important;background-color:#dcfce7 !important;color:#047857 !important;border:1px solid #a7f3d0 !important;}
+</style>
+<style id="darkModeFixV104Refresh">
+/* V104 - Fix Refresh Halaman - hanya body.dark yang bikin gelap, bukan appBody */
+
+/* Base - selalu putih biru light - ID selector menang */
+#btnRefreshHalaman{
+  background:white !important;
+  background-color:white !important;
+  color:#2563eb !important;
+  border:1px solid #bfdbfe !important;
+}
+#btnRefreshHalaman i,
+#btnRefreshHalaman span{
+  color:#2563eb !important;
+}
+
+/* LIGHT - kolom putih teks biru - body not dark */
+body:not(.dark) #btnRefreshHalaman,
+html body:not(.dark) #btnRefreshHalaman{
+  background:white !important;
+  background-color:white !important;
+  color:#2563eb !important;
+  border:1px solid #bfdbfe !important;
+}
+body:not(.dark) #btnRefreshHalaman i,
+body:not(.dark) #btnRefreshHalaman span{
+  color:#2563eb !important;
+}
+
+/* DARK - hanya saat body.dark - gelap */
+body.dark #btnRefreshHalaman,
+html body.dark #btnRefreshHalaman{
+  background:#0f172a !important;
+  background-color:#0f172a !important;
+  color:#60a5fa !important;
+  border:1px solid #1e3a5f !important;
+}
+body.dark #btnRefreshHalaman i,
+body.dark #btnRefreshHalaman span{
+  color:#60a5fa !important;
+}
+</style>
+
+<style id="darkModeFixV105Readable">
+/* V105 - Fix auto-kirim + kuning + biru tidak terbaca di mode gelap */
+
+/* Auto-kirim card - LIGHT default */
+#waAutoKirimCard{
+  background:#f8fafc !important;
+  background-color:#f8fafc !important;
+  border:1px solid #e2e8f0 !important;
+}
+#waAutoKirimCard p,
+#waAutoKirimCard div{
+  color:#0f172a !important;
+}
+#waAutoKirimCard p.text-[10px]{
+  color:#64748b !important;
+}
+
+/* Auto-kirim card - DARK readable */
+body.dark #waAutoKirimCard,
+#appBody.bg-slate-950 #waAutoKirimCard,
+html body.dark #waAutoKirimCard{
+  background:#1e293b !important;
+  background-color:#1e293b !important;
+  border:1px solid #334155 !important;
+}
+body.dark #waAutoKirimCard p,
+body.dark #waAutoKirimCard div,
+#appBody.bg-slate-950 #waAutoKirimCard p{
+  color:#f1f5f9 !important;
+}
+body.dark #waAutoKirimCard p.text-[10px],
+#appBody.bg-slate-950 #waAutoKirimCard p.text-[10px]{
+  color:#94a3b8 !important;
+}
+
+/* Yellow box - LIGHT */
+#waYellowBox{
+  background:#fef9c3 !important;
+  background-color:#fef9c3 !important;
+  border:1px solid #fde047 !important;
+  color:#713f12 !important;
+}
+#waYellowBox b,
+#waYellowBox strong{
+  color:#713f12 !important;
+}
+#waYellowBox code{
+  background:#fef08a !important;
+  color:#713f12 !important;
+  padding:1px 4px !important;
+  border-radius:4px !important;
+}
+
+/* Yellow box - DARK readable - tetap kuning muda tapi teks coklat tua biar kebaca */
+body.dark #waYellowBox,
+#appBody.bg-slate-950 #waYellowBox,
+html body.dark #waYellowBox{
+  background:#fef9c3 !important;
+  background-color:#fef9c3 !important;
+  border:1px solid #facc15 !important;
+  color:#713f12 !important;
+}
+body.dark #waYellowBox b,
+body.dark #waYellowBox strong,
+#appBody.bg-slate-950 #waYellowBox b{
+  color:#713f12 !important;
+}
+body.dark #waYellowBox code,
+#appBody.bg-slate-950 #waYellowBox code{
+  background:#fef08a !important;
+  background-color:#fef08a !important;
+  color:#713f12 !important;
+}
+
+/* Blue box - LIGHT */
+#waBlueBox{
+  background:#dbeafe !important;
+  background-color:#dbeafe !important;
+  border:1px solid #93c5fd !important;
+  color:#1e40af !important;
+}
+#waBlueBox b,
+#waBlueBox strong{
+  color:#1e3a8a !important;
+}
+#waBlueBox code{
+  background:#bfdbfe !important;
+  color:#1e40af !important;
+  padding:1px 4px !important;
+  border-radius:4px !important;
+}
+
+/* Blue box - DARK readable - tetap biru muda tapi teks biru tua biar kebaca */
+body.dark #waBlueBox,
+#appBody.bg-slate-950 #waBlueBox,
+html body.dark #waBlueBox{
+  background:#dbeafe !important;
+  background-color:#dbeafe !important;
+  border:1px solid #60a5fa !important;
+  color:#1e40af !important;
+}
+body.dark #waBlueBox b,
+body.dark #waBlueBox strong,
+#appBody.bg-slate-950 #waBlueBox b{
+  color:#1e3a8a !important;
+}
+body.dark #waBlueBox code,
+#appBody.bg-slate-950 #waBlueBox code{
+  background:#bfdbfe !important;
+  background-color:#bfdbfe !important;
+  color:#1e40af !important;
+}
+
+/* Light mode ensure readable */
+body:not(.dark) #waAutoKirimCard{ background:#f8fafc !important; border-color:#e2e8f0 !important; }
+body:not(.dark) #waYellowBox{ background:#fef9c3 !important; color:#713f12 !important; }
+body:not(.dark) #waBlueBox{ background:#dbeafe !important; color:#1e40af !important; }
 </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
@@ -1929,9 +2088,9 @@ button[onclick="refreshHalaman()"]{transition:none !important;}
 </div>
 </div>
 <div class="mt-3 text-center">
-<button class="bg-white/80 hover:bg-white text-slate-700 hover:text-blue-600 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-slate-200 transition inline-flex items-center gap-1.5" onclick="refreshHalaman()">
-<i class="fa-solid fa-rotate-right"></i>
-<span>Refresh Halaman</span>
+<button class="px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm transition inline-flex items-center gap-1.5" id="btnRefreshHalaman" onclick="refreshHalaman()" style="background:white !important; background-color:white !important; color:#2563eb !important; border:1px solid #bfdbfe !important;">
+<i class="fa-solid fa-rotate-right" style="color:#2563eb !important;"></i>
+<span style="color:#2563eb !important;">Refresh Halaman</span>
 </button>
 </div>
 </div>
@@ -2049,7 +2208,7 @@ button[onclick="refreshHalaman()"]{transition:none !important;}
 <button class="py-2.5 rounded-xl text-xs font-bold border-2" id="waModePasangan" onclick="setWAMode('pasangan')" style="background:#dbeafe; border-color:#2563eb; color:#2563eb;">👫 Pasangan</button>
 <button class="py-2.5 rounded-xl text-xs font-bold border" id="waModeGrup" onclick="setWAMode('grup')" style="background:white; border-color:#e2e8f0; color:#64748b;">👥 Grup WA</button>
 </div>
-<div class="flex items-center justify-between p-2.5 rounded-xl" style="background:#f8fafc; border:1px solid #e2e8f0;">
+<div class="flex items-center justify-between p-2.5 rounded-xl" id="waAutoKirimCard" style="background:#f8fafc !important; border:1px solid #e2e8f0 !important;">
 <div><p class="text-xs font-bold">⚡ Auto-kirim</p><p class="text-[10px] opacity-60">Buka WA otomatis setelah transaksi</p></div>
 <label class="relative inline-flex items-center cursor-pointer">
 <input class="sr-only peer" id="waAutoToggle" onchange="toggleWAAuto(this.checked)" type="checkbox"/>
@@ -2071,7 +2230,7 @@ button[onclick="refreshHalaman()"]{transition:none !important;}
 </div>
 </div>
 <div class="mt-3 space-y-3">
-<div class="p-3 rounded-xl text-[11px] leading-relaxed" style="background:#fef9c3; border:1px solid #fde047;">
+<div class="p-3 rounded-xl text-[11px] leading-relaxed" id="waYellowBox" style="background:#fef9c3 !important; border:1px solid #fde047 !important; color:#713f12 !important;">
 <b>⚠️ Gak ada "Undang via tautan"? Karena bukan admin!</b><br/>
         Di video lu grup <b>Wedding Preparation</b> gak ada menu undang, artinya lu bukan admin. Minta admin grup (Hani/Venus) jadiin lu admin dulu!<br/><br/>
 <b>📲 Cara jadi admin &amp; dapet link (iPhone/Android):</b><br/>
@@ -2082,7 +2241,7 @@ button[onclick="refreshHalaman()"]{transition:none !important;}
         • Mode <b>Pasangan</b> (bukan Grup) → isi No WA HANI &amp; VENUS → auto kirim ke pasangan, gak perlu link grup!<br/>
         • Mode <b>Grup</b> itu cuma buat buka WA dengan teks siap, tetep harus pilih grup manual (limitasi WhatsApp).
       </div>
-<div class="p-3 rounded-xl text-[11px] leading-relaxed" style="background:#dbeafe; border:1px solid #93c5fd;">
+<div class="p-3 rounded-xl text-[11px] leading-relaxed" id="waBlueBox" style="background:#dbeafe !important; border:1px solid #93c5fd !important; color:#1e40af !important;">
 <b>🚀 Solusi Auto Kirim Gampang (tanpa link grup):</b><br/>
         1. Di Setelan → Pilih mode <b>Pasangan</b><br/>
         2. Isi No WA HANI: <code>08xx</code> dan No WA VENUS: <code>08xx</code><br/>
@@ -5816,7 +5975,6 @@ function closeSuccessModal(){
 
 console.log('V83 loaded - closeSuccessModalAndReload overridden - reset will work!');
 </script>
-
 <script>
 // V100 - Balik ke foto kedua pastel, cuma fix toggle + input
 function getIsDarkV100(){
@@ -5945,5 +6103,235 @@ setTimeout(function(){
 
 console.log('V100 loaded - foto kedua pastel');
 </script>
+<style id="darkModeFixV102End">
+body:not(.dark) button[onclick="refreshHalaman()"]{background:white !important;background-color:white !important;color:#2563eb !important;border:1px solid #bfdbfe !important;}
+body.dark button[onclick="refreshHalaman()"]{background:#0f172a !important;background-color:#0f172a !important;color:#60a5fa !important;border:1px solid #1e3a5f !important;}
+body:not(.dark) button[onclick="refreshHalaman()"] i, body:not(.dark) button[onclick="refreshHalaman()"] span{color:#2563eb !important;}
+body.dark button[onclick="refreshHalaman()"] i, body.dark button[onclick="refreshHalaman()"] span{color:#60a5fa !important;}
+</style>
+<style id="darkModeFixV103End">
+#btnRefreshHalaman{background:white !important;background-color:white !important;color:#2563eb !important;border:1px solid #bfdbfe !important;}
+body.dark #btnRefreshHalaman{background:#0f172a !important;background-color:#0f172a !important;color:#60a5fa !important;border:1px solid #1e3a5f !important;}
+body:not(.dark) #btnRefreshHalaman{background:white !important;background-color:white !important;color:#2563eb !important;border:1px solid #bfdbfe !important;}
+#btnRefreshHalaman i, #btnRefreshHalaman span{color:#2563eb !important;}
+body.dark #btnRefreshHalaman i, body.dark #btnRefreshHalaman span{color:#60a5fa !important;}
+body:not(.dark) #btnRefreshHalaman i, body:not(.dark) #btnRefreshHalaman span{color:#2563eb !important;}
+</style>
+<script>
+// V104 - Refresh hanya body.dark yang bikin gelap
+function getIsDarkV104(){
+  var body = document.body;
+  if(body && body.classList.contains('dark')) return true;
+  return false;
+}
+
+function applyV104RefreshFix(){
+  try{
+    var isDark = getIsDarkV104();
+    var btn = document.getElementById('btnRefreshHalaman');
+    if(!btn) btn = document.querySelector('button[onclick="refreshHalaman()"]');
+    if(!btn) return;
+    
+    if(isDark){
+      btn.style.setProperty('background', '#0f172a', 'important');
+      btn.style.setProperty('background-color', '#0f172a', 'important');
+      btn.style.setProperty('color', '#60a5fa', 'important');
+      btn.style.setProperty('border', '1px solid #1e3a5f', 'important');
+      var icon = btn.querySelector('i');
+      var span = btn.querySelector('span');
+      if(icon) icon.style.setProperty('color', '#60a5fa', 'important');
+      if(span) span.style.setProperty('color', '#60a5fa', 'important');
+    } else {
+      btn.style.setProperty('background', 'white', 'important');
+      btn.style.setProperty('background-color', 'white', 'important');
+      btn.style.setProperty('color', '#2563eb', 'important');
+      btn.style.setProperty('border', '1px solid #bfdbfe', 'important');
+      var icon = btn.querySelector('i');
+      var span = btn.querySelector('span');
+      if(icon) icon.style.setProperty('color', '#2563eb', 'important');
+      if(span) span.style.setProperty('color', '#2563eb', 'important');
+    }
+    console.log('V104 Refresh - isDark:', isDark, 'body.dark:', document.body.classList.contains('dark'));
+  }catch(e){ console.log('V104 error', e); }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(applyV104RefreshFix, 50);
+  setTimeout(applyV104RefreshFix, 300);
+  setTimeout(applyV104RefreshFix, 800);
+});
+
+setTimeout(function(){
+  var origToggleDark = window.toggleDarkMode;
+  var origApplyDark = window.applyDarkMode;
+  var origToggleTheme = window.toggleThemeMode;
+  
+  if(origToggleDark && !window._v104HookedDark){
+    window._v104HookedDark = true;
+    window.toggleDarkMode = function(){ origToggleDark(); setTimeout(applyV104RefreshFix, 10); setTimeout(applyV104RefreshFix, 100); };
+  }
+  if(origApplyDark && !window._v104HookedApply){
+    window._v104HookedApply = true;
+    window.applyDarkMode = function(){ origApplyDark(); setTimeout(applyV104RefreshFix, 10); };
+  }
+  if(origToggleTheme && !window._v104HookedTheme){
+    window._v104HookedTheme = true;
+    window.toggleThemeMode = function(){ origToggleTheme(); setTimeout(applyV104RefreshFix, 20); };
+  }
+  
+  if(window.MutationObserver){
+    var observer = new MutationObserver(function(){ setTimeout(applyV104RefreshFix, 10); });
+    observer.observe(document.body, {attributes:true, attributeFilter:['class']});
+    var appBody = document.getElementById('appBody');
+    if(appBody) observer.observe(appBody, {attributes:true, attributeFilter:['class']});
+  }
+  
+  applyV104RefreshFix();
+  var c=0;
+  var iv=setInterval(function(){ applyV104RefreshFix(); c++; if(c>15) clearInterval(iv); }, 200);
+}, 200);
+
+console.log('V104 loaded');
+</script>
+<style id="darkModeFixV104End">
+#btnRefreshHalaman{background:white !important;background-color:white !important;color:#2563eb !important;border:1px solid #bfdbfe !important;}
+body.dark #btnRefreshHalaman{background:#0f172a !important;background-color:#0f172a !important;color:#60a5fa !important;border:1px solid #1e3a5f !important;}
+body:not(.dark) #btnRefreshHalaman{background:white !important;background-color:white !important;color:#2563eb !important;border:1px solid #bfdbfe !important;}
+#btnRefreshHalaman i, #btnRefreshHalaman span{color:#2563eb !important;}
+body.dark #btnRefreshHalaman i, body.dark #btnRefreshHalaman span{color:#60a5fa !important;}
+body:not(.dark) #btnRefreshHalaman i, body:not(.dark) #btnRefreshHalaman span{color:#2563eb !important;}
+</style>
+
+<script>
+// V105 - Fix auto-kirim + kuning + biru terbaca di dark mode
+function getIsDarkV105(){
+  var body = document.body;
+  if(body && body.classList.contains('dark')) return true;
+  return false;
+}
+
+function applyV105ReadableFix(){
+  try{
+    var isDark = getIsDarkV105();
+    
+    var autoCard = document.getElementById('waAutoKirimCard');
+    var yellowBox = document.getElementById('waYellowBox');
+    var blueBox = document.getElementById('waBlueBox');
+    
+    if(autoCard){
+      if(isDark){
+        autoCard.style.setProperty('background', '#1e293b', 'important');
+        autoCard.style.setProperty('background-color', '#1e293b', 'important');
+        autoCard.style.setProperty('border', '1px solid #334155', 'important');
+        var ps = autoCard.querySelectorAll('p, div');
+        ps.forEach(function(p){
+          if(p.classList && p.classList.contains('text-[10px]')){
+            p.style.setProperty('color', '#94a3b8', 'important');
+          } else {
+            p.style.setProperty('color', '#f1f5f9', 'important');
+          }
+        });
+      } else {
+        autoCard.style.setProperty('background', '#f8fafc', 'important');
+        autoCard.style.setProperty('background-color', '#f8fafc', 'important');
+        autoCard.style.setProperty('border', '1px solid #e2e8f0', 'important');
+        var ps = autoCard.querySelectorAll('p');
+        ps.forEach(function(p){
+          if(p.classList && p.classList.contains('text-[10px]')){
+            p.style.setProperty('color', '#64748b', 'important');
+          } else {
+            p.style.setProperty('color', '#0f172a', 'important');
+          }
+        });
+      }
+    }
+    
+    if(yellowBox){
+      yellowBox.style.setProperty('background', '#fef9c3', 'important');
+      yellowBox.style.setProperty('background-color', '#fef9c3', 'important');
+      yellowBox.style.setProperty('color', '#713f12', 'important');
+      if(isDark){
+        yellowBox.style.setProperty('border', '1px solid #facc15', 'important');
+      } else {
+        yellowBox.style.setProperty('border', '1px solid #fde047', 'important');
+      }
+      var bs = yellowBox.querySelectorAll('b, strong');
+      bs.forEach(function(b){ b.style.setProperty('color', '#713f12', 'important'); });
+      var codes = yellowBox.querySelectorAll('code');
+      codes.forEach(function(c){ 
+        c.style.setProperty('background', '#fef08a', 'important'); 
+        c.style.setProperty('background-color', '#fef08a', 'important'); 
+        c.style.setProperty('color', '#713f12', 'important'); 
+      });
+    }
+    
+    if(blueBox){
+      blueBox.style.setProperty('background', '#dbeafe', 'important');
+      blueBox.style.setProperty('background-color', '#dbeafe', 'important');
+      blueBox.style.setProperty('color', '#1e40af', 'important');
+      if(isDark){
+        blueBox.style.setProperty('border', '1px solid #60a5fa', 'important');
+      } else {
+        blueBox.style.setProperty('border', '1px solid #93c5fd', 'important');
+      }
+      var bs = blueBox.querySelectorAll('b, strong');
+      bs.forEach(function(b){ b.style.setProperty('color', '#1e3a8a', 'important'); });
+      var codes = blueBox.querySelectorAll('code');
+      codes.forEach(function(c){ 
+        c.style.setProperty('background', '#bfdbfe', 'important'); 
+        c.style.setProperty('background-color', '#bfdbfe', 'important'); 
+        c.style.setProperty('color', '#1e40af', 'important'); 
+      });
+    }
+    
+    console.log('V105 readable - isDark:', isDark);
+  }catch(e){ console.log('V105 error', e); }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(applyV105ReadableFix, 100);
+  setTimeout(applyV105ReadableFix, 500);
+  setTimeout(applyV105ReadableFix, 1000);
+});
+
+setTimeout(function(){
+  var origToggleDark = window.toggleDarkMode;
+  var origApplyDark = window.applyDarkMode;
+  var origToggleTheme = window.toggleThemeMode;
+  
+  if(origToggleDark && !window._v105HookedDark){
+    window._v105HookedDark = true;
+    window.toggleDarkMode = function(){ origToggleDark(); setTimeout(applyV105ReadableFix, 20); setTimeout(applyV105ReadableFix, 200); };
+  }
+  if(origApplyDark && !window._v105HookedApply){
+    window._v105HookedApply = true;
+    window.applyDarkMode = function(){ origApplyDark(); setTimeout(applyV105ReadableFix, 20); };
+  }
+  if(origToggleTheme && !window._v105HookedTheme){
+    window._v105HookedTheme = true;
+    window.toggleThemeMode = function(){ origToggleTheme(); setTimeout(applyV105ReadableFix, 20); };
+  }
+  
+  if(window.MutationObserver){
+    var observer = new MutationObserver(function(){ setTimeout(applyV105ReadableFix, 10); });
+    observer.observe(document.body, {attributes:true, attributeFilter:['class']});
+  }
+  
+  applyV105ReadableFix();
+  var c=0;
+  var iv=setInterval(function(){ applyV105ReadableFix(); c++; if(c>12) clearInterval(iv); }, 250);
+}, 300);
+
+console.log('V105 loaded - readable dark');
+</script>
+
+<style id="darkModeFixV105End">
+#waAutoKirimCard{background:#f8fafc !important;}
+body.dark #waAutoKirimCard{background:#1e293b !important;}
+#waYellowBox{background:#fef9c3 !important;color:#713f12 !important;}
+#waBlueBox{background:#dbeafe !important;color:#1e40af !important;}
+#waYellowBox b, #waYellowBox strong{color:#713f12 !important;}
+#waBlueBox b, #waBlueBox strong{color:#1e3a8a !important;}
+</style>
 </body>
 </html>
