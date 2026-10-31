@@ -1717,6 +1717,212 @@ select[id*="Bulan"]:hover, select[id*="Tahun"]:hover {
   color: white !important;
 }
 </style>
+
+<style id="darkModeFixV84">
+/* V84 DARK MODE FIX - Teks terlihat di mode gelap */
+
+/* 1. Tombol Refresh Halaman - dark mode */
+body.dark-mode .refresh-btn,
+body.bg-slate-950 .refresh-btn,
+html.dark .refresh-btn,
+#appBody[style*="#090d16"] ~ * .refresh-btn,
+button[onclick*="refreshHalaman"] {
+  background: white !important;
+  color: #1e293b !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Fix specific Refresh Halaman button */
+button:has(i.fa-rotate),
+button:has(i.fa-spinner) {
+  color: #334155 !important;
+}
+
+/* Dashboard refresh button */
+body.dark-mode button[onclick*="refreshHalaman"],
+body.dark-mode [onclick*="refreshHalaman"] {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+  border: 1px solid #cbd5e1 !important;
+  font-weight: 600 !important;
+}
+
+/* 2. Alokasi Keuangan - SALDO MASUK KELUAR */
+body.dark-mode .alokasi-box,
+body.dark-mode [class*="SALDO"],
+body.dark-mode [class*="MASUK"],
+body.dark-mode [class*="KELUAR"] {
+  color: #1e293b !important;
+}
+
+/* Fix pills in Alokasi Keuangan */
+body.dark-mode .bg-emerald-50,
+body.dark-mode .bg-blue-50,
+body.dark-mode .bg-rose-50,
+body.dark-mode .bg-green-50 {
+  background: white !important;
+}
+
+/* Nominal di Alokasi Keuangan */
+body.dark-mode .font-num,
+body.dark-mode [class*="Rp"] {
+  color: #0f172a !important;
+}
+
+/* Specific for Alokasi Keuangan cards */
+#appBody.dark-mode .glass-box,
+#appBody[style*="090d16"] .glass-box {
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+/* SALDO MASUK KELUAR pills */
+body.dark-mode button:contains("SALDO"),
+body.dark-mode button:contains("MASUK"),
+body.dark-mode button:contains("KELUAR") {
+  background: white !important;
+  color: #1e293b !important;
+}
+
+/* Fix chart center text */
+body.dark-mode .chart-center-text {
+  color: white !important;
+}
+
+/* 3. Setelan - Box kuning dan biru teks hilang */
+/* Warning yellow boxes */
+body.dark-mode .bg-yellow-50,
+body.dark-mode [style*="fef9c3"],
+body.dark-mode [style*="fef3c7"],
+body.dark-mode .bg-amber-50 {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fcd34d !important;
+}
+
+body.dark-mode .bg-yellow-50 *,
+body.dark-mode [style*="fef9c3"] *,
+body.dark-mode .bg-amber-50 * {
+  color: #92400e !important;
+}
+
+/* Blue info boxes */
+body.dark-mode .bg-blue-50,
+body.dark-mode .bg-sky-50,
+body.dark-mode [style*="dbeafe"],
+body.dark-mode [style*="e0f2fe"] {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #93c5fd !important;
+}
+
+body.dark-mode .bg-blue-50 *,
+body.dark-mode .bg-sky-50 *,
+body.dark-mode [style*="dbeafe"] * {
+  color: #1e40af !important;
+}
+
+/* Green boxes */
+body.dark-mode .bg-green-50,
+body.dark-mode [style*="f0fdf4"] {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+
+body.dark-mode .bg-green-50 *,
+body.dark-mode [style*="f0fdf4"] * {
+  color: #166534 !important;
+}
+
+/* Setelan - Input fields */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background: rgba(255,255,255,0.95) !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Countdown boxes - light gray bg with white text */
+body.dark-mode .countdown-box,
+body.dark-mode [class*="HARI"],
+body.dark-mode [class*="JAM"] {
+  background: #cbd5e1 !important;
+}
+
+body.dark-mode .countdown-box * {
+  color: #1e293b !important;
+}
+
+/* Fix all glass boxes in dark mode */
+body.dark-mode .glass-box p,
+body.dark-mode .glass-box span,
+body.dark-mode .glass-box div {
+  color: inherit;
+}
+
+/* Refresh button specific */
+.refresh-halaman-btn {
+  background: white !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-mode .refresh-halaman-btn {
+  background: white !important;
+  color: #1e293b !important;
+}
+
+/* Alokasi Keuangan - 3 pills bottom */
+.alokasi-pills button {
+  background: white !important;
+  color: #0f172a !important;
+}
+
+.alokasi-pills button .text-emerald-600,
+.alokasi-pills button .text-blue-600,
+.alokasi-pills button .text-rose-600 {
+  color: #0f172a !important;
+}
+
+/* Force dark text for nominal in dark mode */
+body.dark-mode .text-slate-800,
+body.dark-mode .text-slate-700,
+body.dark-mode .text-slate-600 {
+  color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-white .text-slate-800,
+body.dark-mode .bg-white .text-slate-700,
+body.dark-mode .bg-slate-50 .text-slate-800 {
+  color: #0f172a !important;
+}
+
+/* Specific fixes for dashboard */
+body.dark-mode #tab-dashboard .bg-white,
+body.dark-mode #tab-dashboard .bg-slate-50 {
+  background: #1e293b !important;
+}
+
+body.dark-mode #tab-dashboard .bg-white *,
+body.dark-mode #tab-dashboard .bg-slate-50 * {
+  color: #f1f5f9 !important;
+}
+
+/* But keep alokasi pills white */
+body.dark-mode #tab-dashboard .bg-white.rounded-2xl {
+  background: white !important;
+}
+
+body.dark-mode #tab-dashboard .bg-white.rounded-2xl * {
+  color: #0f172a !important;
+}
+</style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
@@ -5468,7 +5674,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }, 1000);
 });
 </script>
-
 <script>
 // V83 FIX TUNTAS - Override closeSuccessModalAndReload yang dipanggil tombol Oke
 // Masalah: Tombol Oke manggil closeSuccessModalAndReload(), bukan closeSuccessModal()
@@ -5712,6 +5917,205 @@ function closeSuccessModal(){
 }
 
 console.log('V83 loaded - closeSuccessModalAndReload overridden - reset will work!');
+</script>
+
+<script>
+// V84 DARK MODE FIX - Perbaikan teks tidak terlihat di mode gelap
+function fixDarkModeVisibility(){
+  try{
+    var isDark = document.getElementById('appBody') && 
+                 (document.getElementById('appBody').classList.contains('bg-slate-950') || 
+                  document.getElementById('appBody').style.backgroundColor === 'rgb(9, 13, 22)' ||
+                  document.body.classList.contains('dark-mode') ||
+                  document.documentElement.classList.contains('dark'));
+    
+    // Check if dark mode active
+    var appBody = document.getElementById('appBody');
+    var isDarkMode = false;
+    if(appBody){
+      isDarkMode = appBody.classList.contains('bg-slate-950') || 
+                   appBody.style.backgroundColor.includes('9, 13, 22') ||
+                   appBody.style.backgroundColor.includes('#090d16');
+    }
+    if(!isDarkMode){
+      // Also check body
+      isDarkMode = document.body.classList.contains('dark') || 
+                   document.documentElement.classList.contains('dark') ||
+                   localStorage.getItem('theme') === 'dark';
+    }
+    
+    // 1. Fix Refresh Halaman button
+    var refreshBtns = document.querySelectorAll('button[onclick*="refreshHalaman"], button:has(.fa-rotate)');
+    refreshBtns.forEach(function(btn){
+      if(isDarkMode || true){ // Always fix
+        if(btn.innerText && btn.innerText.includes('Refresh')){
+          btn.style.background = 'white';
+          btn.style.color = '#1e293b';
+          btn.style.border = '1px solid #cbd5e1';
+          btn.style.fontWeight = '600';
+        }
+      }
+    });
+    
+    // Find all buttons with Refresh text
+    var allBtns = document.querySelectorAll('button');
+    allBtns.forEach(function(btn){
+      if(btn.textContent && btn.textContent.includes('Refresh Halaman')){
+        btn.style.setProperty('background', 'white', 'important');
+        btn.style.setProperty('color', '#334155', 'important');
+        btn.style.setProperty('border', '1px solid #e2e8f0', 'important');
+        btn.style.setProperty('font-weight', '600', 'important');
+        btn.style.setProperty('box-shadow', '0 1px 3px rgba(0,0,0,0.1)', 'important');
+        // Icon
+        var icon = btn.querySelector('i');
+        if(icon){
+          icon.style.color = '#64748b';
+        }
+      }
+    });
+    
+    // 2. Fix Alokasi Keuangan - SALDO MASUK KELUAR nominal
+    var alokasiSection = document.getElementById('tab-dashboard');
+    if(alokasiSection){
+      // Find SALDO, MASUK, KELUAR pills
+      var pills = alokasiSection.querySelectorAll('button, div');
+      pills.forEach(function(el){
+        var txt = el.textContent || '';
+        if(txt.includes('SALDO') || txt.includes('MASUK') || txt.includes('KELUAR')){
+          // Check if it's a pill with nominal
+          var parent = el.closest('div');
+          if(parent){
+            var nominal = parent.querySelector('[class*="Rp"], .font-num, [class*="text-"]');
+            if(nominal){
+              // Make nominal visible
+              if(isDarkMode){
+                nominal.style.color = '#0f172a';
+                nominal.style.fontWeight = 'bold';
+              }
+            }
+          }
+        }
+      });
+      
+      // Fix countdown boxes - 153, 10, 06, 49
+      var countdownBoxes = alokasiSection.querySelectorAll('[class*="bg-slate-200"], [class*="bg-gray-200"], .bg-white\/90');
+      countdownBoxes.forEach(function(box){
+        if(box.textContent && (box.textContent.includes('HARI') || box.textContent.includes('JAM') || box.textContent.includes('MENIT') || box.textContent.includes('DETIK'))){
+          box.style.background = '#cbd5e1';
+          var numbers = box.querySelectorAll('div, span');
+          numbers.forEach(function(num){
+            if(num.textContent && /^\d+$/.test(num.textContent.trim())){
+              num.style.color = '#1e293b';
+              num.style.fontWeight = 'bold';
+            }
+          });
+        }
+      });
+    }
+    
+    // 3. Fix Setelan - box kuning dan biru
+    var setelanTab = document.getElementById('tab-setelan') || document.getElementById('setelanPage') || document.querySelector('[id*="setelan"]');
+    if(setelanTab || true){
+      // Yellow warning boxes
+      var yellowBoxes = document.querySelectorAll('.bg-yellow-50, .bg-amber-50, [class*="bg-yellow"], div[style*="fef9c3"], div[style*="fef3c7"]');
+      yellowBoxes.forEach(function(box){
+        box.style.background = '#fef3c7';
+        box.style.color = '#92400e';
+        var all = box.querySelectorAll('*');
+        all.forEach(function(el){
+          if(el.style){
+            el.style.color = '#92400e';
+          }
+        });
+        // Force text color
+        box.style.setProperty('color', '#92400e', 'important');
+      });
+      
+      // Blue info boxes
+      var blueBoxes = document.querySelectorAll('.bg-blue-50, .bg-sky-50, div[style*="dbeafe"], div[style*="e0f2fe"], .bg-blue-100');
+      blueBoxes.forEach(function(box){
+        // Skip if it's a button
+        if(box.tagName === 'BUTTON') return;
+        if(box.classList.contains('rounded-xl') && box.querySelector('input')) return;
+        
+        // Check if it's info box (contains Solusi or Cara)
+        var txt = box.textContent || '';
+        if(txt.includes('Solusi') || txt.includes('Cara') || txt.includes('Link Grup') || txt.includes('Auto-kirim') || txt.includes('WA tidak')){
+          box.style.background = '#dbeafe';
+          box.style.color = '#1e40af';
+          box.style.border = '1px solid #93c5fd';
+          var all = box.querySelectorAll('*');
+          all.forEach(function(el){
+            if(el.tagName !== 'BUTTON' && el.tagName !== 'INPUT'){
+              el.style.color = '#1e40af';
+            }
+          });
+        }
+      });
+      
+      // Fix all inputs in setelan
+      var inputs = document.querySelectorAll('#tab-setelan input, #setelanPage input, [id*="setelan"] input');
+      inputs.forEach(function(inp){
+        inp.style.background = 'rgba(255,255,255,0.95)';
+        inp.style.color = '#0f172a';
+      });
+    }
+    
+    console.log('V84 dark mode fix applied, isDark:', isDarkMode);
+  }catch(e){
+    console.log('V84 fix error', e);
+  }
+}
+
+// Run fix on load and on theme change
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(fixDarkModeVisibility, 500);
+  setTimeout(fixDarkModeVisibility, 1500);
+  setTimeout(fixDarkModeVisibility, 3000);
+});
+
+// Hook toggleThemeMode
+setTimeout(function(){
+  var origToggle = window.toggleThemeMode;
+  if(origToggle){
+    window.toggleThemeMode = function(){
+      origToggle();
+      setTimeout(fixDarkModeVisibility, 100);
+      setTimeout(fixDarkModeVisibility, 500);
+    };
+    console.log('toggleThemeMode hooked V84');
+  }
+  
+  // Also watch for body class changes
+  var observer = new MutationObserver(function(mutations){
+    mutations.forEach(function(mutation){
+      if(mutation.attributeName === 'class' || mutation.attributeName === 'style'){
+        setTimeout(fixDarkModeVisibility, 100);
+      }
+    });
+  });
+  
+  var appBody = document.getElementById('appBody');
+  if(appBody){
+    observer.observe(appBody, { attributes: true, attributeFilter: ['class', 'style'] });
+  }
+  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+}, 1000);
+
+// Also fix on tab switch
+setTimeout(function(){
+  var origSwitch = window.switchTab;
+  if(origSwitch){
+    window.switchTab = function(tab){
+      origSwitch(tab);
+      setTimeout(fixDarkModeVisibility, 100);
+      setTimeout(fixDarkModeVisibility, 300);
+    };
+  }
+}, 1200);
+
+console.log('V84 dark mode fix loaded');
 </script>
 </body>
 </html>
