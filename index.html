@@ -5470,25 +5470,23 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <script>
-// V82 FIX TUNTAS - Tanpa error SyntaxError 'else' dan addEventListener null
-// Reset 5 kolom: TIPE, NAMA PENABUNG, JUMLAH, KETERANGAN, LAMPIRAN
+// V83 FIX TUNTAS - Override closeSuccessModalAndReload yang dipanggil tombol Oke
+// Masalah: Tombol Oke manggil closeSuccessModalAndReload(), bukan closeSuccessModal()
 
-function resetTambahTransaksiForm(){
+function resetTambahTransaksiFormV83(){
   try{
-    console.log('=== V82 RESET 5 KOLOM ===');
+    console.log('=== V83 RESET 5 KOLOM TUNTAS ===');
     
     // 1. TIPE TRANSAKSI
     var tipeHidden = document.getElementById('tipeTransaksi');
     var tipeText = document.getElementById('textTipeTransaksi');
     if(tipeHidden){
       tipeHidden.value = '';
-      console.log('✓ Tipe hidden reset');
     }
     if(tipeText){
       tipeText.innerText = '-- Pilih Tipe Transaksi --';
       tipeText.textContent = '-- Pilih Tipe Transaksi --';
-      tipeText.classList.remove('text-slate-800');
-      tipeText.classList.add('text-slate-400');
+      tipeText.className = 'text-slate-400';
     }
     
     // 2. NAMA PENABUNG
@@ -5496,13 +5494,11 @@ function resetTambahTransaksiForm(){
     var penabungText = document.getElementById('textNamaPenabung');
     if(penabungHidden){
       penabungHidden.value = '';
-      console.log('✓ Penabung hidden reset');
     }
     if(penabungText){
       penabungText.innerText = '-- Pilih Nama Penabung --';
       penabungText.textContent = '-- Pilih Nama Penabung --';
-      penabungText.classList.remove('text-slate-800');
-      penabungText.classList.add('text-slate-400');
+      penabungText.className = 'text-slate-400';
     }
     
     // 3. JUMLAH (RP)
@@ -5510,15 +5506,24 @@ function resetTambahTransaksiForm(){
     if(jumlah){
       jumlah.value = '';
       jumlah.placeholder = '0';
-      console.log('✓ Jumlah reset');
     }
+    var jumlahNominal = document.getElementById('jumlahNominal');
+    if(jumlahNominal) jumlahNominal.value = '0';
     
     // 4. KETERANGAN / CATATAN
     var ket = document.getElementById('keteranganTransaksi');
     if(ket){
       ket.value = '';
-      console.log('✓ Keterangan reset');
     }
+    var ket2 = document.getElementById('ketTransaksi');
+    if(ket2) ket2.value = '';
+    // Textareas
+    var tas = document.querySelectorAll('textarea');
+    tas.forEach(function(ta){
+      if(ta.id && ta.id.toLowerCase().includes('keterangan')){
+        ta.value = '';
+      }
+    });
     
     // 5. LAMPIRAN BUKTI TRANSFER
     var fileInput = document.getElementById('buktiTransfer');
@@ -5528,47 +5533,71 @@ function resetTambahTransaksiForm(){
         var clone = fileInput.cloneNode(true);
         clone.value = '';
         fileInput.parentNode.replaceChild(clone, fileInput);
-        // Re-attach listener safely
-        if(clone){
-          clone.addEventListener('change', function(e){
-            var file = e.target.files[0];
-            if(file){
-              var nameEl = document.getElementById('buktiFileName');
-              if(nameEl){
-                nameEl.innerText = file.name;
-                nameEl.classList.remove('hidden');
-              }
-              var cont = document.getElementById('buktiPreviewContainer');
-              if(cont){
-                cont.classList.remove('hidden');
-              }
+        // Re-attach
+        clone.addEventListener('change', function(e){
+          var f = e.target.files[0];
+          if(f){
+            var nameEl = document.getElementById('buktiFileName');
+            if(nameEl){
+              nameEl.innerText = f.name;
+              nameEl.classList.remove('hidden');
+              nameEl.style.display = 'block';
             }
-          });
-        }
-        console.log('✓ File reset via clone');
+            var cont = document.getElementById('buktiPreviewContainer');
+            if(cont){
+              cont.classList.remove('hidden');
+              cont.style.display = 'block';
+            }
+          }
+        });
       }catch(err){
-        console.log('File reset error', err);
         try{ fileInput.value = ''; }catch(e){}
       }
     }
     
     // Preview
-    var buktiPreviewContainer = document.getElementById('buktiPreviewContainer');
-    if(buktiPreviewContainer){
-      buktiPreviewContainer.classList.add('hidden');
-      buktiPreviewContainer.style.display = 'none';
+    var previewContainer = document.getElementById('buktiPreviewContainer');
+    if(previewContainer){
+      previewContainer.classList.add('hidden');
+      previewContainer.style.display = 'none';
+      previewContainer.innerHTML = '';
     }
-    var buktiPreview = document.getElementById('buktiPreview');
-    if(buktiPreview){
-      buktiPreview.src = '';
-      buktiPreview.removeAttribute('src');
+    var preview = document.getElementById('buktiPreview');
+    if(preview){
+      preview.src = '';
+      try{ preview.removeAttribute('src'); }catch(e){}
     }
-    var buktiFileName = document.getElementById('buktiFileName');
-    if(buktiFileName){
-      buktiFileName.innerText = '';
-      buktiFileName.textContent = '';
-      buktiFileName.classList.add('hidden');
+    var fileName = document.getElementById('buktiFileName');
+    if(fileName){
+      fileName.innerText = '';
+      fileName.textContent = '';
+      fileName.classList.add('hidden');
+      fileName.style.display = 'none';
     }
+    
+    // Clear any div with file name like 100140211.jpg
+    try{
+      var allEls = document.querySelectorAll('div, span, p');
+      for(var i=0;i<allEls.length;i++){
+        var el = allEls[i];
+        var txt = (el.innerText || '').trim();
+        if(txt === '100140211.jpg' || (txt.length < 30 && txt.includes('.jpg') && txt.includes('Pilih File') === false)){
+          // Check if in tambahModal
+          var tambahModal = document.getElementById('tambahModal');
+          if(tambahModal && tambahModal.contains(el)){
+            if(el.id !== 'buktiTransfer' && !el.querySelector('input')){
+              // Only clear if it's file name display
+              if(txt.endsWith('.jpg') || txt.endsWith('.png') || txt.endsWith('.jpeg')){
+                // Don't clear if it's the Pilih File button text
+                if(el.tagName !== 'BUTTON' && !el.classList.contains('file:mr-4')){
+                  el.innerText = '';
+                }
+              }
+            }
+          }
+        }
+      }
+    }catch(e){}
     
     // Global vars
     try{
@@ -5578,76 +5607,111 @@ function resetTambahTransaksiForm(){
       window.buktiFile = null;
     }catch(e){}
     
-    // Tanggal real-time
+    // Tanggal real-time 31/10/2026
     try{
       if(typeof setNowDateTimeAndFilter === 'function'){
         setNowDateTimeAndFilter();
-        console.log('✓ Tanggal real-time');
+      } else {
+        var now = new Date();
+        var tgl = document.getElementById('tglTransaksi');
+        var jam = document.getElementById('jamTransaksi');
+        if(tgl){
+          tgl.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+        }
+        if(jam){
+          jam.value = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        }
       }
     }catch(e){}
     
-    console.log('=== V82 RESET DONE ===');
+    // Reset form
+    try{
+      var form = document.getElementById('transactionForm');
+      if(form){
+        // Don't call form.reset() as it may restore, we already cleared manually
+      }
+    }catch(e){}
+    
+    console.log('=== V83 RESET DONE ===');
   }catch(e){
-    console.error('V82 reset error:', e);
+    console.error('V83 reset error', e);
   }
 }
-window.resetTambahTransaksiForm = resetTambahTransaksiForm;
+window.resetTambahTransaksiFormV83 = resetTambahTransaksiFormV83;
 
-// Override closeSuccessModal tanpa else nyasar
-window.closeSuccessModal = function(){
-  console.log('Oke Mengerti clicked V82');
-  var modal = document.getElementById('successModal');
-  var box = document.getElementById('successModalBox');
-  if(modal){
-    modal.classList.add('hidden', 'opacity-0', 'pointer-events-none');
-    modal.classList.remove('flex', 'opacity-100');
-    if(box){
-      box.classList.add('scale-95');
-      box.classList.remove('scale-100');
-    }
+// OVERRIDE closeSuccessModalAndReload - INI YANG DIPANGGIL TOMBOL OKE!
+window.closeSuccessModalAndReload = function(){
+  console.log('=== OKE MENGERTI V83 - closeSuccessModalAndReload CALLED ===');
+  
+  var sm = document.getElementById('successModal');
+  var sb = document.getElementById('successModalBox');
+  if(sm && sb){
+    sb.classList.remove('scale-100');
+    sb.classList.add('scale-95');
+    try{ sb.style.transform='scale(0.9) translateY(10px)'; }catch(e){}
+    try{ sb.style.opacity='0'; }catch(e){}
+    sm.classList.add('opacity-0');
   }
-  resetTambahTransaksiForm();
-  try{ localStorage.setItem('shouldResetTambah', 'true'); }catch(e){}
+  
+  // Reset 5 kolom SEBELUM close
+  resetTambahTransaksiFormV83();
+  
   setTimeout(function(){
+    if(sm){
+      sm.classList.add('hidden','pointer-events-none');
+    }
+    try{
+      if(typeof closeTambahModal === 'function'){
+        closeTambahModal();
+      }
+    }catch(e){ console.log('closeTambahModal error', e); }
+    
     try{
       if(typeof switchTab === 'function'){
         switchTab('riwayat');
       }
     }catch(e){ console.log('switchTab error', e); }
-  }, 100);
+    
+    var riwayatTab = document.getElementById('tab-riwayat');
+    if(riwayatTab){
+      setTimeout(function(){
+        try{
+          riwayatTab.style.transition='opacity 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+          riwayatTab.style.opacity='1';
+          riwayatTab.style.transform='translateY(0)';
+        }catch(e){}
+      }, 50);
+    }
+    
+    try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){}
+    
+    var btnSubmit = document.getElementById('btnSubmit');
+    var btnText = document.getElementById('btnSubmitText');
+    var btnSpinner = document.getElementById('btnSubmitSpinner');
+    if(btnSubmit) btnSubmit.disabled = false;
+    if(btnText){
+      try{ btnText.classList.remove('hidden'); }catch(e){}
+      try{ btnText.innerText = 'Simpan Transaksi'; }catch(e){}
+    }
+    if(btnSpinner){
+      try{ btnSpinner.classList.add('hidden'); }catch(e){}
+    }
+    
+    console.log('V83 - Reset done and switched to Riwayat');
+  }, 200);
+};
+
+// Also override closeSuccessModal for safety
+window.closeSuccessModal = function(){
+  console.log('closeSuccessModal called - redirect to closeSuccessModalAndReload');
+  window.closeSuccessModalAndReload();
 };
 
 function closeSuccessModal(){
-  window.closeSuccessModal();
+  window.closeSuccessModalAndReload();
 }
 
-// Hook switchTab dengan aman tanpa else dobel
-setTimeout(function(){
-  try{
-    var orig = window.switchTab;
-    if(orig && !window._switchTabHookedV82){
-      window._switchTabHookedV82 = true;
-      window.switchTab = function(tab){
-        try{ orig(tab); }catch(e){ console.log('orig switchTab error', e); }
-        if(tab === 'tambah'){
-          try{
-            var should = localStorage.getItem('shouldResetTambah');
-            if(should === 'true'){
-              console.log('Tambah entered - reset');
-              setTimeout(function(){
-                resetTambahTransaksiForm();
-                localStorage.removeItem('shouldResetTambah');
-              }, 50);
-            }
-          }catch(e){ console.log('Tambah hook error', e); }
-        }
-      };
-      console.log('switchTab hooked V82 OK');
-    }
-  }catch(e){ console.log('Hook error', e); }
-}, 1200);
-
-console.log('V82 reset system loaded - no SyntaxError');
+console.log('V83 loaded - closeSuccessModalAndReload overridden - reset will work!');
 </script>
 </body>
 </html>
