@@ -1979,6 +1979,22 @@ body:not(.dark) #waAutoKirimCard{ background:#f8fafc !important; border-color:#e
 body:not(.dark) #waYellowBox{ background:#fef9c3 !important; color:#713f12 !important; }
 body:not(.dark) #waBlueBox{ background:#dbeafe !important; color:#1e40af !important; }
 </style>
+
+<style id="tentangHVFix">
+#tentangHVTitle {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.dark #tentangHVTitle {
+  color: #f8fafc !important;
+}
+/* Ensure Tentang card text readable in both modes */
+.glass-box .text-slate-600 { color: #475569 !important; }
+body.dark .glass-box .text-slate-600 { color: #cbd5e1 !important; }
+.glass-box b { color: #0f172a !important; }
+body.dark .glass-box b { color: #f1f5f9 !important; }
+</style>
+
 </head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
@@ -2299,10 +2315,10 @@ body:not(.dark) #waBlueBox{ background:#dbeafe !important; color:#1e40af !import
   Tentang
  </h3>
 <div class="text-xs text-slate-600 space-y-1">
-<p class="font-bold text-sm text-slate-800 dark:text-white">Tabungan HV</p>
+<p id="tentangHVTitle" class="font-bold text-sm" style="color: #0f172a !important;">Tabungan HV</p>
 <p><b>Target:</b> 03 April 2027</p>
 <p><b>Countdown:</b> <span id="setelanCountdown">-</span></p>
-<p><b>Versi:</b> <span id="appVersionDisplay">V112</span></p>
+<p><b>Versi:</b> <span id="appVersionDisplay">V113</span></p>
 <p class="text-[11px] text-emerald-600 mt-2">Firebase: tabungan-hani-venus • Auto Sync</p>
 </div>
 </div>
@@ -6576,7 +6592,7 @@ console.log('V108 loaded - PIN confirm + auto-lock fix + switchTab preserved');
 <script>
 // V109 - Hapus Semua 2 Step + Tentang Tabungan HV + Versi Auto Update V109
 
-const APP_VERSION = 'V112';
+const APP_VERSION = 'V113';
 const APP_NAME = 'Tabungan HV';
 
 // Auto update version display
@@ -6714,7 +6730,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(m2) m2.addEventListener('click', function(e){ if(e.target===this) closeHapusPinModal(); });
 });
 
-console.log('V112 loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
+console.log('V113 loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
 </script>
 </body>
 </html>
