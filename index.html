@@ -2248,7 +2248,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 </div>
 <div class="grid grid-cols-1 gap-2 mb-3">
 <div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p></div>
-<div class="grid grid-cols-2 gap-2"><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-emerald-600 uppercase">Masuk</p><p class="font-num text-sm font-bold text-blue-600" id="laporanMasuk">Rp 0</p></div><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-rose-600 uppercase">Keluar</p><p class="font-num text-sm font-bold text-rose-600" id="laporanKeluar">Rp 0</p></div></div>
+<div class="grid grid-cols-2 gap-2"><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-blue-600 uppercase">Masuk</p><p class="font-num text-sm font-bold text-blue-600" id="laporanMasuk">Rp 0</p></div><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-rose-600 uppercase">Keluar</p><p class="font-num text-sm font-bold text-rose-600" id="laporanKeluar">Rp 0</p></div></div>
 </div>
 <div class="glass-box rounded-xl p-3"><h4 class="font-bold text-xs mb-2">Detail Periode (auto Firebase)</h4><div class="space-y-2 max-h-[50vh] overflow-y-auto" id="laporanList"></div></div>
 </div>
@@ -2397,7 +2397,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <p id="tentangHVTitle" class="font-bold text-sm" style="color: #0f172a !important;">Tabungan HV</p>
 <p><b>Target:</b> 03 April 2027</p>
 <p><b>Countdown:</b> <span id="setelanCountdown">-</span></p>
-<p><b>Versi:</b> <span id="appVersionDisplay">V113.2</span></p>
+<p><b>Versi:</b> <span id="appVersionDisplay">V113.6</span></p>
 <p class="text-[11px] text-emerald-600 mt-2">Firebase: tabungan-hani-venus • Auto Sync</p>
 </div>
 </div>
@@ -2592,13 +2592,16 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <img alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300" id="editBuktiImg" src=""/>
 </div>
 </div>
-<div class="pt-4 flex gap-3">
-<button class="w-1/3 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-xl border border-rose-200 text-sm sm:text-base transition" onclick="confirmDeleteTransaction()" type="button">
-<i class="fa-solid fa-trash sm:mr-1"></i> Hapus
-                    </button>
-<button class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-sm sm:text-base shadow-md transition" type="submit">
-                        Simpan Perubahan
-                    </button>
+<div class="pt-4 flex gap-2">
+<button class="w-[28%] bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-xl border border-rose-200 text-[13px] sm:text-sm transition flex items-center justify-center" onclick="confirmDeleteTransaction()" type="button">
+<i class="fa-solid fa-trash mr-1"></i> Hapus
+</button>
+<button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-[13px] sm:text-sm shadow-md transition" type="submit">
+Simpan
+</button>
+<button class="w-[30%] bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 rounded-xl text-[13px] sm:text-sm shadow-md transition flex items-center justify-center gap-1.5" onclick="kirimEditKeWAV113_5()" type="button" title="Kirim ke WhatsApp pasangan/grup sesuai Setelan">
+<i class="fa-brands fa-whatsapp text-[16px]"></i> Kirim
+</button>
 </div>
 </form>
 </div>
@@ -4229,8 +4232,24 @@ function updateLaporanUI(){
   var m=0,k=0,r=0; filt.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') r+=it.jumlah; });
   var s=m-k+r;
   function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
+  function fmtMinus(n){ 
+    // Format dengan minus -Rp atau Rp - : biarin format default tapi handle minus
+    if(n<0) return 'Rp -' + new Intl.NumberFormat('id-ID').format(Math.abs(n));
+    return 'Rp '+new Intl.NumberFormat('id-ID').format(n);
+  }
   function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
-  el('laporanSaldo',fmt(s)); el('laporanMasuk',fmt(m)); el('laporanKeluar',fmt(k));
+  el('laporanSaldo',fmtMinus(s)); el('laporanMasuk',fmt(m)); el('laporanKeluar',fmt(k));
+  // === V113.6: Saldo periode otomatis merah jika minus, hijau jika tidak ===
+  var saldoEl = document.getElementById('laporanSaldo');
+  if(saldoEl){
+    if(s<0){
+      saldoEl.classList.remove('text-emerald-600','text-green-600','text-blue-600');
+      saldoEl.classList.add('text-rose-600');
+    } else {
+      saldoEl.classList.remove('text-rose-600','text-red-600','text-blue-600');
+      saldoEl.classList.add('text-emerald-600');
+    }
+  }
   var lbl=document.getElementById('laporanPeriodeLabel');
   if(lbl){ if(sb==='all'&&st==='all') lbl.innerText='Semua Periode (auto Firebase)'; else { var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; var l=''; if(sb!=='all') l+=bn[parseInt(sb)]+' '; if(st!=='all') l+=st; lbl.innerText=l; } }
   var lc=document.getElementById('laporanList');
@@ -4573,8 +4592,8 @@ function resetAutoLockTimer(){
 document.addEventListener('DOMContentLoaded', function(){ resetAutoLockTimer(); });
 
 // Close modals on backdrop click
-document.getElementById('gantiPinModal').addEventListener('click', function(e){ if(e.target===this) closeGantiPinModal(); });
-document.getElementById('kunciAplikasiModal').addEventListener('click', function(e){ if(e.target===this) closeKunciModal(); });
+var _gantiPinModal = document.getElementById('gantiPinModal'); if(_gantiPinModal) _gantiPinModal.addEventListener('click', function(e){ if(e.target===this) closeGantiPinModal(); });
+var _kunciModal = document.getElementById('kunciAplikasiModal'); if(_kunciModal) _kunciModal.addEventListener('click', function(e){ if(e.target===this) closeKunciModal(); });
 
 
 // ===== V15 60FPS SMOOTH + TEXT READABLE =====
@@ -5418,7 +5437,7 @@ window.sendWhatsAppNotif = function(trx, isUpdate){
         var auto=localStorage.getItem('waAutoEnabled')==='true';
         if(auto && !isUpdate){
             setTimeout(function(){
-                if(isGroup) console.log('Opening WA for group'); window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+                if(isGroup){ console.log('Opening WA for group'); window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank'); }
                 else if(targetNum){
                     var c=targetNum.replace(/[^0-9]/g,''); if(c.startsWith('0')) c=c.substring(1); if(!c.startsWith('62')) c='62'+c;
                     window.open('https://wa.me/'+c+'?text='+encodeURIComponent(msg), '_blank');
@@ -6790,7 +6809,7 @@ console.log('V108 loaded - PIN confirm + auto-lock fix + switchTab preserved');
 <script>
 // V109 - Hapus Semua 2 Step + Tentang Tabungan HV + Versi Auto Update V109
 
-const APP_VERSION = 'V113.2';
+const APP_VERSION = 'V113.6';
 const APP_NAME = 'Tabungan HV';
 
 // Auto update version display
@@ -6928,7 +6947,114 @@ document.addEventListener('DOMContentLoaded', function(){
   if(m2) m2.addEventListener('click', function(e){ if(e.target===this) closeHapusPinModal(); });
 });
 
-console.log('V113.2 WIB real-time fix loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
+console.log('V113.6 Saldo warna minus merah plus hijau Masuk biru Kirim Edit bersih loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
 </script>
+
+<script>
+// ===== V113.6 CLEAN + WARNA - KIRIM EDIT FORMAT SAMA KAYAK TAMBAH =====
+function kirimEditKeWAV113_5(){
+  try{
+    var tipeEl = document.getElementById('editTipe');
+    var penabungEl = document.getElementById('editPenabung');
+    var tglEl = document.getElementById('editTgl');
+    var jumlahEl = document.getElementById('editJumlah');
+    var ketEl = document.getElementById('editKet');
+    var textTipeEl = document.getElementById('textEditTipeTransaksi');
+    var textPenabungEl = document.getElementById('textEditNamaPenabung');
+    
+    var tipe = tipeEl && tipeEl.value ? tipeEl.value : (textTipeEl ? textTipeEl.innerText.trim() : '');
+    var penabung = penabungEl && penabungEl.value ? penabungEl.value : (textPenabungEl ? textPenabungEl.innerText.trim() : '');
+    
+    var tipeLower = String(tipe).toLowerCase();
+    var tipeNorm = 'pemasukan';
+    if(tipeLower.indexOf('keluar')!==-1 || tipeLower.indexOf('pengeluaran')!==-1 || tipeLower.indexOf('(-)')!==-1) tipeNorm = 'pengeluaran';
+    else if(tipeLower.indexOf('kembali')!==-1) tipeNorm = 'pengembalian';
+    else if(tipeLower.indexOf('masuk')!==-1 || tipeLower.indexOf('(+)')!==-1) tipeNorm = 'pemasukan';
+    else tipeNorm = tipeLower || 'pemasukan';
+    
+    var tgl = tglEl ? tglEl.value : '';
+    var ket = ketEl ? ketEl.value : '';
+    var jumlahStr = jumlahEl ? jumlahEl.value : '0';
+    var jumlah = parseInt(String(jumlahStr).replace(/[^0-9]/g,'')) || 0;
+    
+    if(!penabung || !tgl || jumlah===0){
+      alert('Lengkapi data dulu bro sebelum kirim ke WA');
+      return;
+    }
+    
+    var saldoEl = document.getElementById('totalSaldo');
+    var saldo = saldoEl ? saldoEl.innerText : 'Lihat di aplikasi';
+    var appLink = 'https://venusdwi.github.io/Tabungan-Pernikahan-Hani-Venus/';
+    try{ if(typeof getAppLink === 'function') appLink = getAppLink(); }catch(e){}
+    
+    var emoji = tipeNorm==='pemasukan' ? '💰' : (tipeNorm==='pengembalian' ? '↩️' : '💸');
+    var jenisText = tipeNorm==='pemasukan' ? 'PEMASUKAN' : (tipeNorm==='pengembalian' ? 'PENGEMBALIAN DANA' : 'PENGELUARAN');
+    var warna = tipeNorm==='pemasukan' ? '🟢' : (tipeNorm==='pengembalian' ? '🔵' : '🔴');
+    
+    var bukti = '';
+    try{
+      var buktiImg = document.getElementById('editBuktiImg');
+      if(buktiImg && buktiImg.src && buktiImg.src.indexOf('http')===0) bukti = buktiImg.src;
+    }catch(e){}
+    
+    var msg = '*' + emoji + ' TABUNGAN PERNIKAHAN*\n';
+    msg += '*' + warna + ' ' + jenisText + ' BARU*\n\n';
+    msg += '👤 *' + penabung.toUpperCase() + '* menambahkan:\n';
+    msg += '📂 Kategori: ' + (ket || '-') + '\n';
+    msg += '💵 Nominal: Rp ' + jumlah.toLocaleString('id-ID') + '\n\n';
+    if(bukti && bukti.length>10){
+      msg += '📸 *Bukti Foto:*\n' + bukti + '\n\n';
+    }
+    msg += '💎 *Total Saldo:* ' + saldo + '\n';
+    msg += '🎯 Target: 03 April 2027\n\n';
+    msg += '📲 *Buka Aplikasi Tabungan:*\n' + appLink + '\n';
+    msg += '_Dikirim otomatis dari aplikasi_';
+    
+    window.lastWAMessage = msg;
+    var waMode = localStorage.getItem('waMode') || 'pasangan';
+    var haniNum = localStorage.getItem('waNumberHani') || '';
+    var venusNum = localStorage.getItem('waNumberVenus') || '';
+    var groupLink = localStorage.getItem('waGroupLink') || '';
+    var targetNum = '';
+    var targetName = '';
+    var isGroup = waMode === 'grup';
+    if(isGroup){ targetName = 'GRUP'; } else {
+      if(penabung.toUpperCase().indexOf('HANI')!==-1){ targetNum = venusNum; targetName = 'VENUS'; }
+      else { targetNum = haniNum; targetName = 'HANI'; }
+      if(!targetNum) targetNum = haniNum || venusNum;
+    }
+    window.lastWATarget = targetNum;
+    window.lastWATargetName = targetName;
+    if(isGroup){
+      if(typeof openWhatsAppGroup === 'function'){ openWhatsAppGroup(msg, groupLink); }
+      else { window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank'); }
+    } else {
+      if(!targetNum){
+        if(confirm('Nomor WA ' + targetName + ' belum diisi di Setelan.\n\nMau buka WA dengan pesan jadi?')){
+          window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+        } else { alert('Isi dulu No WA di Setelan > Notifikasi WhatsApp > Mode Pasangan'); }
+        return;
+      }
+      if(typeof openWhatsApp === 'function'){ openWhatsApp(targetNum, msg); }
+      else {
+        var clean = targetNum.replace(/[^0-9]/g,'');
+        if(clean.indexOf('0')===0) clean = clean.substring(1);
+        if(clean.indexOf('62')!==0) clean = '62' + clean;
+        window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(msg), '_blank');
+      }
+    }
+    try{
+      var toast = document.createElement('div');
+      toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#25D366] text-white px-5 py-3 rounded-full text-xs font-bold z-[90] shadow-xl flex items-center gap-2';
+      toast.innerHTML = '<i class="fa-brands fa-whatsapp text-lg"></i> WA ' + (isGroup ? 'Grup' : targetName) + ' dibuka!';
+      document.body.appendChild(toast);
+      setTimeout(function(){ toast.remove(); }, 2500);
+    }catch(e){}
+  }catch(e){ console.log('Kirim WA Edit error', e); alert('Gagal kirim WA: ' + e.message); }
+}
+window.kirimEditKeWAV113_5 = kirimEditKeWAV113_5;
+console.log('V113.6 CLEAN + WARNA - Saldo Periode merah jika minus hijau jika plus - Masuk biru - Kirim Edit format sama - no syntax error');
+</script>
+
 </body>
 </html>
