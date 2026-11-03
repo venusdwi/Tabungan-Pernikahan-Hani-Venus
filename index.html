@@ -312,8 +312,8 @@ body.dark .countdown-box{background:rgba(30,41,59,0.9)!important}
 body.dark .font-num{color:inherit}
 
 /* Total saldo dark */
-body.dark #totalSaldo{color:#34d399!important}
-body.dark #topTotalIn{color:#60a5fa!important}
+body.dark #totalSaldo{color:#60a5fa!important}
+body.dark #topTotalIn{color:#34d399!important}
 body.dark #topTotalOut{color:#fb7185!important}
 
 /* Ensure all small badges visible */
@@ -2137,7 +2137,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <div class="pb-28 relative" id="tabContents">
 <div class="tab-content active" id="tab-dashboard">
 <div class="flex items-center justify-between gap-2 mb-5" id="topControlsBar">
-<button class="bg-white/90 px-3.5 py-2 rounded-full border border-sky-200 text-[11px] font-bold text-sky-700 shadow-sm flex items-center gap-1.5" onclick="openJourneyModal()"><i class="fa-solid fa-circle-info text-sky-500 animate-pulse"></i> Our Journey to Halal</button>
+<button class="bg-white/90 px-3.5 py-2 rounded-full border border-sky-200 text-[11px] font-bold text-sky-700 shadow-sm flex items-center gap-1.5" onclick="openJourneyModal()"><i class="fa-solid fa-heart text-sky-500 animate-pulse"></i> Our Journey to Halal</button>
 <div class="flex items-center gap-1.5 bg-white/90 px-2.5 py-1.5 rounded-full border shadow-sm">
 <input accept="image/*" class="hidden" id="bgImageInput" onchange="uploadBgImage(event)" type="file"/>
 <button class="bg-blue-600 text-white px-2.5 py-1.5 rounded-full text-[11px] font-bold" onclick="openBgPicker()"><i class="fa-solid fa-image mr-1"></i>Galeri Foto</button>
@@ -2193,10 +2193,10 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
 <div class="relative z-10">
 <div class="flex items-center justify-between mb-2">
-<span class="text-sm font-bold uppercase tracking-wider text-slate-500">Total Saldo Terkumpul</span>
+<span class="text-sm font-bold uppercase tracking-wider text-blue-600">Sisa Saldo Aktual</span>
 <span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
 </div>
-<h2 class="font-num text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight mb-1" id="totalSaldo">Rp 0</h2>
+<h2 class="font-num text-3xl sm:text-4xl font-extrabold text-blue-600 tracking-tight mb-1" id="totalSaldo">Rp 0</h2>
 </div>
 </div>
 <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
@@ -2205,7 +2205,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <span class="text-sm font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
 <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
 </div>
-<h2 class="font-num text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight mb-1" id="topTotalIn">Rp 0</h2>
+<h2 class="font-num text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight mb-1" id="topTotalIn">Rp 0</h2>
 </div>
 </div>
 <div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
@@ -2238,17 +2238,35 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 </div>
 <div class="tab-content" id="tab-laporan">
 <div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Laporan Keuangan</h2><p class="text-sky-200/70 text-[11px] mt-1">Auto dari Firebase</p></div>
-<div class="glass-box rounded-2xl p-4 mb-3">
-<div class="filter-presisi">
-<select class="filter-sel" id="filterBulanLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Bulan</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option><option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option></select>
-<select class="filter-sel" id="filterTahunLaporan" onchange="syncLaporanFilter()"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
-<button class="filter-btn" onclick="resetFilterLaporan()"><i class="fa-solid fa-rotate-left"></i></button>
-<button class="filter-btn pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i></button>
+<div class="glass-box rounded-2xl p-4 mb-3" style="overflow:visible !important;">
+<div class="filter-clean" style="display:flex;flex-direction:column;gap:12px;width:100%;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">
+    <select id="filterBulanLaporan" onchange="syncLaporanFilter()" style="width:100%;height:52px;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:0 14px;font-weight:700;font-size:14px;color:#0f172a;">
+      <option value="all">Semua Bulan</option>
+      <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+    </select>
+    <select id="filterTahunLaporan" onchange="syncLaporanFilter()" style="width:100%;height:52px;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:0 14px;font-weight:700;font-size:14px;color:#0f172a;">
+      <option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
+    </select>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 52px 52px;gap:12px;width:100%;align-items:center;">
+    <select id="filterTipeLaporan" onchange="syncLaporanFilter()" style="width:100%;height:52px;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:0 14px;font-weight:700;font-size:14px;color:#0f172a;">
+      <option value="all">Semua Tipe</option><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option><option value="pengembalian">Pengembalian</option>
+    </select>
+    <button onclick="resetFilterLaporan()" style="height:52px;width:52px;border-radius:14px;background:#f1f5f9;border:1.5px solid #e2e8f0;color:#475569;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-rotate-left"></i></button>
+    <button onclick="downloadPDF()" style="height:52px;width:52px;border-radius:14px;background:#fff7ed;border:1.5px solid #fed7aa;color:#ea580c;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-file-pdf"></i></button>
+  </div>
 </div>
 </div>
 <div class="grid grid-cols-1 gap-2 mb-3">
 <div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p></div>
 <div class="grid grid-cols-2 gap-2"><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-blue-600 uppercase">Masuk</p><p class="font-num text-sm font-bold text-blue-600" id="laporanMasuk">Rp 0</p></div><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-rose-600 uppercase">Keluar</p><p class="font-num text-sm font-bold text-rose-600" id="laporanKeluar">Rp 0</p></div></div>
+<div id="infoPengembalian" class="hidden glass-box rounded-xl p-3 mt-2 border-sky-200 bg-sky-50/50">
+<p class="text-[10px] font-bold text-sky-600 uppercase">Pengembalian Dana (Refund) - Masuk Saldo, Bukan Pemasukan</p>
+<p class="font-num text-sm font-bold text-sky-600" id="textPengembalian">Rp 0</p>
+<p class="text-[10px] text-slate-500 mt-1">Duit ganti checkout bulan lalu, pisah keterangan:</p>
+<div id="listPengembalian" class="mt-2"></div>
+</div>
 </div>
 <div class="glass-box rounded-xl p-3"><h4 class="font-bold text-xs mb-2">Detail Periode (auto Firebase)</h4><div class="space-y-2 max-h-[50vh] overflow-y-auto" id="laporanList"></div></div>
 </div>
@@ -2262,13 +2280,25 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 </div>
 <div class="tab-content" id="tab-riwayat">
 <div class="text-center mb-5"><h2 class="font-serif text-2xl font-bold text-white drop-shadow">Riwayat Transaksi</h2><p class="text-sky-200/70 text-[11px] mt-1">Auto dari Firebase - Klik item untuk edit / hapus</p></div>
-<div class="glass-box rounded-2xl p-4">
-<div class="filter-presisi mb-3">
-<select class="filter-sel" id="filterBulan" onchange="updateUI()"><option value="all">Semua Bulan</option><option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select>
-<select class="filter-sel" id="filterTahun" onchange="updateUI()"><option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
-<button class="filter-btn" onclick="resetFilter()"><i class="fa-solid fa-rotate-left"></i></button>
-<button class="filter-btn pdf" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i></button>
+<div class="glass-box rounded-2xl p-4" style="overflow:visible !important;">
+<div style="display:flex;flex-direction:column;gap:12px;width:100%;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">
+    <select id="filterBulan" onchange="updateUI()" style="width:100%;height:52px;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:0 14px;font-weight:700;font-size:14px;">
+      <option value="all">Semua Bulan</option>
+      <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+    </select>
+    <select id="filterTahun" onchange="updateUI()" style="width:100%;height:52px;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:0 14px;font-weight:700;font-size:14px;">
+      <option value="all">Semua Tahun</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
+    </select>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">
+    <select id="filterTipe" onchange="updateUI()" style="width:100%;height:52px;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:0 14px;font-weight:700;font-size:14px;">
+      <option value="all">Semua Tipe</option><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option><option value="pengembalian">Pengembalian</option>
+    </select>
+    <button onclick="resetFilter()" style="height:52px;border-radius:14px;background:#f1f5f9;border:1.5px solid #e2e8f0;color:#475569;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+  </div>
 </div>
+
 <div class="space-y-3" id="transactionList"></div>
 </div>
 </div>
@@ -2397,7 +2427,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <p id="tentangHVTitle" class="font-bold text-sm" style="color: #0f172a !important;">Tabungan HV</p>
 <p><b>Target:</b> 03 April 2027</p>
 <p><b>Countdown:</b> <span id="setelanCountdown">-</span></p>
-<p><b>Versi:</b> <span id="appVersionDisplay">V113.6</span></p>
+<p><b>Versi:</b> <span id="appVersionDisplay">V113.28</span></p>
 <p class="text-[11px] text-emerald-600 mt-2">Firebase: tabungan-hani-venus • Auto Sync</p>
 </div>
 </div>
@@ -3110,26 +3140,34 @@ Simpan
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            const selBulan = document.getElementById('filterBulan').value;
-            const selTahun = document.getElementById('filterTahun').value;
+            // V113.27 FIX: Pakai filter Laporan, bukan Riwayat!
+            var elBulanLaporan = document.getElementById('filterBulanLaporan');
+            var elTahunLaporan = document.getElementById('filterTahunLaporan');
+            var elTipeLaporan = document.getElementById('filterTipeLaporan');
+            
+            const selBulan = elBulanLaporan ? elBulanLaporan.value : (document.getElementById('filterBulan') ? document.getElementById('filterBulan').value : 'all');
+            const selTahun = elTahunLaporan ? elTahunLaporan.value : (document.getElementById('filterTahun') ? document.getElementById('filterTahun').value : 'all');
+            const selTipe = elTipeLaporan ? elTipeLaporan.value : 'all';
 
-            const dropdownBulan = document.getElementById('filterBulan');
-            const namaBulan = selBulan === 'all' ? 'Semua Bulan' : dropdownBulan.options[dropdownBulan.selectedIndex].text;
-            const namaTahun = selTahun === 'all' ? 'Semua Tahun' : selTahun;
+            var bulanMapFull = {'01':'Januari','02':'Februari','03':'Maret','04':'April','05':'Mei','06':'Juni','07':'Juli','08':'Agustus','09':'September','10':'Oktober','11':'November','12':'Desember'};
+            var namaBulan = selBulan === 'all' ? 'Semua_Bulan' : (bulanMapFull[selBulan] || selBulan);
+            var namaBulanLabel = selBulan === 'all' ? 'Semua Bulan' : (bulanMapFull[selBulan] || selBulan);
+            const namaTahun = selTahun === 'all' ? 'Semua_Tahun' : selTahun;
+            const namaTahunLabel = selTahun === 'all' ? 'Semua Tahun' : selTahun;
 
             let totalMasukPDF = 0;
-            let totalKeluarPDF = 0;
+            let totalKeluarGrossPDF = 0;
+            let totalKembaliPDF = 0;
 
             const filteredTransactions = transactions.filter(item => {
                 if (!item.tgl) return true;
                 const parts = item.tgl.split('-');
                 const itemYear = parts[0];
                 const itemMonth = parts[1];
-
                 const matchMonth = (selBulan === 'all' || itemMonth === selBulan);
                 const matchYear = (selTahun === 'all' || itemYear === selTahun);
-
-                return matchMonth && matchYear;
+                const matchTipe = (selTipe === 'all' || item.tipe === selTipe);
+                return matchMonth && matchYear && matchTipe;
             });
 
             if (filteredTransactions.length === 0) {
@@ -3141,7 +3179,8 @@ Simpan
             doc.text("Rekap Tabungan Pernikahan Hani & Venus", 14, 20);
             
             doc.setFontSize(11);
-            doc.text(`Periode  : ${namaBulan} ${namaTahun}`, 14, 28);
+            var tipeLabel = selTipe==='all' ? 'Semua Tipe' : (selTipe==='pemasukan'?'Pemasukan':(selTipe==='pengeluaran'?'Pengeluaran':'Pengembalian'));
+            doc.text(`Periode  : ${namaBulanLabel} ${namaTahunLabel} - ${tipeLabel}`, 14, 28);
             
             const now = new Date();
             const dateCetak = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
@@ -3153,11 +3192,12 @@ Simpan
 
             filteredTransactions.forEach(item => {
                 if (item.tipe === 'pemasukan') totalMasukPDF += item.jumlah;
-                if (item.tipe === 'pengeluaran') totalKeluarPDF += item.jumlah;
-                if (item.tipe === 'pengembalian') totalKeluarPDF -= item.jumlah;
+                if (item.tipe === 'pengeluaran') totalKeluarGrossPDF += item.jumlah;
+                if (item.tipe === 'pengembalian') totalKembaliPDF += item.jumlah;
 
-                const isMasuk = item.tipe === 'pemasukan' || item.tipe === 'pengembalian';
-                const sign = isMasuk ? "+" : "-";
+                const isMasuk = item.tipe === 'pemasukan';
+                const isKembali = item.tipe === 'pengembalian';
+                const sign = (isMasuk || isKembali) ? "+" : "-";
                 
                 const cleanPenabung = (item.penabung || '').replace(/[^\x20-\x7E]/g, '').trim();
                 const cleanKet = (item.ket || '').replace(/[^\x20-\x7E]/g, '').trim();
@@ -3172,6 +3212,8 @@ Simpan
                 tableRows.push(rowData);
             });
 
+            const totalKeluarPDF = totalKeluarGrossPDF - totalKembaliPDF;
+
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
@@ -3181,16 +3223,26 @@ Simpan
                 headStyles: { fillColor: [2, 132, 199] } 
             });
 
+            var totalKeluarNetPDF = totalKeluarGrossPDF - totalKembaliPDF;
+            var netBalancePDF = totalMasukPDF - totalKeluarGrossPDF; // V113.28 FIX: Refund jangan dihitung di saldo periode
+
             const finalY = doc.lastAutoTable.finalY + 10;
             doc.setFontSize(11);
             doc.text(`Total Pemasukan     : Rp ${new Intl.NumberFormat('id-ID').format(totalMasukPDF)}`, 14, finalY);
-            doc.text(`Total Pengeluaran   : Rp ${new Intl.NumberFormat('id-ID').format(totalKeluarPDF)}`, 14, finalY + 6);
-            
-            doc.setFont(undefined, 'bold');
-            const netBalancePDF = totalMasukPDF - totalKeluarPDF;
-            doc.text(`Total Saldo Periode Ini : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 14);
+            doc.text(`Total Pengeluaran   : Rp ${new Intl.NumberFormat('id-ID').format(totalKeluarGrossPDF)}`, 14, finalY + 6);
+            if(totalKembaliPDF>0){
+              doc.text(`Total Pengembalian  : Rp ${new Intl.NumberFormat('id-ID').format(totalKembaliPDF)} (masuk saldo aktual, tidak dihitung di saldo periode)`, 14, finalY + 12);
+              doc.setFont(undefined, 'bold');
+              doc.text(`Total Saldo Periode (Masuk - Keluar) : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 20);
+              doc.setFont(undefined, 'normal');
+              doc.setFontSize(9);
+              doc.text(`(Rumus: ${totalMasukPDF} - ${totalKeluarGrossPDF} = ${netBalancePDF}) | Refund ${totalKembaliPDF} masuk Sisa Saldo Aktual`, 14, finalY + 26);
+            } else {
+              doc.setFont(undefined, 'bold');
+              doc.text(`Total Saldo Periode (Masuk - Keluar) : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 14);
+            }
 
-            doc.save(`Rekap_Tabungan_${namaBulan}_${namaTahun}.pdf`);
+            doc.save(`Rekap_Tabungan_${namaBulan}_${namaTahunLabel}.pdf`);
         }
 
         // LOGIKA POP-UP DROPDOWN
@@ -4108,7 +4160,7 @@ function closeSuccessModal(){ window.closeSuccessModal(); }
                 });
             }
 
-            const netBalance = totalMasuk - totalKeluar;
+            const netBalance = totalMasuk - totalKeluar + totalKembali;
             document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
             document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
             document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
@@ -4197,7 +4249,7 @@ document.addEventListener('DOMContentLoaded',function(){ applyDarkMode(); });
 
 
 function syncOpacitySliders(v){ var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue'); if(s1) s1.value=v; if(s2) s2.value=v; if(vd) vd.innerText=Math.round(v*100)+'%'; document.documentElement.style.setProperty('--box-opacity',v); try{localStorage.setItem('wedding_box_opacity',v);}catch(e){} }
-function syncLaporanFilter(){ var bL=document.getElementById('filterBulanLaporan').value, tL=document.getElementById('filterTahunLaporan').value, b=document.getElementById('filterBulan'), t=document.getElementById('filterTahun'); if(b) b.value=bL; if(t) t.value=tL; updateUI(); updateLaporanUI(); }
+function syncLaporanFilter(){ updateUI(); updateLaporanUI(); }
 function resetFilterLaporan(){ document.getElementById('filterBulanLaporan').value='all'; document.getElementById('filterTahunLaporan').value='all'; syncLaporanFilter(); }
 var financeChartInstance=null;
 function initFinanceChart(){ var ctx=document.getElementById('financeDonutChart'); if(!ctx) return; if(financeChartInstance){ try{financeChartInstance.destroy();}catch(e){} } financeChartInstance=new Chart(ctx,{type:'doughnut',data:{labels:['Masuk','Keluar'],datasets:[{data:[1,0.1],backgroundColor:['#0284c7','#fb7185'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,0.9)',padding:10,cornerRadius:10,callbacks:{label:function(c){ return c.label+': Rp '+new Intl.NumberFormat('id-ID').format(c.parsed); } } }},animation:{duration:600}}}); }
@@ -4225,21 +4277,22 @@ function updateDashboardDiagram(){
 }
 function updateLaporanUI(){
   if(typeof transactions==='undefined' || !transactions) return;
-  var sbEl=document.getElementById('filterBulanLaporan'); var stEl=document.getElementById('filterTahunLaporan');
+  var sbEl=document.getElementById('filterBulanLaporan'); var stEl=document.getElementById('filterTahunLaporan'); var tpEl=document.getElementById('filterTipeLaporan');
   if(!sbEl || !stEl) return;
-  var sb=sbEl.value, st=stEl.value;
-  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); return (sb==='all'||p[1]===sb)&&(st==='all'||p[0]===st); });
+  var sb=sbEl.value, st=stEl.value; var tp=tpEl ? tpEl.value : 'all';
+  var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); var matchBulan=(sb==='all'||p[1]===sb); var matchTahun=(st==='all'||p[0]===st); var matchTipe=(tp==='all'||it.tipe===tp); return matchBulan && matchTahun && matchTipe; });
   var m=0,k=0,r=0; filt.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') r+=it.jumlah; });
-  var s=m-k+r;
+  var kNet = k - r;
+  var s=m-k; // V113.28 FIX: Refund jangan dihitung di saldo periode
   function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
   function fmtMinus(n){ 
-    // Format dengan minus -Rp atau Rp - : biarin format default tapi handle minus
     if(n<0) return 'Rp -' + new Intl.NumberFormat('id-ID').format(Math.abs(n));
     return 'Rp '+new Intl.NumberFormat('id-ID').format(n);
   }
   function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
+  // V113.27 FIX: Keluar tampil Gross 122.500, bukan Net -16k
   el('laporanSaldo',fmtMinus(s)); el('laporanMasuk',fmt(m)); el('laporanKeluar',fmt(k));
-  // === V113.6: Saldo periode otomatis merah jika minus, hijau jika tidak ===
+  // === V113.9: Saldo periode otomatis merah jika minus, hijau jika tidak ===
   var saldoEl = document.getElementById('laporanSaldo');
   if(saldoEl){
     if(s<0){
@@ -4251,9 +4304,25 @@ function updateLaporanUI(){
     }
   }
   var lbl=document.getElementById('laporanPeriodeLabel');
-  if(lbl){ if(sb==='all'&&st==='all') lbl.innerText='Semua Periode (auto Firebase)'; else { var bn=['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; var l=''; if(sb!=='all') l+=bn[parseInt(sb)]+' '; if(st!=='all') l+=st; lbl.innerText=l; } }
+  if(lbl){ 
+    var bnFull=['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    if(sb==='all'&&st==='all'&&tp==='all') lbl.innerText='Semua Periode (auto Firebase)'; 
+    else { 
+      var l=''; 
+      if(sb!=='all') l+=bnFull[parseInt(sb)]+' '; 
+      if(st!=='all') l+=st+' '; 
+      if(tp!=='all') l+= (tp==='pemasukan'?'Pemasukan':(tp==='pengeluaran'?'Pengeluaran':'Pengembalian'));
+      lbl.innerText=l.trim(); 
+    } 
+  }
   var lc=document.getElementById('laporanList');
-  if(lc){ lc.innerHTML=''; if(filt.length===0) lc.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi di periode ini (coba ganti ke Semua)</p>'; else filt.slice().reverse().forEach(function(it){ var isM=it.tipe==='pemasukan'||it.tipe==='pengembalian'; var d=document.createElement('div'); d.className='riwayat-item-presisi '+(isM?'bg-emerald-50/70 border-emerald-100':'bg-rose-50/70 border-rose-100'); d.innerHTML='<span class="badge">'+(it.penabung||'HANI')+'</span><div class="main"><div class="title '+(isM?'text-emerald-700':'text-rose-700')+'">'+it.ket+'</div><div class="date">'+it.tgl+' | '+it.jam+'</div></div><div class="side"><div class="amount '+(isM?'text-emerald-600':'text-rose-600')+'">'+(isM?'+ Rp ':'- Rp ')+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>'; lc.appendChild(d); }); }
+  if(lc){ lc.innerHTML=''; if(filt.length===0) lc.innerHTML='<p class="text-sm text-slate-500 text-center py-4">Tidak ada transaksi di periode ini (coba ganti ke Semua)</p>'; else filt.slice().reverse().forEach(function(it){ var isMasuk=it.tipe==='pemasukan'; var isKembali=it.tipe==='pengembalian'; var d=document.createElement('div'); 
+        var bgClass = isMasuk ? 'bg-emerald-50/70 border-emerald-100' : (isKembali ? 'bg-sky-50/70 border-sky-200' : 'bg-rose-50/70 border-rose-100');
+        var titleClass = isMasuk ? 'text-emerald-700' : (isKembali ? 'text-sky-700' : 'text-rose-700');
+        var amountClass = isMasuk ? 'text-emerald-600' : (isKembali ? 'text-sky-600' : 'text-rose-600');
+        var sign = (isMasuk || isKembali) ? '+ Rp ' : '- Rp ';
+        d.className='riwayat-item-presisi '+bgClass; 
+        d.innerHTML='<span class="badge">'+(it.penabung||'HANI')+'</span><div class="main"><div class="title '+titleClass+'">'+it.ket+'</div><div class="date">'+it.tgl+' | '+it.jam+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(it.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>'; lc.appendChild(d); }); }
 }
 function openTambahModal(){ 
   var m=document.getElementById('tambahModal'), b=document.getElementById('tambahModalBox'); 
@@ -6809,7 +6878,7 @@ console.log('V108 loaded - PIN confirm + auto-lock fix + switchTab preserved');
 <script>
 // V109 - Hapus Semua 2 Step + Tentang Tabungan HV + Versi Auto Update V109
 
-const APP_VERSION = 'V113.6';
+const APP_VERSION = 'V113.28';
 const APP_NAME = 'Tabungan HV';
 
 // Auto update version display
@@ -6947,11 +7016,11 @@ document.addEventListener('DOMContentLoaded', function(){
   if(m2) m2.addEventListener('click', function(e){ if(e.target===this) closeHapusPinModal(); });
 });
 
-console.log('V113.6 Saldo warna minus merah plus hijau Masuk biru Kirim Edit bersih loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
+console.log('V113.9 Saldo warna minus merah plus hijau Masuk biru Kirim Edit bersih loaded - Hapus 2 step + Tentang Tabungan HV + version '+APP_VERSION);
 </script>
 
 <script>
-// ===== V113.6 CLEAN + WARNA - KIRIM EDIT FORMAT SAMA KAYAK TAMBAH =====
+// ===== V113.9 CLEAN + WARNA - KIRIM EDIT FORMAT SAMA KAYAK TAMBAH =====
 function kirimEditKeWAV113_5(){
   try{
     var tipeEl = document.getElementById('editTipe');
@@ -7053,7 +7122,7 @@ function kirimEditKeWAV113_5(){
   }catch(e){ console.log('Kirim WA Edit error', e); alert('Gagal kirim WA: ' + e.message); }
 }
 window.kirimEditKeWAV113_5 = kirimEditKeWAV113_5;
-console.log('V113.6 CLEAN + WARNA - Saldo Periode merah jika minus hijau jika plus - Masuk biru - Kirim Edit format sama - no syntax error');
+console.log('V113.9 CLEAN + WARNA - Saldo Periode merah jika minus hijau jika plus - Masuk biru - Kirim Edit format sama - no syntax error');
 </script>
 
 </body>
