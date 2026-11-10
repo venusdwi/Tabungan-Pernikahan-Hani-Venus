@@ -203,6 +203,23 @@ body.dark .glass-box{background:rgba(30,41,59,0.9)!important;border-color:rgba(7
 .riwayat-item-presisi .side{display:flex;align-items:flex-start;gap:8px}
 .riwayat-item-presisi .amount{font-size:13px;font-weight:800;white-space:nowrap;text-align:right;line-height:1.2}
 .riwayat-item-presisi .edit{width:28px;height:28px;border-radius:50%;background:white;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#94a3b8}
+/* ===== BUKTI TF DI RIWAYAT - THUMBNAIL KLIK UNTUK PERBESAR ===== */
+.riwayat-item-presisi{ align-items:flex-start; }
+.riwayat-item-presisi .main{ display:flex; flex-direction:column; }
+.bukti-thumb-wrap{ margin-top:8px; position:relative; width:96px; height:68px; border-radius:12px; overflow:hidden; border:1.5px solid #bae6fd; background:#f1f5f9; cursor:zoom-in; flex-shrink:0; box-shadow:0 2px 8px rgba(2,132,199,.12); }
+.bukti-thumb-wrap:hover{ border-color:#0284c7; box-shadow:0 4px 12px rgba(2,132,199,.22); }
+.bukti-thumb-wrap:active{ transform:scale(.97); }
+.bukti-thumb-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
+.bukti-thumb-badge{ position:absolute; left:0; right:0; bottom:0; background:rgba(2,132,199,.94); color:#fff; font-size:9px; font-weight:800; letter-spacing:.02em; padding:4px 4px; display:flex; align-items:center; justify-content:center; gap:4px; }
+.bukti-thumb-wrap .bukti-thumb-zoom{ position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:9999px; background:rgba(0,0,0,.55); color:#fff; display:flex; align-items:center; justify-content:center; font-size:9px; }
+body.dark .bukti-thumb-wrap{ border-color:#334155; background:#1e293b; }
+/* Viewer bukti - area scroll saat zoom */
+#buktiZoomWrap{ width:100%; overflow:auto; display:flex; align-items:center; justify-content:center; max-height:78vh; touch-action:pan-x pan-y pinch-zoom; -webkit-overflow-scrolling:touch; }
+#imageModalSrc{ transition:transform .18s ease; transform-origin:center center; cursor:zoom-in; max-width:100%; max-height:76vh; object-fit:contain; }
+#imageModalSrc.bukti-zoomed{ cursor:zoom-out; max-width:none; max-height:none; width:auto; height:auto; }
+.bukti-zoom-btn{ width:40px; height:40px; border-radius:9999px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.25); color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; backdrop-filter:blur(6px); }
+.bukti-zoom-btn:active{ background:rgba(255,255,255,.35); transform:scale(.94); }
+
 
 /* ===== DARK MODE PERFECT FIX ===== */
 body.dark{background:#0a0f1e!important}
@@ -2613,14 +2630,25 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <label class="block text-sm font-bold uppercase text-slate-600 mb-2">Keterangan / Catatan</label>
 <input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-800" id="editKet" type="text"/>
 </div>
-<div class="hidden pt-2" id="editBuktiContainer">
+<div class="pt-2" id="editBuktiContainer">
 <div class="flex justify-between items-center mb-2">
 <label class="block text-sm font-bold uppercase text-slate-600">Bukti Transfer</label>
-<span class="text-xs text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto</span>
+<span class="text-xs text-blue-600 font-semibold"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i>Klik foto untuk perbesar</span>
 </div>
-<div class="relative w-full h-56 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" onclick="openImageModal(document.getElementById('editBuktiImg').src)">
+<div class="relative w-full h-56 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center cursor-pointer group shadow-inner" id="editBuktiBox" onclick="if(document.getElementById('editBuktiImg').src && document.getElementById('editBuktiImg').src.indexOf('data:,')===-1){ openImageModal(document.getElementById('editBuktiImg').src); } else { document.getElementById('editBuktiTransfer').click(); }">
 <img alt="Bukti Transfer" class="w-full h-full object-contain group-hover:scale-105 transition duration-300" id="editBuktiImg" src=""/>
+<div id="editBuktiEmpty" class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-slate-400 bg-slate-50">
+<i class="fa-solid fa-image text-3xl"></i>
+<p class="text-xs font-bold text-slate-500">Belum ada bukti TF</p>
+<p class="text-[11px] text-blue-600 font-semibold">Tap untuk tambah bukti</p>
 </div>
+</div>
+<input id="editBuktiTransfer" accept="image/*" onchange="previewEditBukti(event)" style="display:none" type="file"/>
+<div class="flex gap-2 mt-2">
+<button class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-2.5 rounded-xl border border-blue-200 text-xs transition flex items-center justify-center gap-1.5" onclick="document.getElementById('editBuktiTransfer').click()" type="button"><i class="fa-solid fa-camera"></i> Tambah / Ganti Bukti</button>
+<button class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 px-3 rounded-xl border border-rose-200 text-xs transition" onclick="hapusEditBukti()" type="button"><i class="fa-solid fa-trash"></i> Hapus Bukti</button>
+</div>
+<p class="text-[11px] text-slate-400 mt-1.5">Bukti tersimpan langsung di transaksi ini, langsung muncul di Riwayat.</p>
 </div>
 <div class="pt-4 flex gap-2">
 <button class="w-[28%] bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-xl border border-rose-200 text-[13px] sm:text-sm transition flex items-center justify-center" onclick="confirmDeleteTransaction()" type="button">
@@ -2636,13 +2664,20 @@ Simpan
 </form>
 </div>
 </div>
-<!-- MODAL FULLSCREEN BUKTI FOTO -->
+<!-- MODAL FULLSCREEN BUKTI FOTO - KLIK UNTUK ZOOM -->
 <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="imageModal" onclick="closeImageModal()">
 <div class="relative max-w-4xl max-h-[95vh] w-full flex flex-col items-center justify-center pointer-events-auto" onclick="event.stopPropagation()">
-<button class="absolute -top-12 right-0 sm:top-2 sm:right-2 bg-white/20 hover:bg-white/40 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl backdrop-blur-md transition z-10 shadow-lg" onclick="closeImageModal()">
-<i class="fa-solid fa-xmark"></i>
-</button>
-<img alt="Bukti Transfer Full" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20" id="imageModalSrc" src=""/>
+<div class="w-full flex items-center justify-between gap-2 mb-2 px-1">
+<span class="text-white text-xs sm:text-sm font-bold bg-white/10 px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2"><i class="fa-solid fa-receipt"></i> Bukti Transfer <span class="hidden sm:inline font-medium text-white/70">• Klik gambar untuk zoom</span></span>
+<div class="flex items-center gap-2">
+<button class="bukti-zoom-btn" onclick="zoomBukti(-0.5)" title="Perkecil"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+<button class="bukti-zoom-btn" onclick="zoomBukti(0.5)" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+<button class="bukti-zoom-btn" onclick="resetBuktiZoom()" title="Reset ukuran"><i class="fa-solid fa-rotate-left"></i></button>
+<button class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center text-lg backdrop-blur-md transition shadow-lg" onclick="closeImageModal()" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</div>
+<div id="buktiZoomWrap"><img alt="Bukti Transfer Full" class="rounded-2xl shadow-2xl border border-white/20" id="imageModalSrc" src="" onclick="toggleBuktiZoom()" /></div>
+<p class="text-white/70 text-[11px] sm:text-xs mt-2 text-center px-2">Klik gambar untuk perbesar / perkecil &nbsp;•&nbsp; Pinch / scroll untuk zoom &nbsp;•&nbsp; Klik area gelap untuk tutup</p>
 </div>
 </div>
 <!-- JAVASCRIPT & CLOUD FIRESTORE INTEGRATION -->
@@ -3655,22 +3690,44 @@ Simpan
             });
         }
 
-        function openImageModal(src) {
-            if (!src) return;
-            const modal = document.getElementById('imageModal');
-            const img = document.getElementById('imageModalSrc');
-            img.src = src;
-            modal.classList.remove('hidden', 'pointer-events-none');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        function closeImageModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden', 'pointer-events-none');
-            }, 300);
-        }
+        function getBuktiUrl(item){ if(!item) return ''; return item.bukti || item.buktiUrl || item.buktiFoto || ''; }
+function escapeBuktiUrl(u){ return String(u||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function buktiThumbHTML(item){
+  var url = getBuktiUrl(item);
+  if(!url) return '';
+  return '<div class="bukti-thumb-wrap" role="button" tabindex="0" title="Klik untuk memperbesar bukti transfer" onclick="event.stopPropagation(); openImageModal(this.querySelector(\'img\').src)" onkeydown="if(event.key===\'Enter\'){event.stopPropagation(); openImageModal(this.querySelector(\'img\').src)}"><img src="'+escapeBuktiUrl(url)+'" alt="Bukti Transfer" loading="lazy" onerror="this.closest(\'.bukti-thumb-wrap\').style.display=\'none\'" /><span class="bukti-thumb-zoom"><i class=\"fa-solid fa-magnifying-glass-plus\"></i></span><span class="bukti-thumb-badge"><i class=\"fa-solid fa-receipt\"></i> Lihat Bukti &bull; Klik untuk perbesar</span></div>';
+}
+window.getBuktiUrl = getBuktiUrl; window.buktiThumbHTML = buktiThumbHTML;
+var buktiZoomLevel = 1;
+function applyBuktiZoom(){
+  var img = document.getElementById('imageModalSrc');
+  var wrap = document.getElementById('buktiZoomWrap');
+  if(!img) return;
+  if(buktiZoomLevel <= 1){ img.style.transform=''; img.classList.remove('bukti-zoomed'); if(wrap){ wrap.style.alignItems='center'; wrap.style.justifyContent='center'; } }
+  else { img.style.transform='scale('+buktiZoomLevel+')'; img.classList.add('bukti-zoomed'); if(wrap){ wrap.style.alignItems='flex-start'; wrap.style.justifyContent='flex-start'; } }
+}
+function toggleBuktiZoom(){ buktiZoomLevel = (buktiZoomLevel <= 1) ? 2 : 1; applyBuktiZoom(); }
+function zoomBukti(delta){ buktiZoomLevel = Math.min(3.5, Math.max(1, Math.round((buktiZoomLevel + delta)*10)/10)); applyBuktiZoom(); }
+function resetBuktiZoom(){ buktiZoomLevel = 1; applyBuktiZoom(); }
+window.toggleBuktiZoom = toggleBuktiZoom; window.zoomBukti = zoomBukti; window.resetBuktiZoom = resetBuktiZoom;
+function openImageModal(src) {
+             if (!src) return;
+             const modal = document.getElementById('imageModal');
+             const img = document.getElementById('imageModalSrc');
+             img.src = src; buktiZoomLevel = 1; applyBuktiZoom();
+             modal.classList.remove('hidden', 'pointer-events-none');
+             try{ document.body.style.overflow='hidden'; }catch(e){}
+             setTimeout(() => modal.classList.remove('opacity-0'), 10);
+         }          function closeImageModal() {
+             const modal = document.getElementById('imageModal');
+             modal.classList.add('opacity-0');
+             try{ document.body.style.overflow=''; }catch(e){}
+             setTimeout(() => {
+                 modal.classList.add('hidden', 'pointer-events-none');
+                 buktiZoomLevel = 1; applyBuktiZoom();
+             }, 300);
+         }
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ var m=document.getElementById('imageModal'); if(m && !m.classList.contains('hidden')) closeImageModal(); } });
 
         function openBgPicker() {
             const fileInput = document.getElementById('bgImageInput');
@@ -3800,47 +3857,78 @@ Simpan
             input.value = value ? new Intl.NumberFormat('id-ID').format(value) : '';
         }
 
-        function previewMainBukti(event) {
+        function compressImageFile(file, cb){
+  try{
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        var tempImg = new Image();
+        tempImg.onload = function(){
+          try{
+            var canvas = document.createElement('canvas');
+            var maxDim = 900; var width = tempImg.width; var height = tempImg.height;
+            if(width > height && width > maxDim){ height = Math.round((height * maxDim) / width); width = maxDim; }
+            else if(height > maxDim){ width = Math.round((width * maxDim) / height); height = maxDim; }
+            canvas.width = width; canvas.height = height;
+            var ctx = canvas.getContext('2d'); ctx.drawImage(tempImg, 0, 0, width, height);
+            cb(canvas.toDataURL('image/jpeg', 0.72));
+          }catch(err){ cb(e.target.result); }
+        };
+        tempImg.onerror = function(){ cb(e.target.result); };
+        tempImg.src = e.target.result;
+      }catch(err){ cb(null); }
+    };
+    reader.onerror = function(){ cb(null); };
+    reader.readAsDataURL(file);
+  }catch(err){ cb(null); }
+}
+window.compressImageFile = compressImageFile;
+function previewMainBukti(event) {
             const file = event.target.files[0];
             const container = document.getElementById('buktiPreviewContainer');
-            const img = document.getElementById('buktiPreviewImg');
-
+            let img = document.getElementById('buktiPreviewImg');
+            if(container && !img){
+              img = document.createElement('img');
+              img.id = 'buktiPreviewImg'; img.alt = 'Preview Bukti';
+              img.className = 'w-full h-full object-cover';
+              container.appendChild(img);
+            }
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const tempImg = new Image();
-                    tempImg.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const maxDim = 800;
-                        let width = tempImg.width;
-                        let height = tempImg.height;
-
-                        if (width > height && width > maxDim) {
-                            height = Math.round((height * maxDim) / width);
-                            width = maxDim;
-                        } else if (height > maxDim) {
-                            width = Math.round((width * maxDim) / height);
-                            height = maxDim;
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(tempImg, 0, 0, width, height);
-
-                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                        img.src = compressedBase64;
-                        tempBuktiBase64 = compressedBase64;
-                        container.classList.remove('hidden');
-                    };
-                    tempImg.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
+                compressImageFile(file, function(compressedBase64){
+                  if(!compressedBase64) return;
+                  if(img) img.src = compressedBase64;
+                  try{ tempBuktiBase64 = compressedBase64; }catch(e){}
+                  try{ window.tempBuktiBase64 = compressedBase64; }catch(e){}
+                  if(container){ container.classList.remove('hidden'); container.style.display='block'; }
+                });
             } else {
-                container.classList.add('hidden');
-                tempBuktiBase64 = "";
+                if(container) container.classList.add('hidden');
+                try{ tempBuktiBase64 = ""; }catch(e){}
+                try{ window.tempBuktiBase64 = ""; try{ tempBuktiBase64=""; }catch(e){} }catch(e){}
             }
         }
+function previewEditBukti(event){
+  var file = event.target.files && event.target.files[0] ? event.target.files[0] : null;
+  if(!file) return;
+  compressImageFile(file, function(b64){
+    if(!b64) { alert('Gagal baca foto, coba foto lain'); return; }
+    window.editBuktiBase64 = b64; window.editBuktiHapus = false;
+    var img = document.getElementById('editBuktiImg');
+    var empty = document.getElementById('editBuktiEmpty');
+    if(img){ img.src = b64; img.style.display='block'; }
+    if(empty) empty.style.display='none';
+  });
+}
+function hapusEditBukti(){
+  window.editBuktiBase64 = ''; window.editBuktiHapus = true;
+  var img = document.getElementById('editBuktiImg');
+  var empty = document.getElementById('editBuktiEmpty');
+  var inp = document.getElementById('editBuktiTransfer');
+  if(img){ img.src=''; img.style.display='none'; }
+  if(empty) empty.style.display='flex';
+  if(inp) inp.value='';
+}
+window.previewEditBukti = previewEditBukti; window.hapusEditBukti = hapusEditBukti;
 
         function handleFormSubmit(e) {
             e.preventDefault();
@@ -3861,10 +3949,40 @@ Simpan
             if(btnText) btnText.classList.add('hidden');
             if(btnSpin) btnSpin.classList.remove('hidden');
             
-            var buktiUrlManual = ""; // Link foto field removed, only file upload
-            
             var fileInput = document.getElementById('buktiTransfer');
             var file = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
+            // FIX: bukti disimpan langsung sebagai base64 terkompresi, bukan nunggu upload Storage yang sering gagal.
+            // Kalau user sudah pilih foto, previewMainBukti sudah isi tempBuktiBase64. Kalau belum, ambil dari preview img.
+            var buktiUrlManual = "";
+            try{ if(typeof tempBuktiBase64!=='undefined' && tempBuktiBase64) buktiUrlManual = tempBuktiBase64; }catch(e){}
+            try{ if(!buktiUrlManual && window.tempBuktiBase64) buktiUrlManual = window.tempBuktiBase64; }catch(e){}
+            try{
+              if(!buktiUrlManual){
+                var _prevImg = document.getElementById('buktiPreviewImg');
+                if(_prevImg && _prevImg.src && _prevImg.src.indexOf('data:image')===0) buktiUrlManual = _prevImg.src;
+              }
+            }catch(e){}
+            // Kalau ada file tapi base64 belum siap (user langsung klik Simpan), kompres dulu baru simpan
+            if(file && !buktiUrlManual && typeof compressImageFile==='function'){
+              var _tipe0 = tipe, _penabung0 = penabung, _ket0 = ketInput, _jumlah0 = jumlah, _tgl0 = tglTransaksiVal(), _jam0 = jamTransaksiVal();
+              // Simpan variabel yang dibutuhkan ke closure lewat fungsi bantu
+              compressImageFile(file, function(_b64){
+                if(_b64){ try{ tempBuktiBase64=_b64; }catch(e){} try{ window.tempBuktiBase64=_b64; }catch(e){} }
+                // Panggil ulang handleFormSubmit tanpa file agar tidak loop - tandai sudah dikompres
+                try{ window._buktiSudahDikompres = true; }catch(e){}
+                // Set preview agar buktiUrlManual terbaca di pemanggilan kedua
+                var _pi2 = document.getElementById('buktiPreviewImg');
+                if(_pi2 && _b64) _pi2.src = _b64;
+                handleFormSubmit(e);
+              });
+              // Kembalikan tombol agar tidak nyangkut
+              if(btn){ btn.disabled = false; }
+              if(btnText){ btnText.classList.remove('hidden'); }
+              if(btnSpin){ btnSpin.classList.add('hidden'); }
+              return;
+            }
+            function tglTransaksiVal(){ try{ return document.getElementById('tglTransaksi').value; }catch(e){ return ''; } }
+            function jamTransaksiVal(){ try{ return document.getElementById('jamTransaksi').value; }catch(e){ return ''; } }
             
             var tgl = document.getElementById('tglTransaksi').value;
             var jam = document.getElementById('jamTransaksi').value;
@@ -3918,7 +4036,7 @@ Simpan
                         try{ sendWhatsAppNotif(newItem); }catch(e){ console.log('WA error', e); }
                     }
                     
-                    // Upload foto in background after popup shown
+                    // Upload Storage sebagai backup (opsional). Kalau gagal, base64 yang sudah tersimpan tetap dipakai, jadi bukti tidak hilang.
                     if(file){
                         console.log('Background upload foto...');
                         try{
@@ -3974,7 +4092,7 @@ Simpan
                 if(typeof setNowDateTimeAndFilter === 'function') setNowDateTimeAndFilter();
                 var cont = document.getElementById('buktiPreviewContainer');
                 if(cont) cont.classList.add('hidden');
-                window.tempBuktiBase64 = "";
+                window.tempBuktiBase64 = ""; try{ tempBuktiBase64=""; }catch(e){}
                 // Reset amount display
                 var jumlahDisplay = document.getElementById('jumlahRupiah');
                 if(jumlahDisplay) jumlahDisplay.value = "";
@@ -4038,12 +4156,18 @@ function closeSuccessModal(){ window.closeSuccessModal(); }
 
             const editBuktiContainer = document.getElementById('editBuktiContainer');
             const editBuktiImg = document.getElementById('editBuktiImg');
-
-            if (item.bukti) {
-                editBuktiImg.src = item.bukti;
-                editBuktiContainer.classList.remove('hidden');
+            const editBuktiEmpty = document.getElementById('editBuktiEmpty');
+            const editBuktiInput = document.getElementById('editBuktiTransfer');
+            window.editBuktiBase64 = ''; window.editBuktiHapus = false;
+            if(editBuktiInput) editBuktiInput.value = '';
+            var _buktiEdit = (typeof getBuktiUrl==='function' ? getBuktiUrl(item) : (item.bukti || item.buktiUrl || item.buktiFoto || ''));
+            if(editBuktiContainer) editBuktiContainer.classList.remove('hidden');
+            if (_buktiEdit) {
+                if(editBuktiImg){ editBuktiImg.src = _buktiEdit; editBuktiImg.style.display='block'; }
+                if(editBuktiEmpty) editBuktiEmpty.style.display='none';
             } else {
-                editBuktiContainer.classList.add('hidden');
+                if(editBuktiImg){ editBuktiImg.src=''; editBuktiImg.style.display='none'; }
+                if(editBuktiEmpty) editBuktiEmpty.style.display='flex';
             }
 
             const modal = document.getElementById('editModal');
@@ -4079,10 +4203,15 @@ function closeSuccessModal(){ window.closeSuccessModal(); }
                 jumlah: parseFloat(rawJumlah) || 0,
                 ket: document.getElementById('editKet').value
             };
-
+            if(window.editBuktiHapus){
+              updatedData.bukti=''; updatedData.buktiUrl=''; updatedData.buktiFoto='';
+            } else if(window.editBuktiBase64){
+              updatedData.bukti=window.editBuktiBase64; updatedData.buktiUrl=window.editBuktiBase64; updatedData.buktiFoto=window.editBuktiBase64;
+            }
             db.collection("transactions").doc(docId).update(updatedData).then(() => {
+                window.editBuktiBase64=''; window.editBuktiHapus=false;
                 closeEditModal();
-            });
+            }).catch(function(err){ alert('Gagal simpan edit: '+err.message); });
         }
 
         function confirmDeleteTransaction() {
@@ -4138,12 +4267,14 @@ function closeSuccessModal(){ window.closeSuccessModal(); }
                     const elem = document.createElement('div');
                     elem.className = `flex justify-between items-center p-4 rounded-xl border cursor-pointer hover:shadow-md transition ${isMasuk ? 'bg-emerald-50/50 border-emerald-100 hover:bg-emerald-100/50' : 'bg-rose-50/50 border-rose-100 hover:bg-rose-100/50'}`;
                     elem.onclick = () => openEditModal(item.id);
+                    const _buktiUrlFirst = (typeof getBuktiUrl==='function' ? getBuktiUrl(item) : (item.bukti || item.buktiUrl || item.buktiFoto || ''));
+
                     elem.innerHTML = `
                         <div>
                             <div class="flex items-center gap-2 mb-1.5">
                                 <span class="text-xs font-bold px-2 py-1 rounded bg-blue-100 text-blue-700 shadow-sm">${penabungName}</span>
                                 <span class="text-sm font-bold ${isMasuk ? 'text-emerald-700' : 'text-rose-700'} uppercase">${item.ket}</span>
-                                ${item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-xs ml-1" title="Ada Bukti Transfer"></i>' : ''}
+                                ${_buktiUrlFirst ? '<i class="fa-solid fa-paperclip text-blue-500 text-xs ml-1" title="Ada Bukti Transfer"></i>' : ''}
                             </div>
                             <div class="text-xs text-slate-500 font-medium">${item.tgl} | ${item.jam}</div>
                         </div>
@@ -4406,8 +4537,8 @@ window.updateUI = function() {
         badgeLabel = item.penabung || 'HANI';
       }
       div.onclick = function(){ if(typeof openEditModal==='function') openEditModal(item.id); };
-      var clip = item.bukti ? '<i class="fa-solid fa-paperclip text-slate-400 text-[10px] ml-1"></i>' : '';
-      div.innerHTML = '<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+item.ket+extra+' '+clip+'</div><div class="date">'+item.tgl+' | '+item.jam+(item.tipe==='pengembalian'?' • Pinjam dibalikin':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(item.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
+      var clip = getBuktiUrl(item) ? '<i class="fa-solid fa-paperclip text-blue-500 text-[10px] ml-1" title="Ada Bukti Transfer"></i>' : '';
+       div.innerHTML = '<span class="badge '+badgeClass+'">'+badgeLabel+'</span><div class="main"><div class="title '+titleClass+'">'+item.ket+extra+' '+clip+'</div><div class="date">'+item.tgl+' | '+item.jam+(item.tipe==='pengembalian'?' • Pinjam dibalikin':'')+'</div></div><div class="side"><div class="amount '+amountClass+'">'+sign+new Intl.NumberFormat('id-ID').format(item.jumlah)+'</div><div class="edit"><i class="fa-solid fa-pen-to-square"></i></div></div>';
       listContainer.appendChild(div);
     });
   }
@@ -6153,7 +6284,8 @@ function resetTambahTransaksiFormV83(){
     if(previewContainer){
       previewContainer.classList.add('hidden');
       previewContainer.style.display = 'none';
-      previewContainer.innerHTML = '';
+      var _pi = document.getElementById('buktiPreviewImg');
+      if(_pi){ try{ _pi.src=''; _pi.removeAttribute('src'); }catch(e){} }
     }
     var preview = document.getElementById('buktiPreview');
     if(preview){
@@ -6194,7 +6326,7 @@ function resetTambahTransaksiFormV83(){
     
     // Global vars
     try{
-      window.tempBuktiBase64 = '';
+      window.tempBuktiBase64 = ''; try{ tempBuktiBase64=''; }catch(e){}
       window.buktiBase64 = '';
       window.selectedFile = null;
       window.buktiFile = null;
