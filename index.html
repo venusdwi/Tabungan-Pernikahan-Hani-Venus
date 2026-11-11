@@ -2091,7 +2091,11 @@ body.dark .lock-option p.text-slate-500 {
 body.dark #tentangHVTitle { color: #f8fafc !important; }
 </style>
 
-</head>
+<style id="v8-compact-dashboard">
+  /* V8: Dashboard nominal diperkecil + kolom dirapihin */
+  #totalSaldo{font-size:20px !important; line-height:1.2 !important;}
+  #topTotalIn, #topTotalOut{font-size:15px !important; line-height:1.25 !important; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+</style></head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
 <!-- OVERLAY LAYAR KUNCI PIN -->
@@ -2165,7 +2169,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 <button class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-[11px]" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="darkModeIcon"></i></button>
 </div>
 </div>
-<div class="text-center mb-8">
+<div class="text-center mb-3">
 <h1 class="font-serif text-3xl sm:text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-md">
                 TABUNGAN PERNIKAHAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-blue-200 to-indigo-300">Hani &amp; Venus</span> 💍
             </h1>
@@ -2206,36 +2210,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 </div>
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-<div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-<div class="relative z-10">
-<div class="flex items-center justify-between mb-2">
-<span class="text-sm font-bold uppercase tracking-wider text-blue-600">Sisa Saldo Aktual</span>
-<span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Net Balance</span>
-</div>
-<h2 class="font-num text-3xl sm:text-4xl font-extrabold text-blue-600 tracking-tight mb-1" id="totalSaldo">Rp 0</h2>
-</div>
-</div>
-<div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-<div class="relative z-10">
-<div class="flex items-center justify-between mb-2">
-<span class="text-sm font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span>
-<span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+ Masuk</span>
-</div>
-<h2 class="font-num text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight mb-1" id="topTotalIn">Rp 0</h2>
-</div>
-</div>
-<div class="glass-box rounded-2xl p-6 relative overflow-hidden group shadow-sm hover:shadow-md transition">
-<div class="relative z-10">
-<div class="flex items-center justify-between mb-2">
-<span class="text-sm font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span>
-<span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">- Keluar</span>
-</div>
-<h2 class="font-num text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight mb-1" id="topTotalOut">Rp 0</h2>
-</div>
-</div>
-</div>
-<div class="mt-5 space-y-3">
+<div cl<div class="grid grid-cols-2 gap-2 mb-3"> <div class="glass-box rounded-xl p-3 col-span-2 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between mb-1"> <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Sisa Saldo Aktual</span> <span class="bg-sky-100 text-sky-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">Net Balance</span> </div> <h2 class="font-num text-xl font-extrabold text-blue-600 tracking-tight" id="totalSaldo">Rp 0</h2> </div> </div> <div class="glass-box rounded-xl p-3 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between mb-1"> <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span> <span class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">+ Masuk</span> </div> <h2 class="font-num text-[15px] leading-tight font-extrabold text-emerald-600 tracking-tight" id="topTotalIn">Rp 0</h2> </div> </div> <div class="glass-box rounded-xl p-3 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between mb-1"> <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span> <span class="bg-rose-100 text-rose-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">- Keluar</span> </div> <h2 class="font-num text-[15px] leading-tight font-extrabold text-rose-600 tracking-tight" id="topTotalOut">Rp 0</h2> </div> </div> </div> <div class="mt-3 space-y-3">
 <div class="glass-box rounded-2xl p-4">
 <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie text-blue-600"></i> Alokasi Keuangan</h3><span class="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold">LIVE Firebase</span></div>
 <div class="relative h-[200px] flex items-center justify-center"><canvas id="financeDonutChart"></canvas><div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"><p class="text-[9px] font-bold text-slate-400 uppercase">Net Balance</p><p class="font-num text-base font-extrabold" id="donutCenterSaldo">Rp 0</p><p class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full mt-1" id="donutCenterPercent">0%</p></div></div>
@@ -7114,7 +7089,7 @@ console.log('V108 loaded - PIN confirm + auto-lock fix + switchTab preserved');
 <script>
 // V109 - Hapus Semua 2 Step + Tentang Tabungan HV + Versi Auto Update V109
 
-const APP_VERSION = 'V113.28';
+const APP_VERSION = 'V113.30';
 const APP_NAME = 'Tabungan HV';
 
 // Auto update version display
@@ -7359,6 +7334,187 @@ function kirimEditKeWAV113_5(){
 }
 window.kirimEditKeWAV113_5 = kirimEditKeWAV113_5;
 console.log('V113.9 CLEAN + WARNA - Saldo Periode merah jika minus hijau jika plus - Masuk biru - Kirim Edit format sama - no syntax error');
+</script>
+
+
+<style id="smoothTapToTopV10">
+/* V10 - TAP TO TOP SMOOTH DI SEMUA TAB */
+/* Matikan smooth bawaan browser biar tidak berantem sama animasi JS kita (penyebab ghost/dobel di video) */
+html, body{ scroll-behavior:auto !important; }
+/* Selama animasi tap-to-top: matikan SEMUA animasi/transisi tab + kurangi blur kaca biar 60fps & tidak ghosting */
+html.is-scrolling-to-top, html.is-scrolling-to-top *{ scroll-behavior:auto !important; }
+html.is-scrolling-to-top .tab-content, html.is-scrolling-to-top .tab-content.active{
+  animation:none !important; transition:none !important;
+}
+html.is-scrolling-to-top .glass-box{
+  backdrop-filter:blur(2px) saturate(1.05) !important;
+  -webkit-backdrop-filter:blur(2px) saturate(1.05) !important;
+  transition:none !important;
+}
+html.is-scrolling-to-top #tabContents{ transition:none !important; animation:none !important; }
+/* Judul tiap tab bisa di-tap buat ke atas - kasih hint */
+.tab-content.active > .text-center > h1.font-serif,
+.tab-content.active > .text-center > h2.font-serif{ cursor:pointer; }
+</style>
+<script id="smoothTapToTopV10JS">
+/* V10 - TAP TO TOP SMOOTH SEMUA TAB - override paling akhir, menang dari semua switchTab lama */
+(function(){
+  if(window.__smoothTapToTopV10) return;
+  window.__smoothTapToTopV10 = true;
+
+  function getY(){
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  }
+  function setY(y){
+    try{ window.scrollTo(0, y); }catch(e){}
+    try{ document.documentElement.scrollTop = y; }catch(e){}
+    try{ document.body.scrollTop = y; }catch(e){}
+    var tc = document.getElementById('tabContents'); if(tc) tc.scrollTop = 0;
+    var ab = document.getElementById('appBody'); if(ab && ab.scrollTop) ab.scrollTop = 0;
+    var ac = document.querySelector('.tab-content.active'); if(ac && ac.scrollTop) ac.scrollTop = 0;
+  }
+  function easeInOutCubic(x){ return x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; }
+
+  var rafId = null;
+  var cancelFn = null;
+
+  function cleanup(){
+    if(rafId){ try{ cancelAnimationFrame(rafId); }catch(e){} rafId = null; }
+    window.__isScrollingToTop = false;
+    try{ document.documentElement.classList.remove('is-scrolling-to-top'); }catch(e){}
+    if(cancelFn){
+      try{ window.removeEventListener('touchstart', cancelFn); }catch(e){}
+      try{ window.removeEventListener('wheel', cancelFn); }catch(e){}
+      try{ window.removeEventListener('touchmove', cancelFn); }catch(e){}
+      cancelFn = null;
+    }
+  }
+
+  // Smooth ke Y manapun, dipakai untuk tap-to-top (Y=0) & scroll smooth lain
+  function smoothScrollToY(targetY){
+    var startY = getY();
+    if(Math.abs(startY - targetY) <= 2){ setY(targetY); cleanup(); return; }
+    // Batalkan animasi lama biar tidak numpuk / dobel (penyebab loncat di video)
+    cleanup();
+    var dist = Math.abs(startY - targetY);
+    // Durasi ikut jarak: deket = cepet, jauh = agak lama tapi max 850ms biar tidak lelet
+    var duration = Math.min(850, Math.max(450, 300 + dist * 0.35));
+    var startTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    window.__isScrollingToTop = true;
+    try{ document.documentElement.classList.add('is-scrolling-to-top'); }catch(e){}
+    var cancelled = false;
+    cancelFn = function(){ cancelled = true; cleanup(); };
+    window.addEventListener('touchstart', cancelFn, {passive:true});
+    window.addEventListener('wheel', cancelFn, {passive:true});
+    window.addEventListener('touchmove', cancelFn, {passive:true});
+    function step(now){
+      if(cancelled) return;
+      var nowMs = now || ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now());
+      var p = Math.min(1, (nowMs - startTime) / duration);
+      var e = easeInOutCubic(p);
+      var y = Math.round(startY + (targetY - startY) * e);
+      setY(y);
+      if(p < 1){
+        rafId = requestAnimationFrame(step);
+      } else {
+        setY(targetY);
+        cleanup();
+      }
+    }
+    rafId = requestAnimationFrame(step);
+  }
+
+  function smoothScrollToTop(){
+    smoothScrollToY(0);
+  }
+  window.smoothScrollToTop = smoothScrollToTop;
+  window.scrollToTopSmooth = smoothScrollToTop;
+  window.smoothScrollToY = smoothScrollToY;
+
+  /* Tangkap semua window.scrollTo({behavior:'smooth'}) lama di app (misal habis submit)
+     biar semuanya pakai animasi custom yang sama, tidak pakai smooth bawaan yang patah-patah */
+  try{
+    var _nativeScrollTo = window.scrollTo.bind(window);
+    var _nativeScroll = window.scroll ? window.scroll.bind(window) : _nativeScrollTo;
+    function patchedScrollTo(){
+      var a = arguments[0];
+      if(a && typeof a === 'object' && a.behavior === 'smooth'){
+        var ty = (typeof a.top === 'number') ? a.top : getY();
+        smoothScrollToY(ty);
+        return;
+      }
+      return _nativeScrollTo.apply(window, arguments);
+    }
+    window.scrollTo = patchedScrollTo;
+    window.scroll = patchedScrollTo;
+  }catch(e){}
+
+  /* ===== OVERRIDE FINAL switchTab - ini yang menang ===== */
+  function switchTabSmooth(tabName){
+    if(tabName === 'tambah'){
+      if(typeof openTambahModal === 'function'){ openTambahModal(); }
+      return;
+    }
+    var cur = window.currentActiveTab;
+    if(typeof cur === 'undefined' || !cur){
+      try{ cur = (typeof currentActiveTab !== 'undefined') ? currentActiveTab : 'dashboard'; }catch(e){ cur = 'dashboard'; }
+    }
+    /* TAP TAB YANG LAGI AKTIF = TAP TO TOP -> smooth, tanpa re-render tab (ini kunci anti-ghost) */
+    if(tabName === cur){
+      smoothScrollToTop();
+      return;
+    }
+    /* PINDAH TAB BEDA -> tetap instant (biar tidak ghost), scroll langsung 0 tanpa smooth */
+    cleanup();
+    var oldEl = document.getElementById('tab-' + cur);
+    var newEl = document.getElementById('tab-' + tabName);
+    if(oldEl){ oldEl.classList.remove('active'); oldEl.style.display = 'none'; }
+    if(newEl){ newEl.classList.add('active'); newEl.style.display = 'block'; }
+    window.currentActiveTab = tabName;
+    try{ currentActiveTab = tabName; }catch(e){}
+    document.querySelectorAll('.bottom-tab-item').forEach(function(b){
+      b.classList.remove('active');
+      if(b.dataset.tab === tabName) b.classList.add('active');
+    });
+    /* Instant ke atas untuk tab baru - pakai native yang sudah dipatch ke instant karena behavior bukan smooth */
+    try{ _nativeScrollTo ? _nativeScrollTo(0, 0) : window.scrollTo(0, 0); }catch(e){}
+    try{ document.documentElement.scrollTop = 0; }catch(e){}
+    try{ document.body.scrollTop = 0; }catch(e){}
+    var tc2 = document.getElementById('tabContents'); if(tc2) tc2.scrollTop = 0;
+    if(tabName === 'laporan' && typeof updateLaporanUI === 'function'){ setTimeout(updateLaporanUI, 50); }
+    if(tabName === 'dashboard' && typeof updateDashboardDiagram === 'function'){ setTimeout(updateDashboardDiagram, 50); }
+    try{ sessionStorage.setItem('lastActiveTab', tabName); }catch(e){}
+    if(typeof applyV100Fix === 'function'){ setTimeout(applyV100Fix, 20); }
+  }
+  window.switchTab = switchTabSmooth;
+  try{ switchTab = switchTabSmooth; }catch(e){}
+
+  /* TAP JUDUL TIAP TAB JUGA KE ATAS - Dashboard H1, Laporan/Riwayat/Setelan H2 */
+  document.addEventListener('click', function(e){
+    if(window.__isScrollingToTop) return;
+    var h = e.target && e.target.closest ? e.target.closest('.tab-content.active > .text-center > h1.font-serif, .tab-content.active > .text-center > h2.font-serif') : null;
+    if(h){
+      // Jangan ganggu kalau yang di-tap itu tombol/link di dalam judul (tidak ada, tapi jaga-jaga)
+      if(e.target.closest('button, a')) return;
+      e.preventDefault();
+      smoothScrollToTop();
+    }
+  });
+
+  /* Kalau user tap status bar / browser ke atas di iOS, browser akan scroll native.
+     Kita jaga biar tidak ghost: selama scroll cepat, matikan animasi tab sesaat */
+  var _scrollTimer = null;
+  window.addEventListener('scroll', function(){
+    if(window.__isScrollingToTop) return;
+    try{ document.documentElement.classList.add('is-scrolling-to-top'); }catch(e){}
+    if(_scrollTimer) clearTimeout(_scrollTimer);
+    _scrollTimer = setTimeout(function(){
+      try{ document.documentElement.classList.remove('is-scrolling-to-top'); }catch(e){}
+    }, 150);
+  }, {passive:true});
+
+  console.log('V10 smoothTapToTop loaded - tap tab aktif / tap judul = smooth ke atas semua tab');
+})();
 </script>
 
 </body>
