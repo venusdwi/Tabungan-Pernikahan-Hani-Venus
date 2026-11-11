@@ -2276,12 +2276,12 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 </div>
 </div>
 <div class="grid grid-cols-1 gap-2 mb-3">
-<div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p></div>
+<div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-slate-500 uppercase">Saldo Periode (Khusus Bulan Ini)</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSaldo">Rp 0</h3><p class="text-[11px] text-slate-500" id="laporanPeriodeLabel">Semua Periode</p><p class="text-[11px] text-slate-400 mt-1">Masuk - Keluar + Refund yang nutup Keluar bulan ini. Refund bulan lalu TIDAK masuk sini.</p></div><div class="glass-box rounded-xl p-3 border-emerald-200 bg-emerald-50/50"><p class="text-[10px] font-bold text-emerald-700 uppercase">Sisa Saldo Aktual (Total Semua Bulan)</p><h3 class="font-num text-xl font-extrabold text-emerald-600" id="laporanSisaSaldo">Rp 0</h3><p class="text-[11px] text-slate-500">Semua refund masuk ke sini, termasuk 122.500 refund bulan lalu. Rumus: Total Masuk - Total Keluar + Total Refund.</p></div>
 <div class="grid grid-cols-2 gap-2"><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-blue-600 uppercase">Masuk</p><p class="font-num text-sm font-bold text-blue-600" id="laporanMasuk">Rp 0</p></div><div class="glass-box rounded-xl p-3"><p class="text-[10px] font-bold text-rose-600 uppercase">Keluar</p><p class="font-num text-sm font-bold text-rose-600" id="laporanKeluar">Rp 0</p></div></div>
 <div id="infoPengembalian" class="hidden glass-box rounded-xl p-3 mt-2 border-sky-200 bg-sky-50/50">
-<p class="text-[10px] font-bold text-sky-600 uppercase">Pengembalian Dana (Refund) - Masuk Saldo, Bukan Pemasukan</p>
+<p class="text-[10px] font-bold text-sky-600 uppercase">Pengembalian Dana (Refund) - Bukan Pemasukan</p>
 <p class="font-num text-sm font-bold text-sky-600" id="textPengembalian">Rp 0</p>
-<p class="text-[10px] text-slate-500 mt-1">Duit ganti checkout bulan lalu, pisah keterangan:</p>
+<p class="text-[10px] text-slate-500 mt-1">Uang kembali. Yang nutup Keluar bulan ini masuk Saldo Periode, sisanya (refund bulan lalu) cuma ke Sisa Saldo Aktual:</p>
 <div id="listPengembalian" class="mt-2"></div>
 </div>
 </div>
@@ -2757,19 +2757,81 @@ Simpan
             }
         }
 
+        // ===== V4 - FILTER REAL-TIME WIB (Riwayat + Laporan) =====
+        // Satu-satunya sumber kebenaran filter bulan/tahun: WIB sekarang (Asia/Jakarta).
+        // Dipakai saat load, saat Reset, dan saat ganti bulan WIB (cek tiap menit).
+        // Kalau user sudah ganti filter manual, jangan ditimpa (kecuali force=true dari tombol Reset).
+        function ensureYearOption(sel, yearStr){
+          try{
+            if(!sel) return;
+            for(var i=0;i<sel.options.length;i++){ if(String(sel.options[i].value)===String(yearStr)) return; }
+            var opt=document.createElement('option'); opt.value=String(yearStr); opt.text=String(yearStr);
+            sel.appendChild(opt);
+          }catch(e){}
+        }
+        function applyRealTimeFilters(force){
+          try{
+            var wib = (typeof getWIBNow==='function') ? getWIBNow() : null;
+            var curMonth = wib ? String(wib.month) : String(new Date().getMonth()+1).padStart(2,'0');
+            var curYear = wib ? String(wib.year) : String(new Date().getFullYear());
+            window._autoFilterMonth = curMonth; window._autoFilterYear = curYear;
+            var ids = ['filterBulan','filterTahun','filterBulanLaporan','filterTahunLaporan'];
+            ids.forEach(function(id){
+              var el=document.getElementById(id);
+              if(!el) return;
+              var isBulan = id.toLowerCase().indexOf('bulan')>-1;
+              var target = isBulan ? curMonth : curYear;
+              if(!isBulan) ensureYearOption(el, curYear);
+              // Jangan timpa pilihan manual user, kecuali force (Reset)
+              if(!force && el.dataset && el.dataset.userChanged==='1') return;
+              el.value = target;
+              if(el.value!==target){
+                // Fallback: cari option yang cocok (misal value "11" vs 11)
+                for(var i=0;i<el.options.length;i++){ if(String(el.options[i].value)===String(target) || String(el.options[i].value)===String(parseInt(target,10))){ el.selectedIndex=i; break; } }
+              }
+            });
+            return {month:curMonth, year:curYear};
+          }catch(e){ console.log('applyRealTimeFilters error', e); return null; }
+        }
+        window.applyRealTimeFilters = applyRealTimeFilters;
+        // Tandai kalau user ganti filter manual, supaya real-time tidak menimpa pilihan dia
+        document.addEventListener('change', function(e){
+          try{
+            var id = e.target && e.target.id ? e.target.id : '';
+            if(id==='filterBulan'||id==='filterTahun'||id==='filterBulanLaporan'||id==='filterTahunLaporan'){
+              e.target.dataset.userChanged='1';
+            }
+          }catch(err){}
+        });
+        // Cek ganti bulan WIB tiap 60 detik: kalau filter masih di mode auto (bukan pilihan manual),
+        // dan bulan sudah ganti, geser otomatis ke bulan baru + refresh.
+        setInterval(function(){
+          try{
+            var wib = (typeof getWIBNow==='function') ? getWIBNow() : null;
+            if(!wib) return;
+            var cm=String(wib.month), cy=String(wib.year);
+            if(window._autoFilterMonth && (cm!==window._autoFilterMonth || cy!==window._autoFilterYear)){
+              var fb=document.getElementById('filterBulan'), ft=document.getElementById('filterTahun');
+              var fbL=document.getElementById('filterBulanLaporan'), ftL=document.getElementById('filterTahunLaporan');
+              var stillAuto = (!fb || fb.dataset.userChanged!=='1') && (!ft || ft.dataset.userChanged!=='1') && (!fbL || fbL.dataset.userChanged!=='1') && (!ftL || ftL.dataset.userChanged!=='1');
+              if(stillAuto){
+                applyRealTimeFilters(true);
+                if(typeof updateUI==='function') updateUI();
+                if(typeof updateLaporanUI==='function') updateLaporanUI();
+              }
+              window._autoFilterMonth=cm; window._autoFilterYear=cy;
+            }
+          }catch(e){}
+        }, 60000);
+
         function setNowDateTimeAndFilter() {
             const wib = getWIBNow();
             const tglEl = document.getElementById('tglTransaksi');
             const jamEl = document.getElementById('jamTransaksi');
             if(tglEl) tglEl.value = wib.isoDate;
             if(jamEl) jamEl.value = wib.time;
-            // Keep filter all (don't override user's filter)
-            try {
-                const fb = document.getElementById('filterBulan');
-                const ft = document.getElementById('filterTahun');
-                if(fb && !fb.dataset.userChanged) fb.value = 'all';
-                if(ft && !ft.dataset.userChanged) ft.value = 'all';
-            } catch(e){}
+            // V4: filter Riwayat + Laporan ikut bulan/tahun WIB sekarang, bukan 'all'
+            try { if(typeof applyRealTimeFilters==='function') applyRealTimeFilters(false); } catch(e){}
             console.log('WIB Real-time:', wib.full, 'ISO:', wib.isoDate, 'Time:', wib.time);
         }
 
@@ -3259,22 +3321,29 @@ Simpan
             });
 
             var totalKeluarNetPDF = totalKeluarGrossPDF - totalKembaliPDF;
-            var netBalancePDF = totalMasukPDF - totalKeluarGrossPDF; // V113.28 FIX: Refund jangan dihitung di saldo periode
+            // V7: Saldo Periode = Masuk - Keluar + refund yang nutup Keluar periode ini (min Refund, Keluar). Kelebihan refund = bulan lalu, cuma ke Sisa.
+            var refundDiPeriodePDF = Math.min(totalKembaliPDF, totalKeluarGrossPDF);
+            var saldoPeriodePDF = totalMasukPDF - totalKeluarGrossPDF + refundDiPeriodePDF;
+            var _mAllPDF=0,_kAllPDF=0,_rAllPDF=0;
+            try{ transactions.forEach(function(it){ if(it.tipe==='pemasukan') _mAllPDF+=it.jumlah; if(it.tipe==='pengeluaran') _kAllPDF+=it.jumlah; if(it.tipe==='pengembalian') _rAllPDF+=it.jumlah; }); }catch(e){}
+            var netBalancePDF = _mAllPDF - _kAllPDF + _rAllPDF; // Sisa Saldo Aktual (total)
 
             const finalY = doc.lastAutoTable.finalY + 10;
             doc.setFontSize(11);
             doc.text(`Total Pemasukan     : Rp ${new Intl.NumberFormat('id-ID').format(totalMasukPDF)}`, 14, finalY);
             doc.text(`Total Pengeluaran   : Rp ${new Intl.NumberFormat('id-ID').format(totalKeluarGrossPDF)}`, 14, finalY + 6);
             if(totalKembaliPDF>0){
-              doc.text(`Total Pengembalian  : Rp ${new Intl.NumberFormat('id-ID').format(totalKembaliPDF)} (masuk saldo aktual, tidak dihitung di saldo periode)`, 14, finalY + 12);
+              doc.text(`Total Pengembalian  : Rp ${new Intl.NumberFormat('id-ID').format(totalKembaliPDF)} (Bukan Pemasukan)`, 14, finalY + 12);
               doc.setFont(undefined, 'bold');
-              doc.text(`Total Saldo Periode (Masuk - Keluar) : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 20);
+              doc.text(`Saldo Periode (Masuk - Keluar + Refund bln ini) : Rp ${new Intl.NumberFormat('id-ID').format(saldoPeriodePDF)}`, 14, finalY + 20);
+              doc.text(`Sisa Saldo Aktual (Total) : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 26);
               doc.setFont(undefined, 'normal');
               doc.setFontSize(9);
-              doc.text(`(Rumus: ${totalMasukPDF} - ${totalKeluarGrossPDF} = ${netBalancePDF}) | Refund ${totalKembaliPDF} masuk Sisa Saldo Aktual`, 14, finalY + 26);
+              doc.text(`(Saldo Periode: Masuk ${totalMasukPDF} - Keluar ${totalKeluarGrossPDF} + Refund bln ini ${refundDiPeriodePDF} = ${saldoPeriodePDF}) | (Sisa: Total Masuk ${_mAllPDF} - Total Keluar ${_kAllPDF} + Total Refund ${_rAllPDF} = ${netBalancePDF})`, 14, finalY + 32);
             } else {
               doc.setFont(undefined, 'bold');
-              doc.text(`Total Saldo Periode (Masuk - Keluar) : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 14);
+              doc.text(`Saldo Periode (Masuk - Keluar + Refund bln ini) : Rp ${new Intl.NumberFormat('id-ID').format(saldoPeriodePDF)}`, 14, finalY + 14);
+              doc.text(`Sisa Saldo Aktual (Total) : Rp ${new Intl.NumberFormat('id-ID').format(netBalancePDF)}`, 14, finalY + 20);
             }
 
             doc.save(`Rekap_Tabungan_${namaBulan}_${namaTahunLabel}.pdf`);
@@ -4224,8 +4293,13 @@ function closeSuccessModal(){ window.closeSuccessModal(); }
         }
 
         function resetFilter() {
-            document.getElementById('filterBulan').value = 'all';
-            document.getElementById('filterTahun').value = 'all';
+            // V4 Reset = balik ke bulan/tahun sekarang (real-time), bukan Semua
+            try{
+              var fb=document.getElementById('filterBulan'), ft=document.getElementById('filterTahun');
+              if(fb) fb.dataset.userChanged='';
+              if(ft) ft.dataset.userChanged='';
+              if(typeof applyRealTimeFilters==='function') applyRealTimeFilters(true);
+            }catch(e){}
             updateUI();
         }
 
@@ -4293,7 +4367,7 @@ function closeSuccessModal(){ window.closeSuccessModal(); }
 
             const netBalance = totalMasuk - totalKeluar + totalKembali;
             document.getElementById('totalSaldo').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(netBalance)}`;
-            document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`;
+            document.getElementById('topTotalIn').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalMasuk)}`; // V5: refund bukan pemasukan
             document.getElementById('topTotalOut').innerText = `Rp ${new Intl.NumberFormat('id-ID').format(totalKeluar)}`;
         }
     </script>
@@ -4381,18 +4455,19 @@ document.addEventListener('DOMContentLoaded',function(){ applyDarkMode(); });
 
 function syncOpacitySliders(v){ var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'), vd=document.getElementById('opacityValue'); if(s1) s1.value=v; if(s2) s2.value=v; if(vd) vd.innerText=Math.round(v*100)+'%'; document.documentElement.style.setProperty('--box-opacity',v); try{localStorage.setItem('wedding_box_opacity',v);}catch(e){} }
 function syncLaporanFilter(){ updateUI(); updateLaporanUI(); }
-function resetFilterLaporan(){ document.getElementById('filterBulanLaporan').value='all'; document.getElementById('filterTahunLaporan').value='all'; syncLaporanFilter(); }
+function resetFilterLaporan(){ try{ var fb=document.getElementById('filterBulanLaporan'), ft=document.getElementById('filterTahunLaporan'); if(fb) fb.dataset.userChanged=''; if(ft) ft.dataset.userChanged=''; if(typeof applyRealTimeFilters==='function') applyRealTimeFilters(true); }catch(e){} syncLaporanFilter(); }
 var financeChartInstance=null;
 function initFinanceChart(){ var ctx=document.getElementById('financeDonutChart'); if(!ctx) return; if(financeChartInstance){ try{financeChartInstance.destroy();}catch(e){} } financeChartInstance=new Chart(ctx,{type:'doughnut',data:{labels:['Masuk','Keluar'],datasets:[{data:[1,0.1],backgroundColor:['#0284c7','#fb7185'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,0.9)',padding:10,cornerRadius:10,callbacks:{label:function(c){ return c.label+': Rp '+new Intl.NumberFormat('id-ID').format(c.parsed); } } }},animation:{duration:600}}}); }
 function updateDashboardDiagram(){
   if(typeof transactions==='undefined' || !transactions) return;
   var m=0,k=0,h=0,v=0,b=0;
-  transactions.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') k-=it.jumlah; var p=(it.penabung||'').toUpperCase(); if(p.indexOf('HANI')>-1&&p.indexOf('BERSAMA')===-1) h+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('VENUS')>-1&&p.indexOf('BERSAMA')===-1) v+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('BERSAMA')>-1) b+=(it.tipe==='pemasukan'?it.jumlah:0); });
-  var s=m-k, up=m>0?Math.round(k/m*100):0;
-  if(financeChartInstance){ financeChartInstance.data.datasets[0].data=[m||1,k||0.1]; financeChartInstance.update(); }
+  var rD=0;
+  transactions.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') rD+=it.jumlah; var p=(it.penabung||'').toUpperCase(); if(p.indexOf('HANI')>-1&&p.indexOf('BERSAMA')===-1) h+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('VENUS')>-1&&p.indexOf('BERSAMA')===-1) v+=(it.tipe==='pemasukan'?it.jumlah:0); else if(p.indexOf('BERSAMA')>-1) b+=(it.tipe==='pemasukan'?it.jumlah:0); });
+  var masukD=m, keluarD=k, s=masukD-keluarD+rD, up=masukD>0?Math.round(keluarD/masukD*100):0; // V6: Dashboard = Sisa Saldo Aktual (total semua bulan), BUKAN Saldo Periode. Refund masuk ke total ini.
+  if(financeChartInstance){ financeChartInstance.data.datasets[0].data=[masukD||1,keluarD||0.1]; financeChartInstance.update(); }
   function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
   function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
-  el('diagramSaldo',fmt(s)); el('diagramMasuk',fmt(m)); el('diagramKeluar',fmt(k)); el('donutCenterSaldo',fmt(s)); el('donutCenterPercent',up+'% terpakai');
+  el('diagramSaldo',fmt(s)); el('diagramMasuk',fmt(masukD)); el('diagramKeluar',fmt(keluarD)); el('donutCenterSaldo',fmt(s)); el('donutCenterPercent',up+'% terpakai');
   el('haniContrib',fmt(h)); el('venusContrib',fmt(v)); 
   var tot=h+v+b||1; el('haniPercent',Math.round(h/tot*100)+'%'); el('venusPercent',Math.round(v/tot*100)+'%');
   var hb=document.getElementById('haniBar'); if(hb) hb.style.width=(h/tot*100)+'%'; var vb=document.getElementById('venusBar'); if(vb) vb.style.width=(v/tot*100)+'%';
@@ -4413,8 +4488,20 @@ function updateLaporanUI(){
   var sb=sbEl.value, st=stEl.value; var tp=tpEl ? tpEl.value : 'all';
   var filt=transactions.filter(function(it){ if(!it.tgl) return true; var p=it.tgl.split('-'); var matchBulan=(sb==='all'||p[1]===sb); var matchTahun=(st==='all'||p[0]===st); var matchTipe=(tp==='all'||it.tipe===tp); return matchBulan && matchTahun && matchTipe; });
   var m=0,k=0,r=0; filt.forEach(function(it){ if(it.tipe==='pemasukan') m+=it.jumlah; if(it.tipe==='pengeluaran') k+=it.jumlah; if(it.tipe==='pengembalian') r+=it.jumlah; });
-  var kNet = k - r;
-  var s=m-k; // V113.28 FIX: Refund jangan dihitung di saldo periode
+  // V7 FIX - FINAL: Bedakan 2 refund di November:
+  // - Ganti uang 6.000 = balikin pengeluaran BULAN INI (CO seserahan 2 Nov) -> HARUS nutup -6.000 di Saldo Periode
+  // - Refund 122.500 = balikin pengeluaran BULAN LALU -> JANGAN masuk Saldo Periode, cuma ke Sisa Saldo Aktual
+  // Cara hitung yang bener: refund yang masuk Saldo Periode = min(Total Refund periode, Total Keluar periode).
+  // Kelebihannya = refund bulan lalu, cuma ke Sisa Saldo Aktual.
+  // Contoh Nov 2026: Saldo Periode = 0 - 6.000 + min(128.500, 6.000)=6.000 = 0 (bukan -6.000, bukan 122.500)
+  var masukLap = m;
+  var keluarLap = k;
+  var refundDiPeriode = Math.min(r, k);
+  var refundBulanLalu = r - refundDiPeriode;
+  var s = masukLap - keluarLap + refundDiPeriode;
+  var mAll=0,kAll=0,rAll=0;
+  try{ transactions.forEach(function(it){ if(it.tipe==='pemasukan') mAll+=it.jumlah; if(it.tipe==='pengeluaran') kAll+=it.jumlah; if(it.tipe==='pengembalian') rAll+=it.jumlah; }); }catch(e){}
+  var sisaAktual = mAll - kAll + rAll;
   function fmt(n){ return 'Rp '+new Intl.NumberFormat('id-ID').format(n); }
   function fmtMinus(n){ 
     if(n<0) return 'Rp -' + new Intl.NumberFormat('id-ID').format(Math.abs(n));
@@ -4422,7 +4509,25 @@ function updateLaporanUI(){
   }
   function el(id,val){ var e=document.getElementById(id); if(e) e.innerText=val; }
   // V113.27 FIX: Keluar tampil Gross 122.500, bukan Net -16k
-  el('laporanSaldo',fmtMinus(s)); el('laporanMasuk',fmt(m)); el('laporanKeluar',fmt(k));
+  el('laporanSaldo',fmtMinus(s)); el('laporanMasuk',fmt(masukLap)); el('laporanKeluar',fmt(keluarLap)); el('laporanSisaSaldo',fmtMinus(sisaAktual));
+  try{ var _sisaEl=document.getElementById('laporanSisaSaldo'); if(_sisaEl){ if(sisaAktual<0){ _sisaEl.classList.remove('text-emerald-600'); _sisaEl.classList.add('text-rose-600'); } else { _sisaEl.classList.remove('text-rose-600'); _sisaEl.classList.add('text-emerald-600'); } } }catch(e){}
+  // Tampilkan box rincian refund kalau ada, biar jelas Masuk-nya sudah termasuk refund
+  try{
+    var _infoPeng=document.getElementById('infoPengembalian');
+    var _txtPeng=document.getElementById('textPengembalian');
+    var _listPeng=document.getElementById('listPengembalian');
+    if(_infoPeng){
+      if(r>0){
+        _infoPeng.classList.remove('hidden');
+        if(_txtPeng) _txtPeng.innerText=fmt(r);
+        if(_listPeng){
+          var _rp=filt.filter(function(x){return x.tipe==='pengembalian';});
+          var _rumus='<div class="text-[11px] bg-white border border-sky-200 rounded-lg px-2 py-1.5 mb-2 text-slate-600 leading-relaxed">Saldo Periode: <b>Masuk ('+fmt(m)+')</b> - <b>Keluar ('+fmt(k)+')</b> + <b>Refund bulan ini ('+fmt(refundDiPeriode)+')</b> = <b class="text-emerald-600">'+fmtMinus(s)+'</b><br/><span class="text-slate-500">Refund total '+fmt(r)+' = '+fmt(refundDiPeriode)+' nutup Keluar bulan ini + '+fmt(refundBulanLalu)+' refund bulan lalu (cuma ke Sisa Saldo Aktual)</span><br/>Sisa Saldo Aktual: <b>Total Masuk ('+fmt(mAll)+')</b> - <b>Total Keluar ('+fmt(kAll)+')</b> + <b>Total Refund ('+fmt(rAll)+')</b> = <b class="text-emerald-600">'+fmtMinus(sisaAktual)+'</b></div>';
+          _listPeng.innerHTML=_rumus+_rp.map(function(x){return '<div class="flex justify-between text-[11px] py-1 border-b border-sky-100 last:border-0"><span class="text-slate-600">'+(x.ket||'Pengembalian')+' • '+x.tgl+'</span><span class="font-bold text-sky-600">+ Rp '+new Intl.NumberFormat('id-ID').format(x.jumlah)+'</span></div>';}).join('');
+        }
+      } else { _infoPeng.classList.add('hidden'); }
+    }
+  }catch(e){}
   // === V113.9: Saldo periode otomatis merah jika minus, hijau jika tidak ===
   var saldoEl = document.getElementById('laporanSaldo');
   if(saldoEl){
@@ -4477,9 +4582,8 @@ document.addEventListener('DOMContentLoaded',function(){
   setTimeout(function(){ initFinanceChart(); updateDashboardDiagram(); },900);
   var s1=document.getElementById('opacitySlider'), s2=document.getElementById('opacitySliderSetelan'); 
   if(s1&&s2){ var so=localStorage.getItem('wedding_box_opacity')||'0.75'; s1.value=so; s2.value=so; var vd=document.getElementById('opacityValue'); if(vd) vd.innerText=Math.round(so*100)+'%'; } 
-  // Default laporan ke 'all' biar data langsung kelihatan
-  var fb=document.getElementById('filterBulanLaporan'), ft=document.getElementById('filterTahunLaporan'); 
-  if(fb) fb.value='all'; if(ft) ft.value='all';
+  // V4 Default laporan = bulan/tahun WIB sekarang (real-time)
+  try{ if(typeof applyRealTimeFilters==='function') applyRealTimeFilters(false); }catch(e){}
 });
 
 var _origUpdateUI = window.updateUI;
@@ -4546,7 +4650,7 @@ window.updateUI = function() {
   var elSaldo = document.getElementById('totalSaldo');
   if (elSaldo) elSaldo.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(net);
   var elIn = document.getElementById('topTotalIn');
-  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk);
+  if (elIn) elIn.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalMasuk); // V5: refund bukan pemasukan
   var elOut = document.getElementById('topTotalOut');
   if (elOut) elOut.innerText = 'Rp '+new Intl.NumberFormat('id-ID').format(totalKeluar);
   try { if(typeof updateDashboardDiagram==='function') updateDashboardDiagram(); } catch(e){}
@@ -5993,9 +6097,9 @@ document.addEventListener('DOMContentLoaded', function(){
   console.log('V76 Real-time filter init');
   
   setTimeout(function(){
-    var now = new Date();
-    var currentMonth = now.getMonth() + 1; // 10 = Oktober
-    var currentYear = now.getFullYear(); // 2026
+    var _wibV76 = (typeof getWIBNow==='function') ? getWIBNow() : null;
+    var currentMonth = _wibV76 ? parseInt(_wibV76.month,10) : (new Date().getMonth() + 1);
+    var currentYear = _wibV76 ? parseInt(_wibV76.year,10) : new Date().getFullYear();
     
     console.log('Real-time now:', currentMonth, currentYear, 'Oktober 2026');
     
