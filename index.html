@@ -2095,7 +2095,17 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
   /* V8: Dashboard nominal diperkecil + kolom dirapihin */
   #totalSaldo{font-size:20px !important; line-height:1.2 !important;}
   #topTotalIn, #topTotalOut{font-size:15px !important; line-height:1.25 !important; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-</style></head>
+</style>
+<style id="v11-sejajar-pengeluaran">
+/* V11 - Sejajarkan TOTAL PENGELUARAN dengan - Keluar, sama kayak TOTAL PEMASUKAN dengan + Masuk */
+.top-stat-header{ display:flex !important; align-items:center !important; justify-content:space-between !important; gap:4px !important; min-height:16px !important; }
+.top-stat-header > span:first-child{ white-space:nowrap !important; flex:1 1 auto !important; min-width:0 !important; letter-spacing:0 !important; }
+.top-stat-header > span:last-child{ white-space:nowrap !important; flex-shrink:0 !important; }
+/* Samakan tinggi kedua kartu biar nominal Rp-nya juga sejajar */
+.glass-box:has(#topTotalIn), .glass-box:has(#topTotalOut){ display:flex; flex-direction:column; justify-content:center; }
+</style>
+
+</head>
 <body class="min-h-screen text-slate-800 pb-12 relative overflow-x-hidden bg-slate-950" id="appBody">
 <div class="zoom-in-bg opacity-100" id="bgImageLayer"></div>
 <!-- OVERLAY LAYAR KUNCI PIN -->
@@ -2210,7 +2220,7 @@ body.dark #tentangHVTitle { color: #f8fafc !important; }
 </div>
 </div>
 </div>
-<div cl<div class="grid grid-cols-2 gap-2 mb-3"> <div class="glass-box rounded-xl p-3 col-span-2 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between mb-1"> <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Sisa Saldo Aktual</span> <span class="bg-sky-100 text-sky-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">Net Balance</span> </div> <h2 class="font-num text-xl font-extrabold text-blue-600 tracking-tight" id="totalSaldo">Rp 0</h2> </div> </div> <div class="glass-box rounded-xl p-3 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between mb-1"> <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Total Pemasukan</span> <span class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">+ Masuk</span> </div> <h2 class="font-num text-[15px] leading-tight font-extrabold text-emerald-600 tracking-tight" id="topTotalIn">Rp 0</h2> </div> </div> <div class="glass-box rounded-xl p-3 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between mb-1"> <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600">Total Pengeluaran</span> <span class="bg-rose-100 text-rose-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">- Keluar</span> </div> <h2 class="font-num text-[15px] leading-tight font-extrabold text-rose-600 tracking-tight" id="topTotalOut">Rp 0</h2> </div> </div> </div> <div class="mt-3 space-y-3">
+<div cl<div class="grid grid-cols-2 gap-2 mb-3"> <div class="glass-box rounded-xl p-3 col-span-2 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between mb-1"> <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Sisa Saldo Aktual</span> <span class="bg-sky-100 text-sky-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">Net Balance</span> </div> <h2 class="font-num text-xl font-extrabold text-blue-600 tracking-tight" id="totalSaldo">Rp 0</h2> </div> </div> <div class="glass-box rounded-xl p-3 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between gap-1 mb-1 top-stat-header"> <span class="text-[9px] font-bold uppercase text-emerald-600 whitespace-nowrap">Total Pemasukan</span> <span class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap shrink-0">+ Masuk</span> </div> <h2 class="font-num text-[15px] leading-tight font-extrabold text-emerald-600 tracking-tight" id="topTotalIn">Rp 0</h2> </div> </div> <div class="glass-box rounded-xl p-3 relative overflow-hidden"> <div class="relative z-10"> <div class="flex items-center justify-between gap-1 mb-1 top-stat-header"> <span class="text-[9px] font-bold uppercase text-rose-600 whitespace-nowrap">Total Pengeluaran</span> <span class="bg-rose-100 text-rose-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap shrink-0">- Keluar</span> </div> <h2 class="font-num text-[15px] leading-tight font-extrabold text-rose-600 tracking-tight" id="topTotalOut">Rp 0</h2> </div> </div> </div> <div class="mt-3 space-y-3">
 <div class="glass-box rounded-2xl p-4">
 <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-chart-pie text-blue-600"></i> Alokasi Keuangan</h3><span class="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full font-bold">LIVE Firebase</span></div>
 <div class="relative h-[200px] flex items-center justify-center"><canvas id="financeDonutChart"></canvas><div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"><p class="text-[9px] font-bold text-slate-400 uppercase">Net Balance</p><p class="font-num text-base font-extrabold" id="donutCenterSaldo">Rp 0</p><p class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full mt-1" id="donutCenterPercent">0%</p></div></div>
@@ -7089,7 +7099,7 @@ console.log('V108 loaded - PIN confirm + auto-lock fix + switchTab preserved');
 <script>
 // V109 - Hapus Semua 2 Step + Tentang Tabungan HV + Versi Auto Update V109
 
-const APP_VERSION = 'V113.30';
+const APP_VERSION = 'V113.31';
 const APP_NAME = 'Tabungan HV';
 
 // Auto update version display
