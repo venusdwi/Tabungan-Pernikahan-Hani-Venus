@@ -7099,7 +7099,7 @@ console.log('V108 loaded - PIN confirm + auto-lock fix + switchTab preserved');
 <script>
 // V109 - Hapus Semua 2 Step + Tentang Tabungan HV + Versi Auto Update V109
 
-const APP_VERSION = 'V113.31';
+const APP_VERSION = 'V113.32';
 const APP_NAME = 'Tabungan HV';
 
 // Auto update version display
@@ -7524,6 +7524,180 @@ html.is-scrolling-to-top #tabContents{ transition:none !important; animation:non
   }, {passive:true});
 
   console.log('V10 smoothTapToTop loaded - tap tab aktif / tap judul = smooth ke atas semua tab');
+})();
+</script>
+
+
+<script id="autoLockV12JS">
+/* V12 - FIX KUNCI OTOMATIS: timer jalan, layar PIN beneran muncul */
+(function(){
+  if(window.__autoLockV12) return;
+  window.__autoLockV12 = true;
+
+  function getMinutes(){
+    var m = parseInt(localStorage.getItem('autoLockTime') || '5');
+    if(isNaN(m)) m = 5;
+    return m;
+  }
+  function isLocked(){
+    var lock = document.getElementById('pinLockScreen');
+    if(!lock) return false;
+    return lock.style.display !== 'none' && !lock.classList.contains('hidden');
+  }
+  function getLastActivity(){
+    var v = parseInt(localStorage.getItem('appLastActivity') || '0');
+    if(v) return v;
+    return window.__autoLockLastActivity || Date.now();
+  }
+  function setLastActivity(now){
+    window.__autoLockLastActivity = now;
+    try{ localStorage.setItem('appLastActivity', String(now)); }catch(e){}
+  }
+  function touchActivity(){
+    if(isLocked()) return; // lagi terkunci jangan reset timer, biar ga langsung kebuka lagi
+    setLastActivity(Date.now());
+  }
+
+  function doLock(){
+    if(isLocked()) return;
+    // Tutup modal pengaturan kunci dulu biar tidak numpuk di bawah layar PIN
+    try{ if(typeof closeKunciModal === 'function') closeKunciModal(); }catch(e){}
+    // 1. Hapus status unlock biar reload tidak auto-buka
+    try{ sessionStorage.removeItem('wedding_app_unlocked'); }catch(e){}
+    try{ localStorage.removeItem('appHiddenTime'); }catch(e){}
+    // 2. Reset UI PIN: sembunyikan cincin, tampilkan input PIN, bersihkan dot & error
+    try{ var ring = document.getElementById('ringAnimationContainer'); if(ring){ ring.classList.add('hidden','opacity-0'); ring.classList.remove('flex'); } }catch(e){}
+    try{ var pic = document.getElementById('pinInputContent'); if(pic){ pic.classList.remove('hidden','opacity-0'); } }catch(e){}
+    try{ var wt = document.getElementById('welcomeText'); if(wt) wt.classList.add('opacity-0'); }catch(e){}
+    try{ var err = document.getElementById('pinErrMsg'); if(err) err.classList.add('hidden'); }catch(e){}
+    try{ var btn = document.getElementById('btnPinSubmit'); if(btn) btn.classList.add('hidden'); }catch(e){}
+    try{ if(typeof clearAllPin === 'function') clearAllPin(); else if(typeof updatePinDisplay === 'function') updatePinDisplay(); }catch(e){}
+    // 3. Tampilkan layar kunci - INI YANG DULU RUSAK:
+    // unlockApp() ninggalin display:none + opacity-0 + pointer-events-none + scale-105,
+    // kalau cuma remove('hidden') layarnya tetap invisible. Harus dibersihin semua.
+    var lock = document.getElementById('pinLockScreen');
+    if(!lock){ try{ refreshHalaman(); }catch(e){} return; }
+    lock.style.display = 'flex';
+    lock.classList.remove('hidden','pointer-events-none','scale-105');
+    lock.classList.add('opacity-0');
+    try{ document.body.classList.add('overflow-hidden'); }catch(e){}
+    lock.style.opacity = '';
+    void lock.offsetHeight; // paksa reflow biar fade-in jalan
+    setTimeout(function(){ try{ lock.classList.remove('opacity-0'); }catch(e){} }, 30);
+    console.log('V12 autoLock - TERKUNCI, idle ' + Math.round((Date.now() - getLastActivity())/1000) + 's');
+  }
+
+  // Override final - menang dari 2 definisi kunciAplikasi lama
+  window.kunciAplikasi = doLock;
+  try{ kunciAplikasi = doLock; }catch(e){}
+  window.kunciSekarang = function(){ try{ closeKunciModal(); }catch(e){} setTimeout(doLock, 200); };
+  try{ kunciSekarang = window.kunciSekarang; }catch(e){}
+
+  // setKunciWaktu: simpan + langsung cek (kalau idle sudah lewat, kunci sekarang, jangan nunggu 1 menit lagi)
+  window.setKunciWaktu = function(minutes){
+    try{ localStorage.setItem('autoLockTime', minutes); }catch(e){}
+    try{ if(typeof updateLockOptionsUI === 'function') updateLockOptionsUI(minutes); }catch(e){}
+    setLastActivity(Date.now());
+    checkAndLock();
+    var txt = minutes === 0 ? 'Tidak Dikunci' : minutes + ' Menit';
+    setTimeout(function(){
+      var toast = document.createElement('div');
+      toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2 rounded-full text-xs font-bold z-[90] shadow-xl';
+      toast.innerText = 'Kunci otomatis: ' + txt;
+      document.body.appendChild(toast);
+      setTimeout(function(){ toast.remove(); }, 2000);
+    }, 100);
+  };
+  try{ setKunciWaktu = window.setKunciWaktu; }catch(e){}
+
+  function checkAndLock(){
+    var m = getMinutes();
+    if(m === 0) return;
+    if(isLocked()) return;
+    var idle = Date.now() - getLastActivity();
+    if(idle >= m * 60 * 1000){ doLock(); }
+  }
+  window.__autoLockCheck = checkAndLock;
+  window.resetAutoLockTimer = function(){ touchActivity(); checkAndLock(); };
+  try{ resetAutoLockTimer = window.resetAutoLockTimer; }catch(e){}
+
+  // Interval 5 detik - bukan cuma setTimeout sekali, jadi kalau Chrome nge-throttle timer
+  // pas app di-background / layar mati, tetap kehitung pas balik
+  setInterval(checkAndLock, 5000);
+
+  // Aktivitas = sentuh, klik, ketik, scroll, geser
+  ['click','touchstart','touchmove','keydown','mousemove','wheel','scroll','input'].forEach(function(ev){
+    try{ document.addEventListener(ev, touchActivity, {passive:true, capture:true}); }catch(e){}
+  });
+
+  // Balik dari background / pindah app / layar mati -> cek selisih waktu, kalau lewat langsung kunci
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){
+      try{ localStorage.setItem('appHiddenTime', String(Date.now())); }catch(e){}
+    } else {
+      try{
+        var ht = parseInt(localStorage.getItem('appHiddenTime') || '0');
+        if(ht){
+          var m = getMinutes();
+          if(m > 0 && (Date.now() - ht) >= m * 60 * 1000){ doLock(); }
+          localStorage.removeItem('appHiddenTime');
+        }
+      }catch(e){}
+      if(!isLocked()) touchActivity();
+      checkAndLock();
+    }
+  });
+  window.addEventListener('pagehide', function(){ try{ localStorage.setItem('appHiddenTime', String(Date.now())); }catch(e){} });
+  window.addEventListener('blur', function(){ try{ localStorage.setItem('appHiddenTime', String(Date.now())); }catch(e){} });
+  window.addEventListener('focus', function(){
+    try{
+      var ht2 = parseInt(localStorage.getItem('appHiddenTime') || '0');
+      if(ht2){
+        var m2 = getMinutes();
+        if(m2 > 0 && (Date.now() - ht2) >= m2 * 60 * 1000){ doLock(); }
+        localStorage.removeItem('appHiddenTime');
+      }
+    }catch(e){}
+    if(!isLocked()) touchActivity();
+  });
+
+  // Pas baru kebuka kuncinya (PIN benar) -> anggap itu aktivitas baru,
+  // biar tidak langsung terkunci lagi 5 detik kemudian karena lastActivity lama
+  try{
+    var lockEl = document.getElementById('pinLockScreen');
+    if(lockEl && window.MutationObserver){
+      var obs = new MutationObserver(function(){
+        if(!isLocked()){ setLastActivity(Date.now()); }
+      });
+      obs.observe(lockEl, {attributes:true, attributeFilter:['class','style']});
+    }
+  }catch(e){}
+
+  // PIN custom: verifyPin lama cuma nerima 150522, padahal Ganti PIN nyimpen ke customPin.
+  // Bungkus biar PIN baru juga bisa buka kunci (tanpa ngubah animasi cincin).
+  try{
+    var _origVerifyPin = window.verifyPin;
+    if(typeof _origVerifyPin === 'function' && !window.__verifyPinV12){
+      window.__verifyPinV12 = true;
+      window.verifyPin = function(enteredPin){
+        try{
+          var custom = localStorage.getItem('customPin') || '150522';
+          if(enteredPin === custom || enteredPin === '150522'){ return _origVerifyPin('150522'); }
+        }catch(e){}
+        return _origVerifyPin(enteredPin);
+      };
+      try{ verifyPin = window.verifyPin; }catch(e){}
+    }
+  }catch(e){}
+
+  // Cek awal: kalau reload setelah ditinggal lama, jangan auto-unlock, langsung kunci
+  setTimeout(function(){
+    if(localStorage.getItem('appLastActivity')){
+      checkAndLock();
+    }
+  }, 1000);
+
+  console.log('V12 autoLock loaded - kunci otomatis diperbaiki');
 })();
 </script>
 
